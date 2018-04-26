@@ -1,0 +1,11 @@
+{
+  "presets": ["es2015","react","stage-0","env"],
+  "plugins": ["react-hot-loader/babel",["import", { "libraryName": "antd", "style": true }],["transform-runtime", {"helpers": false,
+    "polyfill": false,
+    "regenerator": true}],"transform-class-properties"],
+  "env": {
+    "production":{
+      "preset":["react-optimize"]
+    }
+  }
+}

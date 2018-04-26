@@ -1,0 +1,48 @@
+import Koa from 'koa'
+import Router from 'koa-router'
+import User from '../../models/user'
+import {MD5_SUFFIX, responseClient, md5} from '../util'
+
+const router = Router();
+router.post('/login', async (ctx) => {
+    console.log(ctx.request.body);
+    let {username, password} = ctx.request.body;
+    if(!username){
+        responseClient(ctx.response, 400, 2, '用户名不可为空');
+        return;
+    }
+    if(!password){
+        responseClient(ctx.response, 400, 2, '密码不能为空');
+        return;
+    }
+    password = md5(MD5_SUFFIX + password);
+    console.log(password);
+    await User.findOne({
+        username,
+        password
+    }).then(userInfo => {
+        console.log(userInfo);
+        if(userInfo){
+            let data = {};
+            data.username = userInfo.username;
+            data.userType = userInfo.type?'user':'admin';
+            data.userId = userInfo._id;
+            ctx.session.userInfo = data;
+            responseClient(ctx.response, 200, 0, '登陆成功', data);
+        }else{
+            responseClient(ctx.response, 400, 1, '用户名密码错误');
+        }
+    }).catch(err => {
+        responseClient(ctx.response);
+    })
+});
+
+router.get('/userInfo', (ctx) => {
+    if(ctx.session.userInfo){
+        responseClient(ctx.response, 200, 0, '', ctx.session.userInfo)
+    }else{
+        responseClient(ctx.response, 200, 1, '请重新登录', ctx.session.userInfo)
+    }
+});
+
+module.exports = router;
