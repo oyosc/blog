@@ -5,6 +5,8 @@ import mongoose from 'mongoose'
 import session from 'koa-session'
 import Router from 'koa-router'
 import userRouter from './user'
+import {redisConfig} from '../config'
+import {redis_init} from '../database/redis/redis'
 
 const koaBody = require('koa-body')
 
@@ -12,6 +14,8 @@ const router = new Router();
 
 const port = '8080';
 const app = new Koa();
+const redis_client = redis_init(redisConfig.port, redisConfig.url);
+
 console.log("api_server@@@@@@@@@@@@")
 // app.use(bodyParser());
 app.keys = ['koa_react_cookie'];
@@ -54,6 +58,13 @@ app.use(session(CONFIG, app));
 router.use('/user', koaBody(), userRouter.routes())
 
 app.use(router.routes())
+
+if(redis_client){
+    console.log("redis 启动成功，端口号：" + redisConfig.port);
+    redis_client.on('error', (error) => {
+        console.log(error);
+    })
+}
 
 mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://127.0.0.1:27017/blog', function(err){

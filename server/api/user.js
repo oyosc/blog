@@ -2,6 +2,7 @@ import Koa from 'koa'
 import Router from 'koa-router'
 import User from '../../models/user'
 import {MD5_SUFFIX, responseClient, md5} from '../util'
+import {signToke, checkToke} from '../base/token'
 
 const router = Router();
 router.post('/login', async (ctx) => {
@@ -20,13 +21,14 @@ router.post('/login', async (ctx) => {
     await User.findOne({
         username,
         password
-    }).then(userInfo => {
+    }).then(async userInfo => {
         console.log(userInfo);
         if(userInfo){
             let data = {};
             data.username = userInfo.username;
             data.userType = userInfo.type?'user':'admin';
             data.userId = userInfo._id;
+            data.token = await signToke(userInfo);
             ctx.session.userInfo = data;
             responseClient(ctx.response, 200, 0, '登陆成功', data);
         }else{
@@ -37,11 +39,13 @@ router.post('/login', async (ctx) => {
     })
 });
 
-router.get('/userInfo', (ctx) => {
-    if(ctx.session.userInfo){
-        responseClient(ctx.response, 200, 0, '', ctx.session.userInfo)
+router.get('/userInfo', async (ctx) => {
+    let tokenResult = await checkToke(ctx.header.authorization);
+    console.log(tokenResult);
+    if(tokenResult.errCode){
+        responseClient(ctx.response, 200, 0, '', tokenResult.message)
     }else{
-        responseClient(ctx.response, 200, 1, '请重新登录', ctx.session.userInfo)
+        responseClient(ctx.response, 200, 1, 'token已经失效,请重新登录', tokenResult.message)
     }
 });
 

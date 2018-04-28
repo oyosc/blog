@@ -40,12 +40,13 @@ console.log(BUILD_PATH);
 //     ctx.body = frontFile
 // })
 
-app.use(serve(ROOT_PATH + "/build/"))
+// app.use(serve(ROOT_PATH + "/build/"))
 
 
-app.use(history());
+// app.use(history());
 
 router.all('/api/*', async (ctx, next) => {
+    console.log("2231311");
     ctx.req.url = ctx.req.url.split("api")[1];
     ctx.respond = false;
     proxy.web(ctx.req, ctx.res, {target: targetUrl});
@@ -58,24 +59,24 @@ router.all('/api/*', async (ctx, next) => {
 //   })
 
 
-if(process.env.NODE_ENV !== 'production'){
-    const webpack = require('webpack');
-    const {devMiddleware, hotMiddleware} = require('koa-webpack-middleware');
-    const webpackConfig = require('../webpack.dev')
+// if(process.env.NODE_ENV !== 'production'){
+//     const webpack = require('webpack');
+//     const {devMiddleware, hotMiddleware} = require('koa-webpack-middleware');
+//     const webpackConfig = require('../webpack.dev')
 
-    const compiler = webpack(webpackConfig);
-    app.use(devMiddleware(compiler, {
-        lazy: false,
-        stats: {colors: true},
-        watchOptions: {
-            aggregateTimeout: 300,
-            poll: true
-        },
-        publicPath: "/"
+//     const compiler = webpack(webpackConfig);
+//     app.use(devMiddleware(compiler, {
+//         lazy: false,
+//         stats: {colors: true},
+//         watchOptions: {
+//             aggregateTimeout: 300,
+//             poll: true
+//         },
+//         publicPath: "/"
 
-    }));
-    app.use(hotMiddleware(compiler));
-}
+//     }));
+//     app.use(hotMiddleware(compiler));
+// }
 
 app.use(router.routes());
 
