@@ -5,7 +5,7 @@ import {MD5_SUFFIX, responseClient, md5} from '../util'
 import {signToke, checkToke} from '../base/token'
 
 const router = Router();
-router.post('/login', async (ctx) => {
+router.all('/login', async (ctx) => {
     console.log(ctx.request.body);
     let {username, password} = ctx.request.body;
     if(!username){

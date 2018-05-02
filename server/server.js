@@ -46,7 +46,6 @@ console.log(BUILD_PATH);
 // app.use(history());
 
 router.all('/api/*', async (ctx, next) => {
-    console.log("2231311");
     ctx.req.url = ctx.req.url.split("api")[1];
     ctx.respond = false;
     proxy.web(ctx.req, ctx.res, {target: targetUrl});

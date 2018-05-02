@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 import {Base64} from 'js-base64'
 import {jwt_config} from '../config'
-import {getAsync, setAsync} from '../database/redis/redis'
+import {getAsync, setAsync, ttlAsync} from '../database/redis/redis'
 import {handleErr} from '../util'
 import {findUserById} from '../models/user'
 import errCodes from '../errCodes'
@@ -27,6 +27,7 @@ async function checkToke(authorization){
     let decoded = jwt.decode(authorization, {complete: true});
     console.log(decoded.payload['userId']);
     let result = await findUserById(decoded.payload['userId']);
+    let baseJti = decoded.payload['jti'];
     if(result.errCode == '200'){
         let [verifyErr, verifyMessage] = await handleErr(util.promisify(jwt.verify)(authorization, jwt_config.jwt_secret));
         if(verifyErr) return {'errcode': verifyErr, 'message': verifyMessage}
@@ -39,6 +40,9 @@ async function checkToke(authorization){
             if(getRedisErr) return {'errcode': '20001', 'message': getRedisErr}
             if(getRedisValue === null) return {'errcode': '20002', 'message': errCodes['20002']}
             if(getRedisValue == '0'){
+                let [ttlErr, ttlTime] = await handleErr(ttlAsync(baseJti));
+                let [err, message] = await handleErr(setAsync(baseJti, '1', 'EX', ttlTime));
+                if(err || ttlErr) return {'errcode': '20001', 'message': getRedisErr};
                 return {'errCode': '200', 'message': 'token正常，可以访问'}
             }else{
                 return {'errCode': '20003', 'message': errCodes['20003']}
