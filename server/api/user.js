@@ -42,10 +42,10 @@ router.all('/login', async (ctx) => {
 router.get('/userInfo', async (ctx) => {
     let tokenResult = await checkToke(ctx.header.authorization);
     console.log(tokenResult);
-    if(tokenResult.errCode){
-        responseClient(ctx.response, 200, 0, '', tokenResult.message)
+    if(tokenResult.errCode == '200'){
+        responseClient(ctx.response, 200, 0, 'token验证成功', tokenResult.message)
     }else{
-        responseClient(ctx.response, 200, 1, 'token已经失效,请重新登录', tokenResult.message)
+        responseClient(ctx.response, tokenResult.errCode, 1, 'token已经失效,请重新登录', tokenResult.message)
     }
 });
 

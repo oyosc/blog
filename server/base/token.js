@@ -9,6 +9,7 @@ import errCodes from '../errCodes'
 const util = require('util')
 
 async function signToke(user){
+    console.log(user);
     let baseJti = user._id + Base64.encode(user.username) + Date.parse(new Date());
     const token = jwt.sign({
         userId: user._id,
@@ -24,6 +25,7 @@ async function signToke(user){
 }
 
 async function checkToke(authorization){
+    console.log(authorization);
     let decoded = jwt.decode(authorization, {complete: true});
     console.log(decoded.payload['userId']);
     let result = await findUserById(decoded.payload['userId']);
@@ -43,7 +45,14 @@ async function checkToke(authorization){
                 let [ttlErr, ttlTime] = await handleErr(ttlAsync(baseJti));
                 let [err, message] = await handleErr(setAsync(baseJti, '1', 'EX', ttlTime));
                 if(err || ttlErr) return {'errcode': '20001', 'message': getRedisErr};
-                return {'errCode': '200', 'message': 'token正常，可以访问'}
+                let userInfo = {
+                    _id: decoded.payload['userId'],
+                    type: decoded.payload['usertype'] == 'user' ? 1 : 0,
+                    username: decoded.payload['username']
+                };
+                let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo));
+                if(registerTokenErr) return {'errcode': '20004', 'message': registerTokenErr};
+                return {'errCode': '200', 'message': {'token': registerToken}};
             }else{
                 return {'errCode': '20003', 'message': errCodes['20003']}
             }
