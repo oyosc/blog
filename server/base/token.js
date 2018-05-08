@@ -3,7 +3,7 @@ import {Base64} from 'js-base64'
 import {jwt_config} from '../config'
 import {getAsync, setAsync, ttlAsync} from '../database/redis/redis'
 import {handleErr} from '../util'
-import {findUserById} from '../models/user'
+import {findUser} from '../models/user'
 import errCodes from '../errCodes'
 
 const util = require('util')
@@ -25,10 +25,8 @@ async function signToke(user){
 }
 
 async function checkToke(authorization){
-    console.log(authorization);
     let decoded = jwt.decode(authorization, {complete: true});
-    console.log(decoded.payload['userId']);
-    let result = await findUserById(decoded.payload['userId']);
+    let result = await findUser({'id':decoded.payload['userId']});
     let baseJti = decoded.payload['jti'];
     if(result.errCode == '200'){
         let [verifyErr, verifyMessage] = await handleErr(util.promisify(jwt.verify)(authorization, jwt_config.jwt_secret));
