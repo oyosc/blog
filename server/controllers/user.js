@@ -16,19 +16,17 @@ async function login(ctx){
     password = md5(MD5_SUFFIX + password);
     let result = await User.findUser({username, password});
     if(result.errCode == '200'){
-        let data = {};
-        data.username = result.userInfo.username;
-        data.userType = result.userInfo.type?'user':'admin';
-        data.userId = result.userInfo._id;
-        data.token = await signToke(result.userInfo);
-        ctx.session.userInfo = data;
-        responseClient(ctx.response, 200, 0, '登陆成功', data);
+        let token = await signToke(result.userInfo);
+        responseClient(ctx.response, 200, 0, '登陆成功', token);
     }else{
         responseClient(ctx.response, 400, 1, '用户名密码错误');
     }
 }
 
 async function userInfo(ctx){
+    if(!ctx.header.authorization){
+        return responseClient(ctx.response, 200, 0, '不需要进行token验证', {})
+    }
     let tokenResult = await checkToke(ctx.header.authorization);
     console.log(tokenResult);
     if(tokenResult.errCode == '200'){

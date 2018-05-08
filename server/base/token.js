@@ -25,7 +25,7 @@ async function signToke(user){
 }
 
 async function checkToke(authorization){
-    let decoded = jwt.decode(authorization, {complete: true});
+    let decoded =jwt.decode(authorization, {complete: true});
     let result = await findUser({'id':decoded.payload['userId']});
     let baseJti = decoded.payload['jti'];
     if(result.errCode == '200'){
