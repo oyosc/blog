@@ -20,12 +20,15 @@ async function signToke(user){
         exp: Date.parse(new Date()) + 30
     }, jwt_config.jwt_secret);
     let [err, message] = await handleErr(setAsync(baseJti, '0', 'EX', 30));
+    console.log("token");
+    console.log(token);
     if(err) console.log("redis存储key失败");
     return token;
 }
 
 async function checkToke(authorization){
     let decoded =jwt.decode(authorization, {complete: true});
+    if(!decoded) return {'errcode': '10002', 'message': errCodes['10002']};
     let result = await findUser({'id':decoded.payload['userId']});
     let baseJti = decoded.payload['jti'];
     if(result.errCode == '200'){

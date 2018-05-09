@@ -14,8 +14,6 @@ let config = {
     ],
     transformResponse: [
         function(data){
-            console.log("data");
-            console.log(data);
             return data
         }
     ],
@@ -30,7 +28,11 @@ axios.interceptors.response.use(function(res){
     return res;
 });
 
-export function get(url){
+export function get(url, token){
+    if(token){
+        config.headers.authorization = token;
+    }
+    console.log(config);
     return axios.get(url, config)
 }
 

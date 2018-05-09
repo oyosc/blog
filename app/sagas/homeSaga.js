@@ -29,7 +29,7 @@ export function* loginFlow(){
         if(response.data&&response.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1});
             let userInfo = checkToken(response.headers.authorization);
-            let data = Object.assign(response.data, userInfo);
+            let data = Object.assign(response.data, userInfo, {token: response.headers.authorization});
             yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
         }
     }
@@ -37,12 +37,14 @@ export function* loginFlow(){
 
 export function* user_auth(){
     while(true){
-        yield take(IndexActionTypes.USER_AUTH)
+        let result = yield take(IndexActionTypes.USER_AUTH)
         try{
             yield put({type: IndexActionTypes.FETCH_START})
-            let response = yield call(get, '/user/userInfo')
+            let response = yield call(get, '/user/userInfo', result.token);
             if(response && response.code === 0){
-                yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: response.data})
+                let userInfo = checkToken(response.headers.authorization);
+                let data = Object.assign(response.data, userInfo, {token: response.headers.authorization});
+                yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             }
         }catch(err){
             console.log(err);

@@ -43,7 +43,7 @@ console.log(BUILD_PATH);
 // app.use(serve(ROOT_PATH + "/build/"))
 
 
-// app.use(history());
+app.use(history());
 
 router.all('/api/*', async (ctx, next) => {
     ctx.req.url = ctx.req.url.split("api")[1];

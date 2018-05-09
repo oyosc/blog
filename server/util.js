@@ -12,12 +12,13 @@ module.exports = {
         let md5 = crypto.createHash('md5');
         return md5.update(pwd).digest('hex')
     },
-    responseClient(res, httpCode=500, code=3, message='服务端异常', token={}){
+    responseClient(res, httpCode=500, code=3, message='服务端异常', result={}){
         let responseData = {};
         responseData.code = code;
         responseData.message = message;
         res.status = httpCode;
-        if(token) res.set({'Authorization': token});
+        if(result.token) res.set({'Authorization': result.token});
+        console.log("result: " + JSON.stringify(result));
         res.body = JSON.stringify(responseData)
     },
     handleErr

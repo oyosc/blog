@@ -43,9 +43,10 @@ export const actions = {
             msgContent: ''
         }
     },
-    user_auth: function(){
+    user_auth: function(token){
         return {
-            type: actionsTypes.USER_AUTH
+            type: actionsTypes.USER_AUTH,
+            token: token
         }
     }
 };
@@ -70,6 +71,8 @@ export function reducer(state = initialState, action){
                 }
             };
         case actionsTypes.RESPONSE_USER_INFO:
+            console.log("++++++++");
+            console.log(action.data);
             return {
                 ...state, userInfo: action.data
             };
