@@ -72,11 +72,10 @@ class AppIndex extends Component{
         )
     }
 
-    // componentDidMount(){
-    //     alert(JSON.stringify(this.props.userInfo));
-    //     let token = JSON.parse(localStorage.getItem('token'));
-    //     this.props.user_auth(token);
-    // }
+    componentDidMount(){
+        let token = JSON.parse(localStorage.getItem('token'));
+        this.props.user_auth(token);
+    }
 }
 
 function mapStateToProps(state){

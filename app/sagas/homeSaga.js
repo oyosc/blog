@@ -41,7 +41,7 @@ export function* user_auth(){
         try{
             yield put({type: IndexActionTypes.FETCH_START})
             let response = yield call(get, '/user/userInfo', result.token);
-            if(response && response.code === 0){
+            if(response.data && response.data.code === 0){
                 let userInfo = checkToken(response.headers.authorization);
                 let data = Object.assign(response.data, userInfo, {token: response.headers.authorization});
                 yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
