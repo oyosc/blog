@@ -27,9 +27,7 @@ let config = {
 };
 
 axios.interceptors.response.use(function(res){
-    console.log("res");
-    console.log(res);
-    return res.data;
+    return res;
 });
 
 export function get(url){

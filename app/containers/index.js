@@ -56,14 +56,14 @@ class AppIndex extends Component{
                         <Route component={Front} />
                     </Switch>
                     {/* {isFetching && <Loading />} */}
-                    {
+                    {/* {
                         this.props.notification && this.props.notification.content?
                                 (
                                 this.props.notification.type === 1 ? this.openNotification('success', this.props.notification.content):
                                 this.openNotification('error', this.props.notification.content)):
                                 null
 
-                    }
+                    } */}
 
 
 
@@ -72,9 +72,9 @@ class AppIndex extends Component{
         )
     }
 
-    componentDidMount(){
-        this.props.user_auth();
-    }
+    // componentDidMount(){
+    //     this.props.user_auth();
+    // }
 }
 
 function mapStateToProps(state){
