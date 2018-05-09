@@ -25,7 +25,7 @@ class Admin extends Component{
 
     render(){
         const {url} = this.props.match;
-        if(this.props.userInfo&&this.props.userInfo.userType){
+        if(this.props.userInfo&&this.props.userInfo.userType){//这里判断是否有userinfo,防止刷新页面的时候props渲染没有完成，导致为空
             return (
                 <div>
                     {

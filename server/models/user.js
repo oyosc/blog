@@ -3,12 +3,12 @@ const objectId = require('mongodb').ObjectID;
 import errCodes from '../errCodes'
 import {MD5_SUFFIX, md5} from '../util'
 
+//在数据库中查询用户
 async function findUser(info){
     if(info.id){
         info._id = objectId(info.id);
         delete info.id;
     }
-    console.log(info);
     let result = await User.findOne(
         info
     ).then((userInfo) => {

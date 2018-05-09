@@ -8,6 +8,7 @@ import errCodes from '../errCodes'
 
 const util = require('util')
 
+//token进行签名
 async function signToke(user){
     console.log(user);
     let baseJti = user._id + Base64.encode(user.username) + Date.parse(new Date());
@@ -26,9 +27,10 @@ async function signToke(user){
     return token;
 }
 
+//验证token
 async function checkToke(authorization){
     let decoded =jwt.decode(authorization, {complete: true});
-    if(!decoded) return {'errcode': '10002', 'message': errCodes['10002']};
+    if(!decoded) return {'errcode': '10002', 'message': errCodes['10002']}; //这里要进行判断，因为jwt.decode这个不会返回错误
     let result = await findUser({'id':decoded.payload['userId']});
     let baseJti = decoded.payload['jti'];
     if(result.errCode == '200'){
@@ -43,7 +45,7 @@ async function checkToke(authorization){
             if(getRedisErr) return {'errcode': '20001', 'message': getRedisErr}
             if(getRedisValue === null) return {'errcode': '20002', 'message': errCodes['20002']}
             if(getRedisValue == '0'){
-                let [ttlErr, ttlTime] = await handleErr(ttlAsync(baseJti));
+                let [ttlErr, ttlTime] = await handleErr(ttlAsync(baseJti)); //查询redis中是否有该token
                 let [err, message] = await handleErr(setAsync(baseJti, '1', 'EX', ttlTime));
                 if(err || ttlErr) return {'errcode': '20001', 'message': getRedisErr};
                 let userInfo = {
@@ -51,7 +53,7 @@ async function checkToke(authorization){
                     type: decoded.payload['usertype'] == 'user' ? 1 : 0,
                     username: decoded.payload['username']
                 };
-                let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo));
+                let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo));//生成新的token
                 if(registerTokenErr) return {'errcode': '20004', 'message': registerTokenErr};
                 return {'errCode': '200', 'message': {'token': registerToken}};
             }else{

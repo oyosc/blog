@@ -3,6 +3,7 @@ const redis = require("redis")
 
 let getAsync, setAsync, ttlAsync;
 
+//对redis的函数进行promisify并初始化
 const redis_init = (port, url) => {
     let client = redis.createClient(port, url);
     getAsync = promisify(client.get).bind(client);

@@ -3,7 +3,8 @@ import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 const jwt = require('jsonwebtoken')
 
-function checkToken(authorization){
+//客户端解析localsotrage中的token
+function resolveToken(authorization){
     let decoded = jwt.decode(authorization, {complete: true});
     let userId = decoded.payload['userId'];
     let username = decoded.payload['username'];
@@ -28,7 +29,7 @@ export function* loginFlow(){
         let response = yield call(login, request.username, request.password);
         if(response.data&&response.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1});
-            let userInfo = checkToken(response.headers.authorization);
+            let userInfo = resolveToken(response.headers.authorization);
             let data = Object.assign(response.data, userInfo, {token: response.headers.authorization});
             yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
         }
@@ -42,7 +43,7 @@ export function* user_auth(){
             yield put({type: IndexActionTypes.FETCH_START})
             let response = yield call(get, '/user/userInfo', result.token);
             if(response.data && response.data.code === 0){
-                let userInfo = checkToken(response.headers.authorization);
+                let userInfo = resolveToken(response.headers.authorization);
                 let data = Object.assign(response.data, userInfo, {token: response.headers.authorization});
                 yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             }
