@@ -21,9 +21,8 @@ class Home extends Component{
     }
 
     render(){
-        console.log('this is home');
         const {login, register} = this.props;
-        localStorage.setItem('userInfo', JSON.stringify(this.props.userInfo));
+        // localStorage.setItem('userInfo', JSON.stringify(this.props.userInfo));
         return (
             this.props.match.params.tag && (tags.indexOf(this.props.match.params.tag) === -1 || this.props.location.pathname.lastIndexOf('\/') > 0)
                 ?

@@ -19,9 +19,6 @@ class Front extends Component{
             localStorage.setItem('userInfo', JSON.stringify({userId: this.props.userInfo.userId, username: this.props.userInfo.username, userType: this.props.userInfo.userType}));
             localStorage.setItem('token', JSON.stringify(this.props.userInfo.token));
         }
-        if(localStorage.getItem('userInfo')){
-            this.props.userInfo = JSON.parse(localStorage.getItem('userInfo'));
-        }
         return (
             <div>
                 <div className={`${style.container}`}>
