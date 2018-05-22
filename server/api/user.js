@@ -1,6 +1,6 @@
 import Koa from 'koa'
 import Router from 'koa-router'
-import {login, userInfo} from '../controllers/user'
+import {login, userInfo, manageAllUsers} from '../controllers/user'
 
 const router = Router();
 //用户登录

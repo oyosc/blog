@@ -3,7 +3,7 @@ import {Base64} from 'js-base64'
 import {jwt_config} from '../config'
 import {getAsync, setAsync, ttlAsync} from '../database/redis/redis'
 import {handleErr} from '../util'
-import {findUser} from '../models/user'
+import {findOneUser} from '../models/user'
 import errCodes from '../errCodes'
 
 const util = require('util')
@@ -31,7 +31,7 @@ async function signToke(user){
 async function checkToke(authorization){
     let decoded =jwt.decode(authorization, {complete: true});
     if(!decoded) return {'errcode': '10002', 'message': errCodes['10002']}; //这里要进行判断，因为jwt.decode这个不会返回错误
-    let result = await findUser({'id':decoded.payload['userId']});
+    let result = await findOneUser({'id':decoded.payload['userId']});
     let baseJti = decoded.payload['jti'];
     if(result.errCode == '200'){
         let [verifyErr, verifyMessage] = await handleErr(util.promisify(jwt.verify)(authorization, jwt_config.jwt_secret));

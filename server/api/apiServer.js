@@ -5,6 +5,7 @@ import mongoose from 'mongoose'
 import session from 'koa-session'
 import Router from 'koa-router'
 import userRouter from './user'
+import adminRouter from './admin'
 import {redisConfig} from '../config'
 import {redis_init} from '../database/redis/redis'
 
@@ -56,6 +57,8 @@ app.use(session(CONFIG, app));
 
 
 router.use('/user', koaBody(), userRouter.routes())
+
+router.use('/admin', koaBody(), adminRouter.routes())
 
 app.use(router.routes())
 

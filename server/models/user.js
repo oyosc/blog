@@ -5,6 +5,7 @@ import {MD5_SUFFIX, md5} from '../util'
 
 //在数据库中查询用户
 async function findOneUser(info){
+    console.log("findOneUser");
     if(info.id){
         info._id = objectId(info.id);
         delete info.id;
@@ -24,29 +25,32 @@ async function findOneUser(info){
 }
 
 //在数据库中查询多个用户
-async function findUsers({userInfo, pageNum}){
+async function findUsers(userInfo, pageNum){
     let skip = pageNum - 1<0?0:(pageNum-1)*10;
     if(userInfo.id){
         userInfo._id = objectId(userInfo.id);
         delete userInfo.id;
     }
-    let result = await User.find(
+    return User.find(
         userInfo, 
         '_id username type password', 
         {skip:skip, limit:10}
-        ).then((result) => {
-            if(result){
-                return {'errCode': '200', 'message': '查询到符合记录的用户', result}
-            }else{
-                return {'errCode': '20003', 'message': errCodes['20003']}
-            }
-        }).catch(err => {
-            return {'errCode': '20002', 'message': JSON.stringify(err)}
-        })
+        );
 }
 
+//在数据库中查询符合条件的用户数量
+async function countUsers(userInfo){
+    if(userInfo.id){
+        userInfo._id = objectId(userInfo.id);
+        delete userInfo.id;
+    }
+    return User.find(
+        userInfo
+        ).count();
+}
 
 module.exports = {
-    findUser,
-    findUsers
+    findOneUser,
+    findUsers,
+    countUsers
 }

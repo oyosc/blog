@@ -14,7 +14,7 @@ async function login(ctx){
         return;
     }
     password = md5(MD5_SUFFIX + password);
-    let result = await User.findUser({username, password});
+    let result = await User.findOneUser({username, password});
     if(result.errCode == '200'){
         let token = await signToke(result.userInfo);
         responseClient(ctx.response, 200, 0, '登陆成功', {token});
@@ -35,7 +35,21 @@ async function userInfo(ctx){
     }
 }
 
+async function manageAllUsers(ctx){
+    let pageNum = ctx.request.pageNum;
+    let responseData = {
+        total: 0,
+        list: []
+    }
+    let count = await User.countUsers({});
+    let result = await User.findUsers({}, pageNum);
+    responseData.total = count;
+    responseData.list = result;
+    responseClient(ctx.response, 200, 0, '管理用户查询成功', responseData);
+}
+
 module.exports = {
     login,
-    userInfo
+    userInfo,
+    manageAllUsers
 }
