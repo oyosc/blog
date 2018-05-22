@@ -42,22 +42,22 @@ async function checkToke(authorization){
             return {'errCode': '401', 'message': errCodes['401']}
         }else{
             let [getRedisErr, getRedisValue] = await handleErr(getAsync(verifyMessage['jti']));
-            if(getRedisErr) return {'errcode': '20001', 'message': getRedisErr}
-            if(getRedisValue === null) return {'errcode': '20002', 'message': errCodes['20002']}
+            if(getRedisErr) return {'errcode': '30001', 'message': getRedisErr}
+            if(getRedisValue === null) return {'errcode': '30002', 'message': errCodes['30002']}
             if(getRedisValue == '0'){
                 let [ttlErr, ttlTime] = await handleErr(ttlAsync(baseJti)); //查询redis中是否有该token
                 let [err, message] = await handleErr(setAsync(baseJti, '1', 'EX', ttlTime));
-                if(err || ttlErr) return {'errcode': '20001', 'message': getRedisErr};
+                if(err || ttlErr) return {'errcode': '30001', 'message': getRedisErr};
                 let userInfo = {
                     _id: decoded.payload['userId'],
                     type: decoded.payload['usertype'] == 'user' ? 1 : 0,
                     username: decoded.payload['username']
                 };
                 let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo));//生成新的token
-                if(registerTokenErr) return {'errcode': '20004', 'message': registerTokenErr};
+                if(registerTokenErr) return {'errcode': '30004', 'message': registerTokenErr};
                 return {'errCode': '200', 'message': {'token': registerToken}};
             }else{
-                return {'errCode': '20003', 'message': errCodes['20003']}
+                return {'errCode': '30003', 'message': errCodes['30003']}
             }
         }
     }else{
