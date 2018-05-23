@@ -8,6 +8,8 @@ import userRouter from './user'
 import adminRouter from './admin'
 import {redisConfig} from '../config'
 import {redis_init} from '../database/redis/redis'
+import {checkToke} from '../base/token'
+import {MD5_SUFFIX, responseClient, md5} from '../util'
 
 const koaBody = require('koa-body')
 
@@ -35,6 +37,34 @@ let store = {
     destroy (key){
         delete this.storage[key]
         delete this.createDate[key]
+    }
+}
+
+let verifyPath = function(path){
+    switch(true){
+        case /\/user\/login([\s\S])*?/.test(path):
+            return true
+    }
+}
+
+let tokenMiddleware = async function(ctx, next){
+    let path = ctx.request.path;
+    if(verifyPath(path)){
+        return await next();
+    }else{
+        if(!ctx.header.authorization){
+            return responseClient(ctx.response, 400, 0, '没有token信息，请进行登录', {})
+        }else{
+            let tokenResult = await checkToke(ctx.header.authorization);
+            if(tokenResult.errCode == '200'){
+                await next();
+                if(tokenResult.message.token){
+                    ctx.response.set({'Authorization': tokenResult.message.token})
+                }
+            }else{
+                 return responseClient(ctx.response, 400, 1, 'token已经失效,请重新登录', tokenResult.message)
+            }
+        }
     }
 }
 
