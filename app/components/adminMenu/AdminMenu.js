@@ -20,6 +20,8 @@ export default class AdminMenu extends Component{
                     theme='dark'
                     onClick={
                         ({key}) => {
+                            console.log("key");
+                            console.log(key);
                             this.props.changeUrl(key);
                             this.props.history.push('/admin${key}')
                         }

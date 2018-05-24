@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux'
@@ -35,13 +36,15 @@ class AdminManagerUser extends Component{
 
     componentDidMount(){
         if(this.props.list.length===0){
-            this.props.get_all_users();
+            console.log("adminmanageuser");
+            this.props.getAllUsers();
         }
     }
 
     render(){
         return (
             <div>
+                {this.props.token && localStorage.setItem('token', JSON.stringify(this.props.token))}
                 <h2>用户管理</h2>
                 <Table
                     className={style.table}
@@ -51,7 +54,7 @@ class AdminManagerUser extends Component{
                 />
                 <Pagination
                     onChange={(pageNum) =>{
-                        this.props.get_all_users(pageNum);
+                        this.props.getAllUsers(pageNum);
                     }}
                     current={this.props.pageNum}
                     total={this.props.total}
@@ -63,7 +66,7 @@ class AdminManagerUser extends Component{
 
 AdminManagerUser.propTypes = {
     pageNum: PropTypes.number.isRequired,
-    list: PropTypes.arrayof(PropTypes.object),
+    list: PropTypes.arrayOf(PropTypes.object),
     total: PropTypes.number.isRequired
 }
 
@@ -74,11 +77,12 @@ AdminManagerUser.defaultProps = {
 }
 
 function mapStateToProps(state){
-    let {pageNum, list, total} = state.admin.users;
+    let {pageNum, list, total, token} = state.admin.users;
     return {
         pageNum,
         list,
-        total
+        total,
+        token
     }
 }
 

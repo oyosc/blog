@@ -55,15 +55,14 @@ class AppIndex extends Component{
                         <Route path="/admin" component={Admin} />
                         <Route component={Front} />
                     </Switch>
-                    {/* {isFetching && <Loading />} */}
-                    {/* {
+                    {isFetching}
+                    {
                         this.props.notification && this.props.notification.content?
                                 (
                                 this.props.notification.type === 1 ? this.openNotification('success', this.props.notification.content):
-                                this.openNotification('error', this.props.notification.content)):
+                                (this.props.notification.type === 2 ? localStorage.clear()&&this.openNotification('error', this.props.notification.content) : this.openNotification('error', this.props.notification.content))):
                                 null
-
-                    } */}
+                    }
 
 
 
@@ -73,8 +72,10 @@ class AppIndex extends Component{
     }
 
     componentDidMount(){
-        let token = JSON.parse(localStorage.getItem('token'));
-        this.props.user_auth(token);
+        if(localStorage.getItem('token')){
+            let token = JSON.parse(localStorage.getItem('token'));
+            this.props.user_auth(token);
+        }
     }
 }
 

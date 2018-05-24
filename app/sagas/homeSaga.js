@@ -1,16 +1,7 @@
 import {put, take, call, fork} from 'redux-saga/effects'
 import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
-const jwt = require('jsonwebtoken')
-
-//客户端解析localsotrage中的token
-function resolveToken(authorization){
-    let decoded = jwt.decode(authorization, {complete: true});
-    let userId = decoded.payload['userId'];
-    let username = decoded.payload['username'];
-    let userType = decoded.payload['userType'];
-    return {userId, username, userType}
-}
+import {resolveToken} from '../base/util'
 
 export function* login(username, password){
     yield put({type: IndexActionTypes.FETCH_START});
@@ -42,12 +33,18 @@ export function* user_auth(){
         try{
             yield put({type: IndexActionTypes.FETCH_START})
             let response = yield call(get, '/user/userInfo', result.token);
+            console.log('userauth');
+            console.log(response);
             if(response.data && response.data.code === 0){
+                if(!response.headers.authorization){
+                    return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '用户请登录', msgType: 0});
+                }
                 let userInfo = resolveToken(response.headers.authorization);
                 let data = Object.assign(response.data, userInfo, {token: response.headers.authorization});
                 yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             }
         }catch(err){
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '用户token失效，请重新登录', msgType: 2});
             console.log(err);
         }finally{
             yield put({type: IndexActionTypes.FETCH_END})

@@ -10,6 +10,7 @@ import {
 import NotFound from '../../components/notFound/NotFound'
 import AdminMenu from '../../components/adminMenu/AdminMenu'
 import AdminIndex from '../adminIndex/AdminIndex'
+import AdminManagerUser from '../adminManagerUser/AdminManagerUser'
 import style from './style.css'
 import {bindActionCreators} from 'redux'
 import {actions} from '../../reducers/admin'
@@ -40,7 +41,7 @@ class Admin extends Component{
                                 <div className={style.contentContainer}>
                                     <Switch>
                                         <Route exact path={url} component={AdminIndex} />
-                                        {/* <Route path={`${url}/managerUser`} component={AdminManagerUser} /> */}
+                                        <Route path={`${url}/managerUser`} component={AdminManagerUser} />
                                     </Switch>
                                 </div>
                             </div> :
@@ -66,7 +67,7 @@ class Admin extends Component{
                                     <div className={style.contentContainer}>
                                         <Switch>
                                             <Route exact path={url} component={AdminIndex} />
-                                            {/* <Route path={`${url}/managerUser`} component={AdminManagerUser} /> */}
+                                            <Route path={`${url}/managerUser`} component={AdminManagerUser} />
                                         </Switch>
                                     </div>
                                 </div> :
