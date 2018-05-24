@@ -43,7 +43,7 @@ console.log(BUILD_PATH);
 // app.use(serve(ROOT_PATH + "/build/"))
 
 
-app.use(history()); //react是signal page,防止刷新无响应或者404
+app.use(history()); //react是signal page,防止刷新无响应或者404,单纯测试后端接口的时候要注释，防止请求被拦截
 
 router.all('/api/*', async (ctx, next) => {
     ctx.req.url = ctx.req.url.split("api")[1];

@@ -2,6 +2,8 @@
 import User from '../models/user'
 import {MD5_SUFFIX, responseClient, md5} from '../util'
 import {signToke, checkToke} from '../base/token'
+import errCodes from '../errCodes'
+const jwt = require('jsonwebtoken')
 
 async function login(ctx){
     let {username, password} = ctx.request.body;
@@ -24,14 +26,14 @@ async function login(ctx){
 }
 
 async function userInfo(ctx){
-    if(!ctx.header.authorization){
-        return responseClient(ctx.response, 200, 0, '不需要进行token验证', {})
-    }
-    let tokenResult = await checkToke(ctx.header.authorization);
-    if(tokenResult.errCode == '200'){
-        responseClient(ctx.response, 200, 0, 'token验证成功', tokenResult.message)
+    let decoded =jwt.decode(ctx.header.authorization, {complete: true});
+    if(!decoded) return responseClient(ctx.response, 400, 0, 'token验证失败',{err:errCodes['10002']}); //这里要进行判断，因为jwt.decode这个不会返回错误
+    let result = await User.findOneUser({id: decoded.payload['userId']});
+    if(result.errCode == '200'){
+        let token = await signToke(result.userInfo);
+        responseClient(ctx.response, 200, 0, '用户信息正确', '用户信息正确');
     }else{
-        responseClient(ctx.response, 400, 1, 'token已经失效,请重新登录', tokenResult.message)
+        responseClient(ctx.response, 400, 1, '用户名密码错误');
     }
 }
 

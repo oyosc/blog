@@ -17,7 +17,7 @@ module.exports = {
         responseData.code = code;
         responseData.message = message;
         res.status = httpCode;
-        // if(result.token) res.set({'Authorization': result.token});
+        if(result.token) res.set({'Authorization': result.token});
         console.log("result: " + JSON.stringify(result));
         res.body = JSON.stringify(responseData)
     },

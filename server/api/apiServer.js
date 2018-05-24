@@ -41,9 +41,12 @@ let store = {
 }
 
 let verifyPath = function(path){
+    console.log(path);
     switch(true){
         case /\/user\/login([\s\S])*?/.test(path):
             return true
+        default:
+            return false
     }
 }
 
@@ -53,9 +56,11 @@ let tokenMiddleware = async function(ctx, next){
         return await next();
     }else{
         if(!ctx.header.authorization){
-            return responseClient(ctx.response, 400, 0, '没有token信息，请进行登录', {})
+            return responseClient(ctx.response, 400, 0, '没有token信息，请进行登录', {err: '没有token信息，请进行登录'})
         }else{
             let tokenResult = await checkToke(ctx.header.authorization);
+            console.log("tokenResult");
+            console.log(tokenResult);
             if(tokenResult.errCode == '200'){
                 await next();
                 if(tokenResult.message.token){
@@ -75,6 +80,8 @@ const CONFIG = {
 };
 
 app.use(session(CONFIG, app));
+
+app.use(tokenMiddleware);
 
 // app.use(async ctx => {
 //     console.log(ctx.req);
