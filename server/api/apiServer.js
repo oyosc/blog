@@ -56,18 +56,16 @@ let tokenMiddleware = async function(ctx, next){
         return await next();
     }else{
         if(!ctx.header.authorization){
-            return responseClient(ctx.response, 400, 0, '没有token信息，请进行登录', {err: '没有token信息，请进行登录'})
+            return responseClient(ctx.response, 400, 0, '没有token信息，请进行登录')
         }else{
             let tokenResult = await checkToke(ctx.header.authorization);
-            console.log("tokenResult");
-            console.log(tokenResult);
             if(tokenResult.errCode == '200'){
                 await next();
                 if(tokenResult.message.token){
                     ctx.response.set({'Authorization': tokenResult.message.token})
                 }
             }else{
-                 return responseClient(ctx.response, 400, 1, 'token已经失效,请重新登录', tokenResult.message)
+                 return responseClient(ctx.response, 400, 0, tokenResult.message.err)
             }
         }
     }

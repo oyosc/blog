@@ -24,8 +24,7 @@ export function users(state = initialState, action){
             return {
                 list: action.data.list,
                 pageNum: action.data.pageNum,
-                total: action.data.total,
-                token: action.data.token
+                total: action.data.total
             }
         default:
             return state;

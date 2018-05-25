@@ -36,7 +36,6 @@ class AdminManagerUser extends Component{
 
     componentDidMount(){
         if(this.props.list.length===0){
-            console.log("adminmanageuser");
             this.props.getAllUsers();
         }
     }

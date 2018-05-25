@@ -23,7 +23,7 @@ export default class AdminMenu extends Component{
                             console.log("key");
                             console.log(key);
                             this.props.changeUrl(key);
-                            this.props.history.push('/admin${key}')
+                            this.props.history.push(`/admin${key}`)
                         }
                     } 
                 >

@@ -27,17 +27,18 @@ async function login(ctx){
 
 async function userInfo(ctx){
     let decoded =jwt.decode(ctx.header.authorization, {complete: true});
-    if(!decoded) return responseClient(ctx.response, 400, 0, 'token验证失败',{err:errCodes['10002']}); //这里要进行判断，因为jwt.decode这个不会返回错误
+    if(!decoded) return responseClient(ctx.response, 400, 0, 'token验证失败'); //这里要进行判断，因为jwt.decode这个不会返回错误
     let result = await User.findOneUser({id: decoded.payload['userId']});
     if(result.errCode == '200'){
         let token = await signToke(result.userInfo);
-        responseClient(ctx.response, 200, 0, '用户信息正确', '用户信息正确');
+        responseClient(ctx.response, 200, 0, '用户信息正确');
     }else{
         responseClient(ctx.response, 400, 1, '用户名密码错误');
     }
 }
 
 async function manageAllUsers(ctx){
+    console.log(ctx.request.pageNum);
     let pageNum = ctx.request.pageNum;
     let responseData = {
         total: 0,
@@ -47,6 +48,7 @@ async function manageAllUsers(ctx){
     let result = await User.findUsers({}, pageNum);
     responseData.total = count;
     responseData.list = result;
+    console.log(responseData);
     responseClient(ctx.response, 200, 0, '管理用户查询成功', responseData);
 }
 

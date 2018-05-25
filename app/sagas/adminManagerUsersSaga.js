@@ -1,13 +1,14 @@
 import {put, take, call, select} from 'redux-saga/effects'
-import {get, post} from '../feth/fetch'
+import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
-import {actionsTypes as ManagerUserActionTypes} from '../reducers/adminManagerUser'
+import {actionTypes as ManagerUserActionTypes} from '../reducers/adminManagerUser'
 import {resolveToken} from '../base/util'
 
 export function* fetch_users(pageNum){
     yield put({type: IndexActionTypes.FETCH_START});
     try{
-        return yield call(get, `/admin/getUsers?pageNum=${pageNum}`);
+        let token =  JSON.parse(localStorage.getItem('token'));
+        return yield call(get, `/admin/getUsers?pageNum=${pageNum}`, token);
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0});
     }finally{
@@ -20,18 +21,19 @@ export function* get_all_users_flow(){
         let request = yield take(ManagerUserActionTypes.GET_ALL_USER);
         let pageNum = request.pageNum || 1;
         let response = yield call(fetch_users, pageNum);
-        if(response&&response.code === 0){
-            for(let i = 0;i<response.data.list.length; i++){
-                response.data.list[i].key = i;
+        alert(JSON.stringify(response));
+        if(response&&response.data.code === 0&&response.data.result){
+            for(let i = 0;i<response.data.result.list.length; i++){
+                response.data.result.list[i].key = i;
             }
             let data = {};
-            data.total = response.data.total;
-            data.list = response.data.list;
+            data.total = response.data.result.total;
+            data.list = response.data.result.list;
             data.pageNum = Number.parseInt(pageNum);
             localStorage.setItem('token', JSON.stringify(response.headers.authorization));
-            yield put({type:ManagerUserActionTypes.RESOVLE_GET_ALL_USERS, data: data})
+            yield put({type:ManagerUserActionTypes.RESOLVE_GET_ALL_USERS, data: data})
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: response.message, msgType:0});
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: response.data.message, msgType:0});
         }
     }
 }

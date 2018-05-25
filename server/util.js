@@ -18,7 +18,8 @@ module.exports = {
         responseData.message = message;
         res.status = httpCode;
         if(result.token) res.set({'Authorization': result.token});
-        console.log("result: " + JSON.stringify(result));
+        if(result!={})  responseData.result = result;
+        console.log("result: " + responseData);
         res.body = JSON.stringify(responseData)
     },
     handleErr
