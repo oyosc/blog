@@ -20,8 +20,12 @@ export function* loginFlow(){
         let response = yield call(login, request.username, request.password);
         if(response.data&&response.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1});
-            let userInfo = resolveToken(response.headers.authorization);
-            let data = Object.assign(response.data, userInfo, {token: response.headers.authorization});
+            let userInfo;
+            if(response.headers.authorization){
+                userInfo = resolveToken(response.headers.authorization);
+                localStorage.setItem('token', JSON.stringify(response.headers.authorization));
+            }
+            let data = Object.assign(response.data, userInfo);
             yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
         }
     }
@@ -32,15 +36,18 @@ export function* user_auth(){
         let result = yield take(IndexActionTypes.USER_AUTH)
         try{
             yield put({type: IndexActionTypes.FETCH_START})
-            let response = yield call(get, '/user/userInfo', result.token);
-            console.log('userauth');
-            console.log(response);
+            let token =  JSON.parse(localStorage.getItem('token'));
+            let response = yield call(get, '/user/userInfo', token);
             if(response.data && response.data.code === 0){
                 if(!response.headers.authorization){
                     return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '用户请登录', msgType: 0});
                 }
-                let userInfo = resolveToken(response.headers.authorization);
-                let data = Object.assign(response.data, userInfo, {token: response.headers.authorization});
+                let userInfo;
+                if(response.headers.authorization){
+                    userInfo = resolveToken(response.headers.authorization);
+                    localStorage.setItem('token', JSON.stringify(response.headers.authorization));
+                }
+                let data = Object.assign(response.data, userInfo);
                 yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             }
         }catch(err){

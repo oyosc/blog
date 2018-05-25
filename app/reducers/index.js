@@ -43,10 +43,9 @@ export const actions = {
             msgContent: ''
         }
     },
-    user_auth: function(token){
+    user_auth: function(){
         return {
-            type: actionsTypes.USER_AUTH,
-            token: token
+            type: actionsTypes.USER_AUTH
         }
     }
 };

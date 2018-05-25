@@ -28,7 +28,7 @@ export function* get_all_users_flow(){
             data.total = response.data.total;
             data.list = response.data.list;
             data.pageNum = Number.parseInt(pageNum);
-            data.token = response.headers.authorization;
+            localStorage.setItem('token', JSON.stringify(response.headers.authorization));
             yield put({type:ManagerUserActionTypes.RESOVLE_GET_ALL_USERS, data: data})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: response.message, msgType:0});

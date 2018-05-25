@@ -44,7 +44,6 @@ class AdminManagerUser extends Component{
     render(){
         return (
             <div>
-                {this.props.token && localStorage.setItem('token', JSON.stringify(this.props.token))}
                 <h2>用户管理</h2>
                 <Table
                     className={style.table}
@@ -77,12 +76,11 @@ AdminManagerUser.defaultProps = {
 }
 
 function mapStateToProps(state){
-    let {pageNum, list, total, token} = state.admin.users;
+    let {pageNum, list, total} = state.admin.users;
     return {
         pageNum,
         list,
-        total,
-        token
+        total
     }
 }
 

@@ -72,10 +72,7 @@ class AppIndex extends Component{
     }
 
     componentDidMount(){
-        if(localStorage.getItem('token')){
-            let token = JSON.parse(localStorage.getItem('token'));
-            this.props.user_auth(token);
-        }
+        this.props.user_auth();
     }
 }
 
