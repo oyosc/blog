@@ -13,7 +13,7 @@ import {
 
 // import './reset.css'
 // import {Detail} from './detail'
-import {Home} from './home'
+// import {Home} from './home'
 // import Banner from './conponents/banner/Banner'
 // import Menus from './components/menu/Menus'
 // import NotFound from './components/notFound/NotFound'

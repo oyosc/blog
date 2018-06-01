@@ -7,6 +7,8 @@ import {bindActionCreators} from 'redux'
 import Login from '../home/components/login/Login'
 import {Logined} from '../home/components/logined/logined'
 import {actions as IndexActions} from '../../reducers/index'
+import NotFound from '../../components/notFound/NotFound';
+import Home from '../home'
 
 class Front extends Component{
     constructor(props){
@@ -21,12 +23,21 @@ class Front extends Component{
         return (
             <div>
                 <div className={`${style.container}`}>
-                    <div className={`${style.loginContainer}`}>
-                        {
-                            this.props.userInfo.userId?
-                            <Logined history={this.props.history} userInfo={this.props.userInfo} />:
-                            <Login login={login} />
-                        }
+                    <div className={`${style.contentContainer}`}>
+                        <div className={`${style.content}`}>
+                            <Switch>
+                                <Route exact path={url} component={Home} />
+                                <Route path={'/:tag'} component={Home} />
+                                <Route component={NotFound} />
+                            </Switch>
+                        </div>
+                        <div className={`${style.loginContainer}`}>
+                            {
+                                this.props.userInfo.userId?
+                                <Logined history={this.props.history} userInfo={this.props.userInfo} />:
+                                <Login login={login} />
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
