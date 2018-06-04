@@ -33,7 +33,7 @@ async function getAllTags(ctx){
     if(!decoded) return responseClient(ctx.response, 400, 0, 'token验证失败'); //这里要进行判断，因为jwt.decode这个不会返回错误
     let result = await Tags.getAllTags();
     if(result.errCode == '200'){
-        responseClient(ctx.response, 200, 0, '标签查询成功');
+        responseClient(ctx.response, 200, 0, result.tagsInfo);
     }else{
         responseClient(ctx.response, 400, 1, '标签查询失败');
     }
