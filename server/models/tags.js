@@ -51,3 +51,9 @@ async function addTag(name){
             return {'errCode': '20005', 'message': JSON.stringify(err)}
         })
 }
+
+module.exports = {
+    getAllTags,
+    delTag,
+    addTag
+}

@@ -6,6 +6,7 @@ import session from 'koa-session'
 import Router from 'koa-router'
 import userRouter from './user'
 import adminRouter from './admin'
+import indexRouter from './index'
 import {redisConfig} from '../config'
 import {redis_init} from '../database/redis/redis'
 import {checkToke} from '../base/token'
@@ -94,6 +95,8 @@ app.use(tokenMiddleware);
 router.use('/user', koaBody(), userRouter.routes())
 
 router.use('/admin', koaBody(), adminRouter.routes())
+
+router.use('/', koaBody(), indexRouter.routes())
 
 app.use(router.routes())
 

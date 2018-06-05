@@ -32,9 +32,17 @@ async function getAllTags(ctx){
     let decoded =jwt.decode(ctx.header.authorization, {complete: true});
     if(!decoded) return responseClient(ctx.response, 400, 0, 'token验证失败'); //这里要进行判断，因为jwt.decode这个不会返回错误
     let result = await Tags.getAllTags();
+    console.log("getalltag")
+    console.log(result)
     if(result.errCode == '200'){
         responseClient(ctx.response, 200, 0, result.tagsInfo);
     }else{
         responseClient(ctx.response, 400, 1, '标签查询失败');
     }
+}
+
+module.exports = {
+    addTag,
+    delTag,
+    getAllTags
 }
