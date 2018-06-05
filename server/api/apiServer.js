@@ -3,18 +3,13 @@ import config from '../../config/config'
 import bodyParser from 'koa-bodyparser'
 import mongoose from 'mongoose'
 import session from 'koa-session'
-import Router from 'koa-router'
-import userRouter from './user'
-import adminRouter from './admin'
-import indexRouter from './index'
 import {redisConfig} from '../config'
 import {redis_init} from '../database/redis/redis'
 import {checkToke} from '../base/token'
 import {MD5_SUFFIX, responseClient, md5} from '../util'
+import router from '../router/main'
 
 const koaBody = require('koa-body')
-
-const router = new Router();
 
 const port = '8080';
 const app = new Koa();
@@ -90,13 +85,6 @@ app.use(tokenMiddleware);
 // app.use('/', require('./main'));
 
 // app.use('/admin', require('./admin'))
-
-
-router.use('/user', koaBody(), userRouter.routes())
-
-router.use('/admin', koaBody(), adminRouter.routes())
-
-router.use('/', koaBody(), indexRouter.routes())
 
 app.use(router.routes())
 
