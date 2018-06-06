@@ -18,7 +18,7 @@ async function signToke(user){
         username: user.username,
         jti: baseJti,
         iat: Date.parse(new Date()),
-        exp: Date.parse(new Date()) + 30
+        exp: Date.parse(new Date()) + 300000
     }, jwt_config.jwt_secret);
     let [err, message] = await handleErr(setAsync(baseJti, '0', 'EX', 30));
     console.log("token");
@@ -29,13 +29,18 @@ async function signToke(user){
 
 //验证token
 async function checkToke(authorization){
+    console.log("authorization");
+    console.log(authorization)
     let decoded =jwt.decode(authorization, {complete: true});
     if(!decoded) return {'errcode': '10002', 'message': {err: errCodes['10002']}}; //这里要进行判断，因为jwt.decode这个不会返回错误
     let baseJti = decoded.payload['jti'];
     let [verifyErr, verifyMessage] = await handleErr(util.promisify(jwt.verify)(authorization, jwt_config.jwt_secret));
     if(verifyErr) return {'errcode': verifyErr, 'message': {err: verifyMessage}}
     let nowTime = Date.parse(new Date());
-    if(verifyMessage['iat'] > nowTime || verifyMessage['exp'] > nowTime){
+    console.log(verifyMessage['iat'])
+    console.log(verifyMessage['exp'])
+    console.log(nowTime)
+    if(verifyMessage['iat'] > nowTime || verifyMessage['exp'] < nowTime){
         console.log('token已经失效，请重新登录');
         return {'errCode': '401', 'message': {err: errCodes['401']}}
     }else{

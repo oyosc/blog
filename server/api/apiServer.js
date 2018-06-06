@@ -60,6 +60,8 @@ let tokenMiddleware = async function(ctx, next){
             if(tokenResult.errCode == '200'){
                 await next();
                 if(tokenResult.message.token){
+                    console.log("###########")
+                    console.log(tokenResult.message.token)
                     ctx.response.set({'Authorization': tokenResult.message.token})
                 }
             }else{
