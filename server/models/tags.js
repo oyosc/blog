@@ -20,14 +20,18 @@ async function getAllTags(){
 
 //删除标签
 async function delTag(name){
-    let result = await Tags.remove({name})
+    console.log(name)
+    let result = await Tags.remove(name)
         .then((result) => {
-            if(result.result.n === 1){
+            console.log(result);
+            if(result.n === 1){
                 return {'errCode':'200','message':'成功删除tag信息'}
             }else{
                 return {'errCode': '20006', 'message': errCodes['20006']}
             }
         }).catch(err => {
+            console.log("deltagerr")
+            console.log(err)
             return {'errCode': '20005', 'message': JSON.stringify(err)}
         })
     return result
@@ -35,10 +39,10 @@ async function delTag(name){
 
 //添加标签
 async function addTag(name){
-    let result = await Tags.findOne({name})
+    let result = await Tags.findOne(name)
         .then(async result => {
             if(!result){
-                let tag = new Tags({name});
+                let tag = new Tags(name);
                 return await tag.save().then((data) => {
                     return {'errCode': '200', 'message': '标签添加成功'}
                 }).catch(err => {
@@ -50,6 +54,7 @@ async function addTag(name){
         }).catch(err => {
             return {'errCode': '20005', 'message': JSON.stringify(err)}
         })
+    return result
 }
 
 module.exports = {
