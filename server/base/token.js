@@ -18,7 +18,7 @@ async function signToke(user){
         username: user.username,
         jti: baseJti,
         iat: Date.parse(new Date()),
-        exp: Date.parse(new Date()) + 300000
+        exp: Date.parse(new Date()) + 1000*60
     }, jwt_config.jwt_secret);
     let [err, message] = await handleErr(setAsync(baseJti, '0', 'EX', 30));
     console.log("token");
