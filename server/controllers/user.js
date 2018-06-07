@@ -8,11 +8,11 @@ const jwt = require('jsonwebtoken')
 async function login(ctx){
     let {username, password} = ctx.request.body;
     if(!username){
-        responseClient(ctx.response, 400, 2, '用户名不可为空');
+        responseClient(ctx.response, 200, 2, '用户名不可为空');
         return;
     }
     if(!password){
-        responseClient(ctx.response, 400, 2, '密码不能为空');
+        responseClient(ctx.response, 200, 2, '密码不能为空');
         return;
     }
     password = md5(MD5_SUFFIX + password);
@@ -21,19 +21,19 @@ async function login(ctx){
         let token = await signToke(result.userInfo);
         responseClient(ctx.response, 200, 0, '登陆成功', {token});
     }else{
-        responseClient(ctx.response, 400, 1, '用户名密码错误');
+        responseClient(ctx.response, 200, 1, '用户名密码错误');
     }
 }
 
 async function userInfo(ctx){
     let decoded =jwt.decode(ctx.header.authorization, {complete: true});
-    if(!decoded) return responseClient(ctx.response, 400, 0, 'token验证失败'); //这里要进行判断，因为jwt.decode这个不会返回错误
+    if(!decoded) return responseClient(ctx.response, 200, 1, 'token验证失败'); //这里要进行判断，因为jwt.decode这个不会返回错误
     let result = await User.findOneUser({id: decoded.payload['userId']});
     if(result.errCode == '200'){
         let token = await signToke(result.userInfo);
         responseClient(ctx.response, 200, 0, '用户信息正确');
     }else{
-        responseClient(ctx.response, 400, 1, '用户名密码错误');
+        responseClient(ctx.response, 200, 1, '用户名密码错误');
     }
 }
 
