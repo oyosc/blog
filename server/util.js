@@ -6,6 +6,18 @@ const handleErr = (promise) => {
     }).catch(err => [err]);
 }
 
+const getLocalTime = () => {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() +1;
+    let day = date.getDate();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    let second = date.getSeconds();
+    return year+"/"+month+"/"+day+" " + hour+":"+minute+":"+second
+
+}
+
 module.exports = {
     MD5_SUFFIX: 'eisdsadawwada这个是加密的信息哦%%%@@!',
     md5: function(pwd){
@@ -22,5 +34,6 @@ module.exports = {
         console.log("result: " + JSON.stringify(responseData));
         res.body = JSON.stringify(responseData)
     },
-    handleErr
+    handleErr,
+    getLocalTime
 }

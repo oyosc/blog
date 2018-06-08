@@ -5,12 +5,12 @@ import {getAsync, setAsync, ttlAsync} from '../database/redis/redis'
 import {handleErr} from '../util'
 import {findOneUser} from '../models/user'
 import errCodes from '../errCodes'
+import log from "../log/log"
 
 const util = require('util')
 
 //token进行签名
 async function signToke(user){
-    console.log(user);
     let baseJti = user._id + Base64.encode(user.username) + Date.parse(new Date());
     const token = jwt.sign({
         userId: user._id,
@@ -21,9 +21,7 @@ async function signToke(user){
         exp: Date.parse(new Date()) + 1000*60
     }, jwt_config.jwt_secret);
     let [err, message] = await handleErr(setAsync(baseJti, '0', 'EX', 30));
-    console.log("token");
-    console.log(token);
-    if(err) console.log("redis存储key失败");
+    if(err) log.error(__filename, 24, "redis存储key失败");
     return token;
 }
 
@@ -37,11 +35,8 @@ async function checkToke(authorization){
     let [verifyErr, verifyMessage] = await handleErr(util.promisify(jwt.verify)(authorization, jwt_config.jwt_secret));
     if(verifyErr) return {'errcode': verifyErr, 'message': {err: verifyMessage}}
     let nowTime = Date.parse(new Date());
-    console.log(verifyMessage['iat'])
-    console.log(verifyMessage['exp'])
-    console.log(nowTime)
     if(verifyMessage['iat'] > nowTime || verifyMessage['exp'] < nowTime){
-        console.log('token已经失效，请重新登录');
+        log.error(__filename, 39,'token已经失效，请重新登录');
         return {'errCode': '401', 'message': {err: errCodes['401']}}
     }else{
         let [getRedisErr, getRedisValue] = await handleErr(getAsync(verifyMessage['jti']));

@@ -8,6 +8,7 @@ import {redis_init} from '../database/redis/redis'
 import {checkToke} from '../base/token'
 import {MD5_SUFFIX, responseClient, md5} from '../util'
 import router from '../router/main'
+import log from "../log/log"
 
 const koaBody = require('koa-body')
 
@@ -37,7 +38,6 @@ let store = {
 }
 
 let verifyPath = function(path){
-    console.log(path);
     switch(true){
         case /\/user\/login([\s\S])*?/.test(path):
             return true
@@ -54,14 +54,13 @@ let tokenMiddleware = async function(ctx, next){
         if(!ctx.header.authorization){
             return responseClient(ctx.response, 400, 1, '没有token信息，请进行登录')
         }else{
-            console.log(ctx.header.authorization);
+            log.debug(__filename, 58, ctx.header.authorization);
             let tokenResult = await checkToke(ctx.header.authorization);
-            console.log(tokenResult);
+            log.debug(__filename, 60, tokenResult);
             if(tokenResult.errCode == '200'){
                 await next();
                 if(tokenResult.message.token){
-                    console.log("###########")
-                    console.log(tokenResult.message.token)
+                    log.debug(__filename, 65, tokenResult.message.token);
                     ctx.response.set({'Authorization': tokenResult.message.token})
                 }
             }else{
@@ -95,22 +94,22 @@ app.use(router.routes())
 if(redis_client){
     console.log("redis 启动成功，端口号：" + redisConfig.port);
     redis_client.on('error', (error) => {
-        console.log(error);
+        log.error(__filename, 98, error);
     })
 }
 
 mongoose.Promise = require('bluebird');
 mongoose.connect('mongodb://127.0.0.1:27017/blog', function(err){
     if(err){
-        console.log(err, '数据库连接失败');
+        log.error(__filename, 105, err);
         return;
     }
     console.log('数据库连接成功');
     app.listen('8080', function(err){
         if(err){
-            console.error('err:', err);
+            log.error(__filename, 111, err);
         }else{
-            console.info('===> api server is running at 8080')
+            log.info(__filename, 112, '===> api server is running at 8080');
         }
     });
 });
