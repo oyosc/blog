@@ -14,8 +14,6 @@ function debug(fileDir, lineNumber, infos){
 }
 
 function info(fileDir, lineNumber, infos){
-    console.log(fileDir)
-    console.log(root_dir)
     let rela_file = fileDir.split(root_dir)[1]
     let today = new Date()
     console.log(getLocalTime() + " [INFO] [" + rela_file + ":" + lineNumber + "]  " +  infos)
