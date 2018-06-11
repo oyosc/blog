@@ -22,6 +22,9 @@ export function* get_all_users_flow(){
         let pageNum = request.pageNum || 1;
         let response = yield call(fetch_users, pageNum);
         alert(JSON.stringify(response));
+        if(response.headers.authorization){
+            localStorage.setItem('token', JSON.stringify(response.headers.authorization));
+        }
         if(response&&response.data.code === 0&&response.data.result){
             for(let i = 0;i<response.data.result.list.length; i++){
                 response.data.result.list[i].key = i;
@@ -30,7 +33,6 @@ export function* get_all_users_flow(){
             data.total = response.data.result.total;
             data.list = response.data.result.list;
             data.pageNum = Number.parseInt(pageNum);
-            localStorage.setItem('token', JSON.stringify(response.headers.authorization));
             yield put({type:ManagerUserActionTypes.RESOLVE_GET_ALL_USERS, data: data})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: response.data.message, msgType:0});

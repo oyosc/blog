@@ -11,6 +11,7 @@ import NotFound from '../../components/notFound/NotFound'
 import AdminMenu from '../../components/adminMenu/AdminMenu'
 import AdminIndex from '../adminIndex/AdminIndex'
 import AdminManagerUser from '../adminManagerUser/AdminManagerUser'
+import AdminManagerTags from '../adminManagerTags/AdminManagerTags'
 import style from './style.css'
 import {bindActionCreators} from 'redux'
 import {actions} from '../../reducers/admin'
@@ -42,6 +43,7 @@ class Admin extends Component{
                                     <Switch>
                                         <Route exact path={url} component={AdminIndex} />
                                         <Route path={`${url}/managerUser`} component={AdminManagerUser} />
+                                        <Route path={`${url}/managerTags`} component={AdminManagerTags}/>
                                     </Switch>
                                 </div>
                             </div> :

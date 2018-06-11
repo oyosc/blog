@@ -3,7 +3,8 @@ import {Menu, Icon} from 'antd'
 
 const menus = [
     {url: '/', name: '首页', iconType: 'home'},
-    {url: '/managerUser', name: '用户管理', iconType: 'usergroup-delete'}
+    {url: '/managerUser', name: '用户管理', iconType: 'usergroup-delete'},
+    {url: '/managerTags', name: '标签管理', iconType: 'usergroup-delete'}
 ];
 
 export default class AdminMenu extends Component{

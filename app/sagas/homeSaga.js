@@ -40,7 +40,7 @@ export function* user_auth(){
             let response = yield call(get, '/user/userInfo', token);
             if(response.data && response.data.code === 0){
                 if(!response.headers.authorization){
-                    return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '用户请登录', msgType: 0});
+                    return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '用户请登录', msgType: 2});
                 }
                 let userInfo;
                 if(response.headers.authorization){

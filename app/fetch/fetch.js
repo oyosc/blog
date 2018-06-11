@@ -36,6 +36,9 @@ export function get(url, token){
     return axios.get(url, config)
 }
 
-export function post(url, data){
+export function post(url, data, token){
+    if(token){
+        config.headers.authorization = token;
+    }
     return axios.post(url, data, config)
 }
