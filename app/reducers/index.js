@@ -2,7 +2,6 @@
 import {combineReducers} from 'redux'
 import admin from './admin'
 import {reducer as front} from './frontReducer'
-import {reducer as front} from './frontReducer'
 const initialState = {
     isFetching: true,
     msg: {

@@ -74,4 +74,113 @@ class AdminNewArticle extends Component{
             modalVisible: false
         })
     }
+
+    render(){
+        return (
+            <div>
+                <h2>发文</h2>
+                <div className={`${style.container}`}>
+                    <span className={`${style.subTitle}`}>标题</span>
+                    <Input
+                        className={`${style.titleInout}`}
+                        placeholder={'请输入文字标题'}
+                        type='text'
+                        value={this.props.title}
+                        onChange={this.titleOnChange.bind(this)} 
+                    />
+                    <span className={`${style.subTitle}`}>正文</span>
+                    <textarea
+                        className={`${style.textarea}`}
+                        value={this.props.content}
+                        onChange={this.onChanges.bind(this)} 
+                    />
+                    <span className={`${style.subTitle}`}>分类</span>
+                    <Select
+                        mode="multiple"
+                        className={`${style.titleInput}`}
+                        placeholder="请选择分类"
+                        onChange={this.selectTags.bind(this)}
+                        value={this.props.tags}
+                    >
+                        {
+                            this.props.tagsBase.map((item)=>{
+                                <Option key={item}>{item}</Option>
+                            })
+                        }
+                    </Select>
+                    <div className={`${style.bottomContainer}`}>
+                        <Button type="primary" onClick={this.publishArticle.bind(this)}
+                            className={`${style.buttonStyle}`}>发布</Button>
+                        <Button type="primary" onClick={this.saveArticle.bind(this)}
+                            className={`${style.buttonStyle}`}>保存</Button>
+                        <Button type="primary" onClick={this.preView.bind(this)}
+                            className={`${style.buttonStyle}`}>预览</Button>
+                    </div>
+                </div>
+                <Modal
+                    visible={this.state.modalVisible}
+                    title="文章预览"
+                    onOk={this.handleOk.bind(this)}
+                    width={'900px'}
+                    onCancel={this.handleOk.bind(this)}
+                    footer={null}
+                >
+                    <div className={`${style.modalContainer}`}>
+                        <div id='preview' className={`${style.testCode}`}>
+                            {remark().use(reactRenderer).processSync(this.props.content).contents}
+                        </div>
+                    </div>
+                </Modal>
+            </div>
+        )
+    }
+
+    componentDidMount(){
+        this.props.get_all_tags();
+    }
 }
+
+AdminNewArticle.PropTypes = {
+    title: PropTypes.string,
+    content: PropTypes.string,
+    tags: PropTypes.array,
+    tagsBase: PropTypes.array
+};
+
+AdminNewArticle.defaultProps = {
+    title: '',
+    content: '',
+    tags: [],
+    tagsBase: []
+};
+
+function mapStateToProps(state){
+    const {title, content, tags} = state.admin.newArticle;
+    let tempArr = state.admin.tags;
+    for(let i=0; i<tempArr; i++){
+        if(tempArr[i]==='首页'){
+            tempArr.splice(i, 1);
+        }
+    }
+    return {
+        title,
+        content,
+        tags,
+        tagBase:tempArr
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        update_tags: bindActionCreators(update_tags, dispatch),
+        update_title: bindActionCreators(update_title, dispatch),
+        update_content: bindActionCreators(update_content, dispatch),
+        get_all_tags: bindActionCreators(get_all_tags, dispatch),
+        save_article: bindActionCreators(save_article, dispatch)
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(AdminNewArticle)
