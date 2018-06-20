@@ -25,8 +25,10 @@ export function* getAllArticlesFlow(){
         console.log(res)
         if(res && res.data.code ===0 && res.data.result){
             yield put({type: ManagerArticlesTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST,data: res.data.result})
+        }else if (res && res.data.code ===3){
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:3})
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgCongtent:res.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
         }
     }
 }

@@ -8,7 +8,7 @@ export function* login(username, password){
     try{
         return yield call(post, '/user/login', {username, password})
     } catch(error){
-        yield put({type:IndexActionTypes.SET_MESSAGE, msgContent:'用户名或密码错误', msgType: 0});
+        yield put({type:IndexActionTypes.SET_MESSAGE, msgContent:'用户名或密码错误', msgType: 2});
     }finally{
         yield put({type: IndexActionTypes.FETCH_END})
     }
@@ -49,10 +49,12 @@ export function* user_auth(){
                 }
                 let data = Object.assign(response.data, userInfo);
                 yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
+            }else if (res && res.data.code ===3){
+                console.log(res.data.meassage)
+                yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:2})
             }
         }catch(err){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '用户token失效，请重新登录', msgType: 2});
-            console.log(err);
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: "用户未登录", msgType: 2});
         }finally{
             yield put({type: IndexActionTypes.FETCH_END})
         }

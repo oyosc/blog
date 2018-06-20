@@ -52,7 +52,7 @@ let tokenMiddleware = async function(ctx, next){
         return await next();
     }else{
         if(!ctx.header.authorization){
-            return responseClient(ctx.response, 400, 1, '没有token信息，请进行登录')
+            return responseClient(ctx.response, 200, 3, '没有token信息，请进行登录')
         }else{
             log.debug(__filename, 58, ctx.header.authorization);
             let tokenResult = await checkToke(ctx.header.authorization);
@@ -64,7 +64,7 @@ let tokenMiddleware = async function(ctx, next){
                     ctx.response.set({'Authorization': tokenResult.message.token})
                 }
             }else{
-                 return responseClient(ctx.response, 200, 0, tokenResult.message.err)
+                 return responseClient(ctx.response, 200, 3, tokenResult.message.err)
             }
         }
     }
