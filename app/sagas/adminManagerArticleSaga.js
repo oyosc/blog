@@ -24,7 +24,6 @@ export function* getAllArticlesFlow(){
         }
         console.log(res)
         if(res && res.data.code ===0 && res.data.result){
-            res.data.result.pageNum = req.pageNum
             yield put({type: ManagerArticlesTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST,data: res.data.result})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgCongtent:res.data.message, msgType:0})

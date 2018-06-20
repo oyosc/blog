@@ -10,9 +10,9 @@ async function getArticles(ctx){
     let result = await Articles.getArticles(tag, ispublish, pageNum)
     log.debug(__filename, 11, result)
     if(result.statusCode == '200'){
-        responseClient(ctx.response, 200, 1, '文章查询成功', result.articlesInfo)
+        responseClient(ctx.response, 200, 0, '文章查询成功', result.articlesInfo)
     }else{
-        responseClient(ctx.response, 200, 0, '文章查询失败')
+        responseClient(ctx.response, 200, 1, '文章查询失败')
     }
 }
 

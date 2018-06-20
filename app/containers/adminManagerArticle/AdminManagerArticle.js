@@ -19,20 +19,23 @@ class AdminManagerArticles extends Component{
     }
 
     render(){
+        console.log(this.props.articleList)
         return (
             <div>
                 <h2>文章管理</h2>
                 <div className={`${style.articleListContainer}`}>
                     {
                         this.props.articleList.map((item, index) => {
-                            <ManagerArticleCell
-                                edit_article={(id)=>this.props.edit_article(id)}
-                                history={this.props.history}
-                                get_article_detail={(id)=>this.props.get_article_detail(id)}
-                                delete={(id)=>{this.props.delete_article(id)}}
-                                key={index}
-                                data={item}
-                            />
+                            return (
+                                <ManagerArticleCell
+                                    edit_article={(id)=>this.props.edit_article(id)}
+                                    history={this.props.history}
+                                    get_article_detail={(id)=>this.props.get_article_detail(id)}
+                                    delete={(id)=>{this.props.delete_article(id)}}
+                                    key={index}
+                                    data={item}
+                                />
+                            )
                         })
                     }
                 </div>
@@ -51,9 +54,7 @@ class AdminManagerArticles extends Component{
     }
 
     componentDidMount(){
-        console.log("article")
         if(this.props.articleList.length === 0){
-            alert("test")
             this.props.get_article_list()
         }
     }
