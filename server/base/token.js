@@ -30,32 +30,32 @@ async function checkToke(authorization){
     console.log("authorization");
     console.log(authorization)
     let decoded =jwt.decode(authorization, {complete: true});
-    if(!decoded) return {'errcode': '10002', 'message': {err: errCodes['10002']}}; //这里要进行判断，因为jwt.decode这个不会返回错误
+    if(!decoded) return {'statusCode': '10002', 'message': {err: errCodes['10002']}}; //这里要进行判断，因为jwt.decode这个不会返回错误
     let baseJti = decoded.payload['jti'];
     let [verifyErr, verifyMessage] = await handleErr(util.promisify(jwt.verify)(authorization, jwt_config.jwt_secret));
-    if(verifyErr) return {'errcode': verifyErr, 'message': {err: verifyMessage}}
+    if(verifyErr) return {'statusCode': verifyErr, 'message': {err: verifyMessage}}
     let nowTime = Date.parse(new Date());
     if(verifyMessage['iat'] > nowTime || verifyMessage['exp'] < nowTime){
         log.error(__filename, 39,'token已经失效，请重新登录');
-        return {'errCode': '401', 'message': {err: errCodes['401']}}
+        return {'statusCode': '401', 'message': {err: errCodes['401']}}
     }else{
         let [getRedisErr, getRedisValue] = await handleErr(getAsync(verifyMessage['jti']));
-        if(getRedisErr) return {'errcode': '30001', 'message': {err: getRedisErr}}
-        if(getRedisValue === null) return {'errcode': '30002', 'message': {err: errCodes['30002']}}
+        if(getRedisErr) return {'statusCode': '30001', 'message': {err: getRedisErr}}
+        if(getRedisValue === null) return {'statusCode': '30002', 'message': {err: errCodes['30002']}}
         if(getRedisValue == '0'){
             let [ttlErr, ttlTime] = await handleErr(ttlAsync(baseJti)); //查询redis中是否有该token
             let [err, message] = await handleErr(setAsync(baseJti, '1', 'EX', ttlTime));
-            if(err || ttlErr) return {'errcode': '30001', 'message': {err: getRedisErr}};
+            if(err || ttlErr) return {'statusCode': '30001', 'message': {err: getRedisErr}};
             let userInfo = {
                 _id: decoded.payload['userId'],
                 type: decoded.payload['usertype'] == 'user' ? 1 : 0,
                 username: decoded.payload['username']
             };
             let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo));//生成新的token
-            if(registerTokenErr) return {'errcode': '30004', 'message': {err: registerTokenErr}};
-            return {'errCode': '200', 'message': {'token': registerToken}};
+            if(registerTokenErr) return {'statusCode': '30004', 'message': {err: registerTokenErr}};
+            return {'statusCode': '200', 'message': {'token': registerToken}};
         }else{
-            return {'errCode': '30003', 'message': {err: errCodes['30003']}}
+            return {'statusCode': '30003', 'message': {err: errCodes['30003']}}
         }
     }
 }

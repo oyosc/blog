@@ -12,7 +12,7 @@ import Admin from '../admin/Admin'
 const {get_article_list, delete_article, edit_article} = actions
 const {get_article_detail} = FrontActions
 
-class adminManagerArticle extends Component{
+class AdminManagerArticles extends Component{
     constructor(props){
         super(props);
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
@@ -51,19 +51,21 @@ class adminManagerArticle extends Component{
     }
 
     componentDidMount(){
+        console.log("article")
         if(this.props.articleList.length === 0){
+            alert("test")
             this.props.get_article_list()
         }
     }
 }
 
-AdminManagerArticle.defaultProps = {
+AdminManagerArticles.defaultProps = {
     articleList: [],
     pageNum: 1,
     total: 0
 }
 
-AdminManagerArticle.defaultProps = {
+AdminManagerArticles.defaultProps = {
     articleList: PropTypes.array,
     pageNum: PropTypes.number,
     total: PropTypes.number
@@ -89,4 +91,4 @@ function mapDispatchToProps(dispatch){
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(AdminManagerArticle)
+)(AdminManagerArticles)

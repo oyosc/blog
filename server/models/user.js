@@ -1,7 +1,6 @@
 import User from '../../models/user'
 const objectId = require('mongodb').ObjectID;
 import errCodes from '../errCodes'
-import {MD5_SUFFIX, md5} from '../util'
 
 //在数据库中查询用户
 async function findOneUser(info){
@@ -14,12 +13,12 @@ async function findOneUser(info){
         info
     ).then((userInfo) => {
         if(userInfo){
-            return {'errCode':'200','message':'该用户在数据库中', userInfo}
+            return {'statusCode':'200','message':'该用户在数据库中', userInfo}
         }else{
-            return {'errCode':'20001','message':errCodes['20001']}
+            return {'statusCode':'20001','message':errCodes['20001']}
         }
     }).catch((err) =>{
-        return {'errCode': '20002', 'message': JSON.stringify(err)};
+        return {'statusCode': '20002', 'message': JSON.stringify(err)};
     })
     return result;
 }

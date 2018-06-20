@@ -45,6 +45,7 @@ class Admin extends Component{
                                         <Route exact path={url} component={AdminIndex} />
                                         <Route path={`${url}/managerUser`} component={AdminManagerUser} />
                                         <Route path={`${url}/managerTags`} component={AdminManagerTags}/>
+                                        <Route path={`${url}/managerArticles`} component={AdminManagerArticles}/>
                                     </Switch>
                                 </div>
                             </div> :

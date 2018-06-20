@@ -56,8 +56,8 @@ let tokenMiddleware = async function(ctx, next){
         }else{
             log.debug(__filename, 58, ctx.header.authorization);
             let tokenResult = await checkToke(ctx.header.authorization);
-            log.debug(__filename, 60, tokenResult);
-            if(tokenResult.errCode == '200'){
+            log.debug(__filename, 60, JSON.stringify(tokenResult));
+            if(tokenResult.statusCode == '200'){
                 await next();
                 if(tokenResult.message.token){
                     log.debug(__filename, 65, tokenResult.message.token);

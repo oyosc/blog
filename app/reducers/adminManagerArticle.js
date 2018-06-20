@@ -4,7 +4,7 @@ const initialState = {
     total: 0
 };
 
-export const actionTypes = {
+export const actionsTypes = {
     ADMIN_GET_ARTICLE_LIST: 'ADMIN_GET_ARTICLE_LIST',
     ADMIN_RESPONSE_GET_ARTICLE_LIST: 'ADMIN_RESPONSE_GET_ARTICLE_LIST',
     ADMIN_EDIT_ARTICLE: 'ADMIN_EDIT_ARTICLE',
@@ -14,27 +14,27 @@ export const actionTypes = {
 export const actions = {
     get_article_list: function(pageNum = 1){
         return {
-            type: actionTypes.ADMIN_GET_ARTICLE_LIST,
+            type: actionsTypes.ADMIN_GET_ARTICLE_LIST,
             pageNum
         }
     },
     delete_article: function(id){
         return {
-            type: actionTypes.ADMIN_DELETE_ARTICLE,
+            type: actionsTypes.ADMIN_DELETE_ARTICLE,
             id
         }
     },
     edit_article: function(id){
         return {
-            type: actionTypes.ADMIN_EDIT_ARTICLE,
+            type: actionsTypes.ADMIN_EDIT_ARTICLE,
             id
         }
     }
 }
 
-export function articles(state=initialState){
+export function articles(state=initialState, action){
     switch(action.type){
-        case actionTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST:
+        case actionsTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST:
             return {
                 ...state, articleList: [...action.data.list], total: action.data.total, pageNum: action.data.pageNum
             };

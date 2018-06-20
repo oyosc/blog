@@ -2,6 +2,7 @@ import {fork} from 'redux-saga/effects'
 import {loginFlow, user_auth} from './homeSaga'
 import {get_all_users_flow} from './adminManagerUsersSaga'
 import {getAllTagsFlow, delTagFlow, addTagFlow} from './adminManagerTagsSaga'
+import {getAllArticlesFlow} from './adminManagerArticleSaga'
 
 export default function* rootSaga(){
     yield fork(loginFlow)
@@ -10,4 +11,5 @@ export default function* rootSaga(){
     yield fork(getAllTagsFlow)
     yield fork(delTagFlow)
     yield fork(addTagFlow)
+    yield fork(getAllArticlesFlow)
 }
