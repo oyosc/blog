@@ -107,5 +107,6 @@ async function delArticle(id){
 module.exports = {
     getArticles,
     updateArticle,
-    delArticle
+    delArticle,
+    addArticle
 }

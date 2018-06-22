@@ -40,6 +40,7 @@ async function delArticle(ctx){
 
 //添加文章
 async function addArticle(ctx){
+    console.log("add article")
     let body = ctx.request.body
     let userName= ctx.session.username
     let result = await Articles.addArticle(body, userName)
