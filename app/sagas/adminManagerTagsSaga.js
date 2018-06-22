@@ -46,7 +46,7 @@ export function* getAllTagsFlow(){
     while(true){
         yield take(ManagerTagsTypes.GET_ALL_TAGS);
         let res = yield call(getAllTags);
-        if(res.headers.authorization){
+        if(res && res.headers.authorization){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
         console.log(res);
@@ -58,8 +58,8 @@ export function* getAllTagsFlow(){
             }
             yield put({type: ManagerTagsTypes.SET_TAGS, data: tagArr})
         }else if (res && res.data.code ===3){
-            console.log(res.data)
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"token已经失效,请重新登录", msgType:3})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
+            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
         }
@@ -72,12 +72,15 @@ export function* delTagFlow(){
         let res = yield call(delTag, req.name);
         console.log("deltagtoken");
         console.log(res.headers.authorization);
-        if(res.headers.authorization){
+        if(res && res.headers.authorization){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
         if(res && res.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
             yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
+        }else if (res && res.data.code ===3){
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
+            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
         }
@@ -89,12 +92,15 @@ export function* addTagFlow(){
         let req = yield take(ManagerTagsTypes.ADD_TAG);
         let res = yield call(addTag, req.name);
         console.log(res);
-        if(res.headers.authorization){
+        if(res && res.headers.authorization){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
         if(res.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
             yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
+        }else if (res && res.data.code ===3){
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
+            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
         }

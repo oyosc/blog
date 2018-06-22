@@ -22,7 +22,7 @@ export function* get_all_users_flow(){
         let pageNum = request.pageNum || 1;
         let response = yield call(fetch_users, pageNum);
         alert(JSON.stringify(response));
-        if(response.headers.authorization){
+        if(res && response.headers.authorization){
             localStorage.setItem('token', JSON.stringify(response.headers.authorization));
         }
         if(response&&response.data.code === 0&&response.data.result){
@@ -34,6 +34,9 @@ export function* get_all_users_flow(){
             data.list = response.data.result.list;
             data.pageNum = Number.parseInt(pageNum);
             yield put({type:ManagerUserActionTypes.RESOLVE_GET_ALL_USERS, data: data})
+        }else if (res && res.data.code ===3){
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
+            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: response.data.message, msgType:0});
         }

@@ -19,14 +19,15 @@ export function* getAllArticlesFlow(){
     while(true){
         let req = yield take(ManagerArticlesTypes.ADMIN_GET_ARTICLE_LIST)
         let res = yield call(getArticleList, req.pageNum)
-        if(res.headers.authorization){
+        if(res && res.headers.authorization){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
         console.log(res)
         if(res && res.data.code ===0 && res.data.result){
             yield put({type: ManagerArticlesTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST,data: res.data.result})
         }else if (res && res.data.code ===3){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:3})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
+            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
         }

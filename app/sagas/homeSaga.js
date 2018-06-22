@@ -40,7 +40,7 @@ export function* user_auth(){
             let response = yield call(get, '/user/userInfo', token);
             if(response.data && response.data.code === 0){
                 if(!response.headers.authorization){
-                    return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '用户请登录', msgType: 2});
+                    return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录失败,请重新登录', msgType: 2});
                 }
                 let userInfo;
                 if(response.headers.authorization){
@@ -49,12 +49,10 @@ export function* user_auth(){
                 }
                 let data = Object.assign(response.data, userInfo);
                 yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
-            }else if (res && res.data.code ===3){
-                console.log(res.data.meassage)
-                yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:2})
             }
         }catch(err){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: "用户未登录", msgType: 2});
+            console.log(err)
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: "网络错误,请重试", msgType: 2});
         }finally{
             yield put({type: IndexActionTypes.FETCH_END})
         }

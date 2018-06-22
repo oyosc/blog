@@ -56,24 +56,14 @@ class AppIndex extends Component{
                         <Route component={Front} />
                     </Switch>
                     {isFetching}
-                    {
-                        this.props.notification && this.props.notification.content ?
-                            (this.props.notification.type === 1 ? this.openNotification('success', this.props.notification.content) : (this.props.notification.type === 2 ? localStorage.clear()&&this.openNotification('error', this.props.notification.content): (this.props.notification.type === 3 ?this.openNotification('error', this.props.notification.content)&&this.props.history.push('/index'):this.openNotification('error', this.props.notification.content)))):
-                            null
-                    }
-
-
-                    {/* {console.log(this.props.notification)}
+                    {console.log(this.props.notification)}
                     {
                         this.props.notification && this.props.notification.content?
                                 (
                                 this.props.notification.type === 1 ? this.openNotification('success', this.props.notification.content):
-                                (this.props.notification.type === 2 ? localStorage.clear()&&this.openNotification('error', this.props.notification.content) : this.props.notification.type === 3 ? )):
+                                (this.props.notification.type === 2 ? this.openNotification('error', this.props.notification.content)&&localStorage.clear() :  this.openNotification('error', this.props.notification.content))):
                                 null
-                        if(this.props.notification && this.props.notification.content){
-
-                        }
-                    } */}
+                    }
 
 
 
