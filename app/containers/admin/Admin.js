@@ -13,6 +13,7 @@ import AdminIndex from '../adminIndex/AdminIndex'
 import AdminManagerUser from '../adminManagerUser/AdminManagerUser'
 import AdminManagerTags from '../adminManagerTags/AdminManagerTags'
 import AdminManagerArticles from '../adminManagerArticle/AdminManagerArticle'
+import AdminNewArticle from '../adminNewArticle/AdminNewArticle'
 import style from './style.css'
 import {bindActionCreators} from 'redux'
 import {actions} from '../../reducers/admin'
@@ -46,6 +47,7 @@ class Admin extends Component{
                                         <Route path={`${url}/managerUser`} component={AdminManagerUser} />
                                         <Route path={`${url}/managerTags`} component={AdminManagerTags}/>
                                         <Route path={`${url}/managerArticles`} component={AdminManagerArticles}/>
+                                        <Route path={`${url}/newArticle`} component={AdminNewArticle}/>
                                     </Switch>
                                 </div>
                             </div> :
@@ -74,6 +76,7 @@ class Admin extends Component{
                                             <Route path={`${url}/managerUser`} component={AdminManagerUser} />
                                             <Route path={`${url}/managerTags`} component={AdminManagerTags}/>
                                             <Route path={`${url}/managerArticles`} component={AdminManagerArticles}/>
+                                            <Route path={`${url}/newArticle`} component={AdminNewArticle}/>
                                         </Switch>
                                     </div>
                                 </div> :

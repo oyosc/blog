@@ -16,6 +16,43 @@ async function getArticles(ctx){
     }
 }
 
+//更新文章
+async function updateArticle(ctx){
+    let body = ctx.request.body
+    let result = await Articles.updateArticle(body)
+    if(result.statusCode == '200'){
+        responseClient(ctx.response, 200, 0, '文章更新成功')
+    }else{
+        responseClient(ctx.response, 200, 1, '文章更新失败')
+    }
+}
+
+//删除文章
+async function delArticle(ctx){
+    let id = req.query.id
+    let result = await Articles.delArticle(id)
+    if(result.statusCode == '200'||result.statusCode == '201'){
+        responseClient(ctx.response, 200, 0, '文章删除成功')
+    }else{
+        responseClient(ctx.response, 200, 1, '文章删除失败')
+    }
+}
+
+//添加文章
+async function addArticle(ctx){
+    let body = ctx.request.body
+    let userName= ctx.session.username
+    let result = await Articles.addArticle(body, userName)
+    if(result.statusCode == '200'){
+        responseClient(ctx.response, 200, 0, '文章添加成功')
+    }else{
+        responseClient(ctx.response, 200, 1, '文章添加失败')
+    }
+}
+
 module.exports = {
-    getArticles
+    getArticles,
+    updateArticle,
+    delArticle,
+    addArticle
 }

@@ -5,7 +5,8 @@ const menus = [
     {url: '/', name: '首页', iconType: 'home'},
     {url: '/managerUser', name: '用户管理', iconType: 'usergroup-delete'},
     {url: '/managerTags', name: '标签管理', iconType: 'usergroup-delete'},
-    {url: '/managerArticles', name: '文章管理', iconType: 'usergroup-delete'}
+    {url: '/managerArticles', name: '文章管理', iconType: 'usergroup-delete'},
+    {url: '/newArticle', name: '发文', iconType: 'file-text'}
 ];
 
 export default class AdminMenu extends Component{

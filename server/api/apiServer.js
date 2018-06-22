@@ -31,7 +31,7 @@ let store = {
         this.storage[key] = sess;
         this.createDate[key] = new Date(Date.now() + maxAge*1000);
     },
-    destroy (key){
+    async destroy (key){
         delete this.storage[key]
         delete this.createDate[key]
     }
@@ -58,6 +58,7 @@ let tokenMiddleware = async function(ctx, next){
             let tokenResult = await checkToke(ctx.header.authorization);
             log.debug(__filename, 60, JSON.stringify(tokenResult));
             if(tokenResult.statusCode == '200'){
+                ctx.session.username = tokenResult.message.username
                 await next();
                 if(tokenResult.message.token){
                     log.debug(__filename, 65, tokenResult.message.token);

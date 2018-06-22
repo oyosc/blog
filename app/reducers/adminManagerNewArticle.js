@@ -14,7 +14,7 @@ export const actionTypes = {
 }
 
 export const actions = {
-    update_titile: function(title){
+    update_title: function(title){
         return {
             type: actionTypes.UPDATING_TITLE,
             title,
@@ -50,6 +50,10 @@ export function reducer(state=initialState, action){
             return {
                 ...state, content: action.content
             };
+        case actionTypes.UPDATING_TAGS:
+            return {
+                ...state, tags: action.tags
+            }
         case actionTypes.SET_ARTICLE_ID:
             return {
                 ...state, id: action.id

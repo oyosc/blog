@@ -17,9 +17,9 @@ class Front extends Component{
     render(){
         const {url} = this.props.match;
         const {login} = this.props;
-        // if(this.props.userInfo.userId){
-        //     localStorage.setItem('userInfo', JSON.stringify({userId: this.props.userInfo.userId, username: this.props.userInfo.username, userType: this.props.userInfo.userType}));
-        // }
+        if(this.props.userInfo.userId){
+            localStorage.setItem('userInfo', JSON.stringify({userId: this.props.userInfo.userId, username: this.props.userInfo.username, userType: this.props.userInfo.userType}));
+        }
         return (
             <div>
                 <div className={`${style.container}`}>

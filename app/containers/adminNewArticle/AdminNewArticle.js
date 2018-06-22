@@ -7,7 +7,7 @@ import style from './style.css'
 import remark from 'remark'
 import reactRenderer from 'remark-react'
 import {Input, Select, Button, Modal} from 'antd'
-import {actions} from '../../reducers/admin' //TODO
+import {actions} from '../../reducers/adminManagerNewArticle' //TODO
 import {actions as tagActions} from '../../reducers/adminManagerTags'
 import dateFormat from 'dateformat'
 
@@ -37,6 +37,8 @@ class AdminNewArticle extends Component{
 
     //选择标签
     selectTags(value){
+        console.log("value")
+        console.log(value)
         this.props.update_tags(value)
     }
 
@@ -90,7 +92,7 @@ class AdminNewArticle extends Component{
                     />
                     <span className={`${style.subTitle}`}>正文</span>
                     <textarea
-                        className={`${style.textarea}`}
+                        className={`${style.textArea}`}
                         value={this.props.content}
                         onChange={this.onChanges.bind(this)} 
                     />
@@ -104,7 +106,9 @@ class AdminNewArticle extends Component{
                     >
                         {
                             this.props.tagsBase.map((item)=>{
-                                <Option key={item}>{item}</Option>
+                                return (
+                                    <Option key={item}>{item}</Option>
+                                )
                             })
                         }
                     </Select>
@@ -157,8 +161,10 @@ AdminNewArticle.defaultProps = {
 function mapStateToProps(state){
     const {title, content, tags} = state.admin.newArticle;
     let tempArr = state.admin.tags;
-    for(let i=0; i<tempArr; i++){
-        if(tempArr[i]==='首页'){
+    for(let i=0; i<tempArr.length; i++){
+        if(tempArr[i] == '首页'){
+            console.log("arr")
+            console.log(i)
             tempArr.splice(i, 1);
         }
     }
@@ -166,7 +172,7 @@ function mapStateToProps(state){
         title,
         content,
         tags,
-        tagBase:tempArr
+        tagsBase:tempArr
     }
 }
 

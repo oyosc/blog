@@ -42,6 +42,70 @@ async function getArticles(tag, isPublish, pageNum){
     return result
 }
 
+async function addArticle(articleInfo, userName){
+    const {
+        title,
+        content,
+        time,
+        tags,
+        isPublish
+    } = articleInfo
+    const author = userName
+    const coverImg = `/${Math.round(Math,round()*9 + 1)}.jpg`
+    const viewCount = 0
+    const commentCount = 0
+    let tempArticle = new Article({
+        title,
+        content,
+        isPublish,
+        viewCount,
+        commentCount,
+        time,
+        author,
+        coverImg,
+        tags: tags.split(',')
+    })
+    let result = await tempArticle.save().then(data => {
+        return {'statusCode': '200', 'message': '文章保存成功', data}
+    }).catch(err => {
+        return {'statusCode': '20008', 'message': '文章保存失败'}
+    })
+    return result
+}
+
+async function updateArticle(articleInfo){
+    const {
+        title,
+        content,
+        time,
+        tags,
+        isPublish,
+        id
+    } = articleInfo
+    let result = await Article.update({_id: id}, {title, content,time, tags: tags.split(','), isPublish})
+        .then(data => {
+            return {'statusCode': '200', 'message': '文章保存成功'}
+        }).catch(err => {
+            return {'statusCode': '20008', 'message': '文章保存失败'}
+        })
+    return result
+}
+
+async function delArticle(id){
+    let result = await Article.remove({_id: id})
+        .then(data => {
+            if(data.result.n === 1){
+                return {'statusCode': '200', 'message': '文章删除成功'}
+            }else{
+                return {'statusCode': '201', 'message': '文章不存在'}
+            }
+        }).catch(err => {
+            return {'statusCode': '20006', 'message': '文章删除失败'}
+        })
+}
+
 module.exports = {
-    getArticles
+    getArticles,
+    updateArticle,
+    delArticle
 }
