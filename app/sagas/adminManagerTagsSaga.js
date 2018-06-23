@@ -2,6 +2,7 @@ import {put, take, call, select} from 'redux-saga/effects'
 import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 import {actionTypes as ManagerTagsTypes} from '../reducers/adminManagerTags'
+import {clear_userinfo} from './baseSaga'
 
 export function* getAllTags(){
     yield put({type: IndexActionTypes.FETCH_START})
@@ -58,8 +59,7 @@ export function* getAllTagsFlow(){
             }
             yield put({type: ManagerTagsTypes.SET_TAGS, data: tagArr})
         }else if (res && res.data.code ===3){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
-            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
+            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
         }
@@ -79,8 +79,7 @@ export function* delTagFlow(){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
             yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
         }else if (res && res.data.code ===3){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
-            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
+            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
         }
@@ -99,8 +98,7 @@ export function* addTagFlow(){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
             yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
         }else if (res && res.data.code ===3){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
-            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
+            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
         }

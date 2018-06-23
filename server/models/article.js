@@ -51,7 +51,7 @@ async function addArticle(articleInfo, userName){
         isPublish
     } = articleInfo
     const author = userName
-    const coverImg = `/${Math.round(Math,round()*9 + 1)}.jpg`
+    const coverImg = `/${Math.round(Math.round()*9 + 1)}.jpg`
     const viewCount = 0
     const commentCount = 0
     let tempArticle = new Article({

@@ -2,16 +2,19 @@ import {take, call, put, select} from 'redux-saga/effects'
 import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 import {actionTypes as NewArticleActionTypes} from '../reducers/adminManagerNewArticle'
+import {actionsTypes as ManagerArticlesTypes} from '../reducers/adminManagerArticle'
+import {clear_userinfo} from './baseSaga'
 
 export function* saveArticle(data){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
         let id = yield select(state => state.admin.newArticle.id)
+        let token =  JSON.parse(localStorage.getItem('token'));
         if(id){
             data.id = id
-            return yield call(post, '/admin/article/update', data)
+            return yield call(post, '/admin/article/update', data, token)
         }else{
-            return yield call(post, '/admin/article/add', data)
+            return yield call(post, '/admin/article/add', data, token)
         }
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
@@ -39,11 +42,10 @@ export function* saveArticleFlow(){
             if(res && res.data.code ===0 && res.data.message){
                 yield put({type: ManagerArticlesTypes.SET_MESSAGE,msgContent: res.data.message, msgType: 1})
                 setTimeout(function(){
-                    location.replace('/admin/managerArticle')
+                    location.replace('/admin/managerArticles')
                 }, 1000)
             }else if (res && res.data.code ===3){
-                yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
-                yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
+                yield clear_userinfo()
             }else{
                 yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
             }

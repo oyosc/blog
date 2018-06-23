@@ -61,7 +61,7 @@ class AppIndex extends Component{
                         this.props.notification && this.props.notification.content?
                                 (
                                 this.props.notification.type === 1 ? this.openNotification('success', this.props.notification.content):
-                                (this.props.notification.type === 2 ? this.openNotification('error', this.props.notification.content)&&localStorage.clear() :  this.openNotification('error', this.props.notification.content))):
+                                this.openNotification('error', this.props.notification.content)):
                                 null
                     }
 

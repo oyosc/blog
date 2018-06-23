@@ -3,6 +3,7 @@ import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 import {actionTypes as ManagerUserActionTypes} from '../reducers/adminManagerUser'
 import {resolveToken} from '../base/util'
+import {clear_userinfo} from './baseSaga'
 
 export function* fetch_users(pageNum){
     yield put({type: IndexActionTypes.FETCH_START});
@@ -35,8 +36,7 @@ export function* get_all_users_flow(){
             data.pageNum = Number.parseInt(pageNum);
             yield put({type:ManagerUserActionTypes.RESOLVE_GET_ALL_USERS, data: data})
         }else if (res && res.data.code ===3){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
-            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
+            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: response.data.message, msgType:0});
         }

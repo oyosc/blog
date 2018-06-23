@@ -2,6 +2,7 @@ import {put, take, call, select} from 'redux-saga/effects'
 import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 import {actionsTypes as ManagerArticlesTypes} from '../reducers/adminManagerArticle'
+import {clear_userinfo} from './baseSaga'
 
 export function* getArticleList(pageNum){
     yield put({type: IndexActionTypes.FETCH_START})
@@ -26,8 +27,7 @@ export function* getAllArticlesFlow(){
         if(res && res.data.code ===0 && res.data.result){
             yield put({type: ManagerArticlesTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST,data: res.data.result})
         }else if (res && res.data.code ===3){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:"长时间未响应,请重新登录", msgType:2})
-            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
+            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
         }
