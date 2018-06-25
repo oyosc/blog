@@ -2,13 +2,12 @@ import {take, put, call} from 'redux-saga/effects'
 import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 import {actionTypes as FrontActionTypes} from '../reducers/frontReducer'
-import { getArticleList } from './adminManagerArticleSaga'
 import {clear_userinfo} from './baseSaga'
 
 export function* getArticleList(tag, pageNum){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
-        let token = JSON.parse(localStorage.getItem("token"));
+        let token = JSON.parse(localStorage.getItem("token"))
         return yield call(get, `/getArticles?pageNum=${pageNum}&isPublish=true&tag=${tag}`, token) 
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
@@ -38,7 +37,8 @@ export function* getAllArticleFlow(){
 export function* getArticleDetail(id){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
-        return yield call(get, '/getArticleDetail?id=${id}')
+        let token = JSON.parse(localStorage.getItem("token"))
+        return yield call(get, `/getArticleDetail?id=${id}`, token)
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
     }finally{
@@ -48,8 +48,13 @@ export function* getArticleDetail(id){
 
 export function* getArticleDetailFlow(){
     while(true){
-        let req = yield take(FrontActionTypes.GET_ARTICLE_LIST)
+        let req = yield take(FrontActionTypes.GET_ARTICLE_DETAIL)
         let res = yield call(getArticleDetail, req.id)
+
+        if(res && res.headers.authorization){
+            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
+        }
+
         if(res && res.data.code ===0 && res.data.result){
             yield put({type: FrontActionTypes.RESPONSE_ARTICLE_DETAIL,data: res.data.result})
         }else if (res && res.data.code ===3){

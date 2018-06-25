@@ -5,10 +5,10 @@ import {actionsTypes as ManagerArticlesTypes} from '../reducers/adminManagerArti
 import {clear_userinfo} from './baseSaga'
 import {actionTypes as NewArticleTypes} from '../reducers/adminManagerNewArticle'
 
-export function* getArticleList(pageNum){
+export function* getArticlesList(pageNum){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
-        let token = JSON.parse(localStorage.getItem("token"));
+        let token = JSON.parse(localStorage.getItem("token"))
         return yield call(get, `/getArticles?pageNum=${pageNum}&isPublish=false`, token) 
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
@@ -20,7 +20,7 @@ export function* getArticleList(pageNum){
 export function* getAllArticlesFlow(){
     while(true){
         let req = yield take(ManagerArticlesTypes.ADMIN_GET_ARTICLE_LIST)
-        let res = yield call(getArticleList, req.pageNum)
+        let res = yield call(getArticlesList, req.pageNum)
         if(res && res.headers.authorization){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
@@ -39,7 +39,7 @@ export function* deleteArticle(id){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
         let token = JSON.parse(localStorage.getItem("token"))
-        return yield call(get, '/admin/article/delArticle?id=${id}', token)
+        return yield call(get, `/admin/article/delete?id=${id}`, token)
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType: 0})
     }finally{  
@@ -70,7 +70,8 @@ export function* deleteArticleFlow(){
 export function* editArticle(id){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
-        return yield call(get, '/getArticleDetail?id=${id}')
+        let token = JSON.parse(localStorage.getItem("token"))
+        return yield call(get, `/getArticleDetail?id=${id}`, token)
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
     }finally{
@@ -90,7 +91,7 @@ export function* editArticleFlow(){
             let title = res.data.result.title
             let content = res.data.result.content
             let tags = res.data.result.tags
-            let id = res.data.result.id
+            let id = res.data.result._id
             yield put({type: NewArticleTypes.SET_ARTICLE_ID, id})
             yield put({type: NewArticleTypes.UPDATING_TAGS, tags})
             yield put({type: NewArticleTypes.UPDATING_CONTENT, content})

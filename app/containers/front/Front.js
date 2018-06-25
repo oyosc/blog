@@ -9,6 +9,7 @@ import {Logined} from '../home/components/logined/logined'
 import {actions as IndexActions} from '../../reducers/index'
 import NotFound from '../../components/notFound/NotFound';
 import Home from '../home'
+import {Detail} from '../detail'
 
 class Front extends Component{
     constructor(props){
@@ -27,6 +28,7 @@ class Front extends Component{
                         <div className={`${style.content}`}>
                             <Switch>
                                 <Route exact path={url} component={Home} />
+                                <Route path={'/detail/:id'} component={Detail} />
                                 <Route path={'/:tag'} component={Home} />
                                 <Route component={NotFound} />
                             </Switch>

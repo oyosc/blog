@@ -18,6 +18,7 @@ import style from './style.css'
 import {bindActionCreators} from 'redux'
 import {actions} from '../../reducers/admin'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
+import {Detail} from '../detail/Detail'
 
 const {change_location_admin} = actions;
 
@@ -48,6 +49,7 @@ class Admin extends Component{
                                         <Route path={`${url}/managerTags`} component={AdminManagerTags}/>
                                         <Route path={`${url}/managerArticles`} component={AdminManagerArticles}/>
                                         <Route path={`${url}/newArticle`} component={AdminNewArticle}/>
+                                        <Route path={`${url}/detail`} component={Detail} />
                                     </Switch>
                                 </div>
                             </div> :

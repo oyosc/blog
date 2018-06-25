@@ -23,7 +23,7 @@ export function* get_all_users_flow(){
         let pageNum = request.pageNum || 1;
         let response = yield call(fetch_users, pageNum);
         alert(JSON.stringify(response));
-        if(res && response.headers.authorization){
+        if(response && response.headers.authorization){
             localStorage.setItem('token', JSON.stringify(response.headers.authorization));
         }
         if(response&&response.data.code === 0&&response.data.result){

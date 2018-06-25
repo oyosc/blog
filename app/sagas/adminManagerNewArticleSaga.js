@@ -9,6 +9,7 @@ export function* saveArticle(data){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
         let id = yield select(state => state.admin.newArticle.id)
+        alert(id)
         let token =  JSON.parse(localStorage.getItem('token'));
         if(id){
             data.id = id
