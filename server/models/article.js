@@ -1,6 +1,7 @@
 import Article from '../../models/article'
 import log from "../log/log"
 
+//获取文章列表
 async function getArticles(tag, isPublish, pageNum){
     let searchCondition = {
         isPublish
@@ -9,7 +10,7 @@ async function getArticles(tag, isPublish, pageNum){
         searchCondition.tags = tag;
     }
     if(isPublish === 'false'){
-        searchCondition = null
+        searchCondition = {}
     }
 
     let skip = pageNum -1 < 0 ? 0 : (pageNum-1)*5
@@ -24,7 +25,7 @@ async function getArticles(tag, isPublish, pageNum){
             skip: skip,
             limit: 5
         }).then(result => {
-            log.debug(__filename, 28, result)
+            log.debug(__filename, 30, result)
             return {'code': 1, 'data': result}
         }).catch(err => {
             return {'code': 0, 'data': JSON.stringify(err)}
@@ -37,6 +38,30 @@ async function getArticles(tag, isPublish, pageNum){
         }
     }).catch(err => {
         log.error(__filename, 23, err)
+        return {'statusCode': '20002', 'message': JSON.stringify(err)}
+    })
+    return result
+}
+
+//获取文章详情
+async function getArticleDetail(id){
+    log.debug(__filename, 48, id)
+    let result = await Article.findOne({"_id": id}).then(async (data)=> {
+        data.viewCount = data.viewCount + 1
+
+        let updateResult = await Article.update({"_id": id}, {viewCount: data.viewCount})
+            .then((result)=>{
+                return {'code': 1, 'data': "更新成功"}
+            }).catch(err=> {
+                return {'code': 0, 'data': JSON.stringify(err)}
+            })
+
+        if(updateResult.code == 1){
+            return {'statusCode': '200', 'message': '成功查询到article信息', data}
+        }else{
+            return {'statusCode': '20002', 'message': '获取文章信息失败', data: updateResult.data}
+        }
+    }).catch(err=>{
         return {'statusCode': '20002', 'message': JSON.stringify(err)}
     })
     return result
@@ -108,5 +133,6 @@ module.exports = {
     getArticles,
     updateArticle,
     delArticle,
-    addArticle
+    addArticle,
+    getArticleDetail
 }

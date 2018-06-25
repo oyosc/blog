@@ -1,11 +1,12 @@
 import Articles from '../models/article'
 import {responseClient} from '../util'
+const objectId = require('mongodb').ObjectID;
 import log from "../log/log"
 
 //获取文章
 async function getArticles(ctx){
     let tag = ctx.request.tag || null
-    let ispublish = ctx.request.query.ispublish
+    let ispublish = ctx.request.query.isPublish
     let pageNum = ctx.request.query.pageNum
     let result = await Articles.getArticles(tag, ispublish, pageNum)
     log.debug(__filename, 11, result)
@@ -29,7 +30,7 @@ async function updateArticle(ctx){
 
 //删除文章
 async function delArticle(ctx){
-    let id = req.query.id
+    let id = ctx.request.query.id
     let result = await Articles.delArticle(id)
     if(result.statusCode == '200'||result.statusCode == '201'){
         responseClient(ctx.response, 200, 0, '文章删除成功')
@@ -51,9 +52,22 @@ async function addArticle(ctx){
     }
 }
 
+async function getArticleDetail(ctx){
+    let id = objectId(ctx.request.query.id)
+    let result = await Articles.getArticleDetail(id)
+    console.log("articledetail")
+    console.log(result)
+    if(result.statusCode == '200'){
+        responseClient(ctx.response, 200, 0, '文章详情查询成功', result.data)
+    }else{
+        responseClient(ctx.response, 200, 1, '文章详情查询失败')
+    }
+}
+
 module.exports = {
     getArticles,
     updateArticle,
     delArticle,
-    addArticle
+    addArticle,
+    getArticleDetail
 }

@@ -1,7 +1,7 @@
 import Koa from 'koa'
 import Router from 'koa-router'
 import {getAllTags} from '../controllers/tags'
-import {getArticles} from '../controllers/article'
+import {getArticles, getArticleDetail} from '../controllers/article'
 
 const router = Router();
 
@@ -10,5 +10,8 @@ router.get('getAllTags', getAllTags);
 
 //获取文章信息
 router.get('getArticles', getArticles)
+
+//获取文章详情
+router.get('getArticleDetail', getArticleDetail)
 
 module.exports = router;
