@@ -1,5 +1,6 @@
 import Article from '../../models/article'
 import log from "../log/log"
+const objectId = require('mongodb').ObjectID
 
 //获取文章列表
 async function getArticles(tag, isPublish, pageNum){
@@ -107,7 +108,8 @@ async function updateArticle(articleInfo){
         isPublish,
         id
     } = articleInfo
-    let result = await Article.update({_id: id}, {title, content,time, tags: tags.split(','), isPublish})
+    let _id = objectId(id)
+    let result = await Article.update({"_id": _id}, {title, content,time, tags: tags.split(','), isPublish})
         .then(data => {
             return {'statusCode': '200', 'message': '文章保存成功'}
         }).catch(err => {
@@ -117,16 +119,18 @@ async function updateArticle(articleInfo){
 }
 
 async function delArticle(id){
-    let result = await Article.remove({_id: id})
+    let result = await Article.remove({"_id": id})
         .then(data => {
-            if(data.result.n === 1){
+            if(data.n === 1){
                 return {'statusCode': '200', 'message': '文章删除成功'}
             }else{
                 return {'statusCode': '201', 'message': '文章不存在'}
             }
         }).catch(err => {
+            console.log(err)
             return {'statusCode': '20006', 'message': '文章删除失败'}
         })
+    return result
 }
 
 module.exports = {

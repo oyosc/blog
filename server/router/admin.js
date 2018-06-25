@@ -22,7 +22,7 @@ router.post('/article/add', addArticle)
 router.get('/article/delete', delArticle)
 
 //更新文章
-router.post('article/update', updateArticle)
+router.post('/article/update', updateArticle)
 
 module.exports = router;
 
