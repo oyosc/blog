@@ -66,7 +66,7 @@ AdminManagerArticles.defaultProps = {
     total: 0
 }
 
-AdminManagerArticles.defaultProps = {
+AdminManagerArticles.PropTypes = {
     articleList: PropTypes.array,
     pageNum: PropTypes.number,
     total: PropTypes.number
