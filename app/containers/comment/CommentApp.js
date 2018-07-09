@@ -27,6 +27,13 @@ class CommentApp extends Component{
         }
     }
 
+    handleDeleteComment(index){
+        const comments = this.state.comments
+        comments.splice(index, 1)
+        this.setState({comments})
+        this._saveComments(comments)
+    }
+
     handleSubmitContent(comment){
         if(!comment) return
         if(!comment.username) return alert("请输入用户名")

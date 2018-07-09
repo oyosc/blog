@@ -14,6 +14,16 @@ class Comment extends Component{
         this._timer = setInterval(this._updateTimeString.bind(this), 5000)
     }
 
+    componentWillUnmount(){
+        clearInterval(this._timer)
+    }
+
+    handleDeleteComment(){
+        if(this.props.onDeleteComment){
+            this.props.onDeleteComment(this.props.index)
+        }
+    }
+
     _updateTimeString(){
         const comment = this.props.comment
         const duration = (+Date.now() - comment.createdTime) /1000
@@ -22,15 +32,30 @@ class Comment extends Component{
         })
     }
 
+    _getProcessedContent (content) {
+        return content
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;")
+          .replace(/`([\S\s]+?)`/g, '<code>$1</code>')
+    }
+
     render(){
         return (
             <div className={`${style.comment}`}>
                 <div className={`${style.comment-user}`}>
                     <span>{this.props.comment.username}</span>
                 </div>
-                <p>{this.props.comment.content}</p>
+                <p dangerouslySetInnerHTML={{
+                    __html: this._getProcessedContent(comment.content)
+                }} />
                 <span className={`${style.comment-createdTime}`}>
                     {this.state.timeString}
+                </span>
+                <span className={`${style.comment-del}`} onClick = {this.handleDeleteComment.bind(this)}>
+                    删除
                 </span>
             </div>
         )
@@ -38,7 +63,9 @@ class Comment extends Component{
 }
 
 Comment.PropTypes = {
-    comment: PropTypes.object.isRequired
+    comment: PropTypes.object.isRequired,
+    onDeleteComment: PropTypes.func,
+    index: PropTypes.number
 }
 
 export default Comment

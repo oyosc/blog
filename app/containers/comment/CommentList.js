@@ -1,7 +1,15 @@
 import React, {Component} from 'react'
 import Comment from './Comment'
+import PropTypes from 'prop-types'
 
 class CommentList extends Component{
+
+    handleDeleteComment(index){
+        if(rhis.props.index){
+            this.props.onDeleteComment(index)
+        }
+    }
+
     render(){
         const comments = [
             {username: "Jerry", content: "hello"},
@@ -14,7 +22,7 @@ class CommentList extends Component{
                 comments.map((comment, i) => {
                     return (
                         <div key={i}>
-                            <Comment comment={comment}  key={i} />
+                            <Comment comment={comment} index={i} onDeleteComment={this.handleDeleteComment.bind(this)}  key={i} />
                         </div>
                     )
                 })
@@ -26,6 +34,11 @@ class CommentList extends Component{
 
 CommentList.defaultProps = {
     comments: []
+}
+
+CommentList.PropTypes = {
+    comments: PropTypes.array,
+    onDeleteComment: PropTypes.func
 }
 
 export default CommentList
