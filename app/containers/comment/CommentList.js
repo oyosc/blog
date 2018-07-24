@@ -1,33 +1,38 @@
 import React, {Component} from 'react'
-import Comment from './Comment'
 import PropTypes from 'prop-types'
+import {connect} from 'react-redux'
+import CommentList from './components/CommentList'
+import {actions} from '../../reducers/comments'
+import {bindActionCreators} from 'redux'
 
 class CommentList extends Component{
+    componentWillMount(){
+        this._loadComments()
+    }
+
+    _loadComments(){
+        let comments = localStorage.getItem('comments')
+        comments = comments ? JSON.parse(comments) : []
+        this.props.initComments(comments)
+    }
 
     handleDeleteComment(index){
-        if(rhis.props.index){
+        let {comments} = this.props
+        let newComments = [
+            ...comments.slice(0, index),
+            ...comments.slice(index+1)
+        ]
+        localStorage.setItem('comments', JSON.stringify(newComments))
+        if(this.props.onDeleteComment){
             this.props.onDeleteComment(index)
         }
     }
 
     render(){
-        const comments = [
-            {username: "Jerry", content: "hello"},
-            {username: "Tony", content: "World"},
-            {username: "Lucy", content: "Good"}
-        ]
-
         return (
-            <div>{
-                comments.map((comment, i) => {
-                    return (
-                        <div key={i}>
-                            <Comment comment={comment} index={i} onDeleteComment={this.handleDeleteComment.bind(this)}  key={i} />
-                        </div>
-                    )
-                })
-            }
-            </div>
+            <CommentList
+                comments = {this.props.comments}
+                onDeleteComment={this.handleDeleteComment.bind(this)} />
         )
     }
 }
@@ -38,7 +43,24 @@ CommentList.defaultProps = {
 
 CommentList.PropTypes = {
     comments: PropTypes.array,
+    initComments: PropTypes.func,
     onDeleteComment: PropTypes.func
 }
 
-export default CommentList
+function mapStateToProps(state){
+    return {
+        comments: state.comments
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        initComments: bindActionCreators(actions.init_comment, dispatch),
+        onDeleteComment: bindActionCreators(actions.delete_comment, dispatch)
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CommentList)
