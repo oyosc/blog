@@ -2,8 +2,8 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {Redirect} from 'react-router-dom'
-// import style from './style.css'
-// import ArticleList from './components/articleList/ArticleList'
+import style from './style.css'
+import ArticleList from './components/articleList/ArticleList'
 import Login from './components/login/Login'
 import {Pagination} from 'antd'
 import {connect} from 'react-redux'
@@ -31,10 +31,10 @@ class Home extends Component{
                 <div className={`${style.container}`}>
                     <div className={`${style.contentContainer}`}>
                         <div className={'${style.newsContainer} ${anStyle.animated} ${anStyle.fadeInUp}'}>
-                            {/* <ArticleList />
+                            <ArticleList />
                             <div className={`${style.paginationContainer}`}>
                                 <Pagination defaultCurrent={6} total={500} />
-                            </div> */}
+                            </div>
                         </div>
                         <div className={'${style.loginContainer} ${anStyle.animated} ${anStyle.fadeInRight}'}>
                             {this.props.userInfo.userId?<Logined history={this.props.history} userInfo={this.props.userInfo} />:<Login login={login} register={register} />}
