@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {actions} from '../../reducers/comments'
 import Comment from './Comment';
+import { bindActionCreators } from 'redux';
 
 class CommentInput extends Component{
     constructor(){
@@ -24,6 +25,28 @@ class CommentInput extends Component{
     __saveUsername(username){
         localStorage.setItem('username', username)
     }
+
+    handleSubmitComment(comment){
+        if(!comment) return
+        if(!comment.username)   return alert('请输入用户名')
+        if(!comment.content)    return alert('请输入评论内存')
+        const {comments} = this.props
+        const newComments = [...comments, comment]
+        localStorage.setItem('commments', JSON.stringify(newComments))
+        if(this.props.onSubmit){
+            this.props.onSubmit(comment)
+        }
+    }
+
+    render(){
+        return (
+            <CommentInput
+                username = {this.state.username}
+                onUserNameInputBlur={this.__saveUsername.bind(this)}
+                onSubmit = {this.handleSubmitComment.bind(this)}
+            />
+        )
+    }
 }
 
 CommentInput.defaultProps = {
@@ -34,3 +57,20 @@ CommentInput.PropTypes = {
     comments: PropTypes.array,
     onSubmit: PropTypes.func
 }
+
+function mapStateToProps(state){
+    return {
+        comments: state.comments
+    }
+}
+
+function mapDispatchToProps(dispatch){
+    return {
+        onSubmit: bindActionCreators(actions.add_comment, dispatch)
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(CommentInput)
