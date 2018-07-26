@@ -5,7 +5,7 @@ import log from "../log/log"
 
 //获取文章
 async function getArticles(ctx){
-    let tag = ctx.request.tag || null
+    let tag = ctx.request.query.tag || null
     let ispublish = ctx.request.query.isPublish
     let pageNum = ctx.request.query.pageNum
     let result = await Articles.getArticles(tag, ispublish, pageNum)

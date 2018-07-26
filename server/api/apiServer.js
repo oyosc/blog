@@ -41,12 +41,12 @@ let verifyPath = function(path){
     switch(true){
         case /\/user\/login([\s\S])*?/.test(path):
             return true
-        case /\/getArticles([\s\S])*?/.test(path):
-            return true
-        case /\/getArticleDetail([\s\S])*?/.test(path):
-        return true
-        default:
+        case /\/admin([\s\S])*?/.test(path):
             return false
+        case /\/user([\s\S])*?/.test(path):
+            return false
+        default:
+            return true
     }
 }
 
