@@ -7,6 +7,7 @@ import {actions} from '../../reducers/frontReducer'
 const {get_article_detail} = actions
 import reactRenderer from 'remark-react'
 import style from './style.css'
+import CommentApp from '../comment/CommentApp'
 
 class Detail extends Component{
     constructor(props){
@@ -33,6 +34,7 @@ class Detail extends Component{
                 <div id='preview' className={`${style.content}`}>
                     {remark().use(reactRenderer).processSync(articleContent).contents}
                 </div>
+                <CommentApp />
             </div>
         )
     }

@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 module.exports = new mongoose.Schema({
-    name: String,
+    content: String,
     createdTime: String,
     clickHot: String
 })

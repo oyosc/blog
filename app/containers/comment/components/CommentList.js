@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import Comment from './Comment'
+import Comment from '../Comment'
 import PropTypes from 'prop-types'
 
-class CommentList extends Component{
+class CommentListCom extends Component{
 
     handleDeleteComment(index){
         if(rhis.props.index){
@@ -32,13 +32,13 @@ class CommentList extends Component{
     }
 }
 
-CommentList.defaultProps = {
+CommentListCom.defaultProps = {
     comments: []
 }
 
-CommentList.PropTypes = {
+CommentListCom.PropTypes = {
     comments: PropTypes.array,
     onDeleteComment: PropTypes.func
 }
 
-export default CommentList
+export default CommentListCom

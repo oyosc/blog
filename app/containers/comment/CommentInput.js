@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {actions} from '../../reducers/comments'
-import Comment from './Comment';
+import CommentInputCom from './components/CommentInput';
 import { bindActionCreators } from 'redux';
 
 class CommentInput extends Component{
@@ -22,7 +22,7 @@ class CommentInput extends Component{
         }
     }
 
-    __saveUsername(username){
+    _saveUsername(username){
         localStorage.setItem('username', username)
     }
 
@@ -40,9 +40,9 @@ class CommentInput extends Component{
 
     render(){
         return (
-            <CommentInput
+            <CommentInputCom
                 username = {this.state.username}
-                onUserNameInputBlur={this.__saveUsername.bind(this)}
+                onUserNameInputBlur={this._saveUsername.bind(this)}
                 onSubmit = {this.handleSubmitComment.bind(this)}
             />
         )

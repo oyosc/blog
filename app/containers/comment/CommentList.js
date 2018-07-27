@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import CommentList from './components/CommentList'
+import CommentListCom from './components/CommentList'
 import {actions} from '../../reducers/comments'
 import {bindActionCreators} from 'redux'
 
@@ -30,7 +30,7 @@ class CommentList extends Component{
 
     render(){
         return (
-            <CommentList
+            <CommentListCom
                 comments = {this.props.comments}
                 onDeleteComment={this.handleDeleteComment.bind(this)} />
         )

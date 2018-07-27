@@ -45,16 +45,16 @@ class Comment extends Component{
     render(){
         return (
             <div className={`${style.comment}`}>
-                <div className={`${style.comment-user}`}>
-                    <span>{this.props.comment.username}</span>
+                <div className={`${style.commentUser}`}>
+                    <span>{this.props.commentUsername}</span>
                 </div>
                 <p dangerouslySetInnerHTML={{
                     __html: this._getProcessedContent(comment.content)
-                }} />
-                <span className={`${style.comment-createdTime}`}>
+                }} />createdTime
+                <span className={`${style.commentCreatedTime}`}>
                     {this.state.timeString}
                 </span>
-                <span className={`${style.comment-del}`} onClick = {this.handleDeleteComment.bind(this)}>
+                <span className={`${style.commentDel}`} onClick = {this.handleDeleteComment.bind(this)}>
                     删除
                 </span>
             </div>

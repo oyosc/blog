@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
-import style from './index.css'
+import style from '../index.css'
 import PropTypes from 'prop-types'
 
-export default class CommentInput extends Component{
+export default class CommentInputCom extends Component{
     constructor(props){
         super(props)
         this.state = {
@@ -31,7 +31,7 @@ export default class CommentInput extends Component{
         this.setState({content: ""})
     }
 
-    handleUsernameBlur(event){
+    handleUserNameBlur(event){
         if(this.props.onUserNameInputBlur){
             this.props.onUserNameInputBlur(event.target,value)
         }
@@ -39,20 +39,20 @@ export default class CommentInput extends Component{
 
     render(){
         return (
-            <div className={`${style.comment-input}`}>
-                <div className={`${style.comment-field}`}>
-                    <span className={`${style.comment-field-name}`}>用户名: </span>
-                    <div className={`${style.comment-field-input}`}>
-                        <input value={this.state.comment_user} onChange={this.handleUserNameChange.bind(this)} onBlur={this.handleUsernameBlur.bind(this)}/>
+            <div className={`${style.commentInput}`}>
+                <div className={`${style.commentField}`}>
+                    <span className={`${style.commentFieldName}`}>用户名: </span>
+                    <div className={`${style.commentFieldInput}`}>
+                        <input value={this.state.comment_user} onChange={this.handleUserNameBlur.bind(this)} onBlur={this.handleUserNameBlur.bind(this)}/>
                     </div>
                 </div>
-                <div className={`${style.comment-field}`}>
-                    <span className={`${style.comment-field-name}`}>评论内容: </span>
-                    <div className={`${comment-field-input}`}>
+                <div className={`${style.commentField}`}>
+                    <span className={`${style.commentFieldName}`}>评论内容: </span>
+                    <div className={`${style.commentFieldInput}`}>
                         <textarea ref={(textarea)=> this.textarea = textarea }value={this.state.content} onChange={this.handleContentChange.bind(this)}/>
                     </div>
                 </div>
-                <div className='comment-field-button'>
+                <div className={`${style.commentFieldButton}`}>
                     <button onClick = {this.handleSubmit.bind(this)}>
                         发布
                     </button>
@@ -62,11 +62,11 @@ export default class CommentInput extends Component{
     }
 }
 
-CommentInput.defaultProps = {
+CommentInputCom.defaultProps = {
     username: ''
 }
 
-CommentInput.PropTypes = {
+CommentInputCom.PropTypes = {
     username: PropTypes.any,
     onSubmit: PropTypes.func,
     onUserNameInputBlur: PropTypes.func
