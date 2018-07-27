@@ -7,7 +7,8 @@ import test4 from '../../../../../static/4.jpg'
 import {Link} from 'react-router-dom'
 
 export const ArticleListCell = (props) => {
-    <div className={`${style.container}`} onClick={()=>{props.history.push(`/detail/${props.data._id}`, {id: props.data._id}); props.getArticleDetail(props.data._id)}}>
+    return (
+        <div className={`${style.container}`} onClick={()=>{props.history.push(`/detail/${props.data._id}`, {id: props.data._id}); props.getArticleDetail(props.data._id)}}>
         <div>
             <img src={props.data.coverImg} alt="" />
         </div>
@@ -39,4 +40,5 @@ export const ArticleListCell = (props) => {
             </div>
         </div>
     </div>
+    )
 }

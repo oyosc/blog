@@ -8,8 +8,7 @@ import {actionTypes as NewArticleTypes} from '../reducers/adminManagerNewArticle
 export function* getArticlesList(pageNum){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
-        let token = JSON.parse(localStorage.getItem("token"))
-        return yield call(get, `/getArticles?pageNum=${pageNum}&isPublish=false`, token) 
+        return yield call(get, `/getArticles?pageNum=${pageNum}&isPublish=false`) 
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
     }finally{
@@ -21,11 +20,7 @@ export function* getAllArticlesFlow(){
     while(true){
         let req = yield take(ManagerArticlesTypes.ADMIN_GET_ARTICLE_LIST)
         let res = yield call(getArticlesList, req.pageNum)
-        if(res && res.headers.authorization){
-            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
-        }
-        console.log(res)
-        if(res && res.data.code ===0 && res.data.result){
+        if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: ManagerArticlesTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST,data: res.data.result})
         }else if (res && res.data.code ===3){
             yield clear_userinfo()
@@ -52,7 +47,7 @@ export function* deleteArticleFlow(){
         let req = yield take(ManagerArticlesTypes.ADMIN_DELETE_ARTICLE)
         const pageNum = yield select(state => state.admin.articles.pageNum)
         let res = yield call(deleteArticle, req.id)
-        if(res && res.headers.authorization){
+        if(res && res.data && res.headers.authorization){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
         console.log(res)
@@ -70,8 +65,7 @@ export function* deleteArticleFlow(){
 export function* editArticle(id){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
-        let token = JSON.parse(localStorage.getItem("token"))
-        return yield call(get, `/getArticleDetail?id=${id}`, token)
+        return yield call(get, `/getArticleDetail?id=${id}`)
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
     }finally{
@@ -83,11 +77,7 @@ export function* editArticleFlow(){
     while(true){
         let req = yield take(ManagerArticlesTypes.ADMIN_EDIT_ARTICLE)
         let res = yield call(editArticle, req.id)
-        if(res && res.headers.authorization){
-            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
-        }
-        console.log(res)
-        if(res && res.data.code ===0){
+        if(res && res.data && res.data.code ===0){
             let title = res.data.result.title
             let content = res.data.result.content
             let tags = res.data.result.tags

@@ -18,7 +18,7 @@ export function* loginFlow(){
     while(true){
         let request = yield take(IndexActionTypes.USER_LOGIN);
         let response = yield call(login, request.username, request.password);
-        if(response.data&&response.data.code === 0){
+        if(response && response.data&&response.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1});
             let userInfo;
             if(response.headers.authorization){
@@ -38,7 +38,7 @@ export function* user_auth(){
             yield put({type: IndexActionTypes.FETCH_START})
             let token =  JSON.parse(localStorage.getItem('token'));
             let response = yield call(get, '/user/userInfo', token);
-            if(response.data && response.data.code === 0){
+            if(response && response.data && response.data.code === 0){
                 if(!response.headers.authorization){
                     return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录失败,请重新登录', msgType: 2});
                 }

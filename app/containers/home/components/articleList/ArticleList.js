@@ -10,11 +10,12 @@ export default class ArticleList extends Component{
     }
 
     render(){
+        console.log(this.props.data)
         return(
             <div>
                 {
                     this.props.data.map((item, index) => {
-                        <ArticleListCell getArticleDetail={this.props.getArticleDetail} history={this.props.history} key={index} data={item}/>
+                        return <ArticleListCell getArticleDetail={this.props.getArticleDetail} history={this.props.history} key={index} data={item}/>
                     })
                 }
             </div>

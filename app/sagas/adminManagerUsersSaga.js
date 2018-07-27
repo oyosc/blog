@@ -26,7 +26,7 @@ export function* get_all_users_flow(){
         if(response && response.headers.authorization){
             localStorage.setItem('token', JSON.stringify(response.headers.authorization));
         }
-        if(response&&response.data.code === 0&&response.data.result){
+        if(response&&response.data&&response.data.code === 0&&response.data.result){
             for(let i = 0;i<response.data.result.list.length; i++){
                 response.data.result.list[i].key = i;
             }

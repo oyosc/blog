@@ -6,7 +6,6 @@ import style from '../../lib/animate.css'
 export default class NotFound extends Component{
     constructor(props){
         super(props);
-        console.log("32213131")
         this.state = {
             animationType: 'swing'
         };

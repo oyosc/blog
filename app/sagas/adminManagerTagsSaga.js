@@ -7,9 +7,7 @@ import {clear_userinfo} from './baseSaga'
 export function* getAllTags(){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
-        let token =  JSON.parse(localStorage.getItem('token'));
-        console.log(token);
-        return yield call(get, '/getAllTags', token);
+        return yield call(get, '/getAllTags');
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType: 0})
     }finally{
@@ -47,11 +45,7 @@ export function* getAllTagsFlow(){
     while(true){
         yield take(ManagerTagsTypes.GET_ALL_TAGS);
         let res = yield call(getAllTags);
-        if(res && res.headers.authorization){
-            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
-        }
-        console.log(res);
-        if(res && res.data.code ===0 && res.data.result){
+        if(res && res.data && res.data.code ===0 && res.data.result){
             let tagArr = [];
             console.log(res);
             for(let i=0; i< res.data.result.length; i++){
@@ -75,7 +69,7 @@ export function* delTagFlow(){
         if(res && res.headers.authorization){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
-        if(res && res.data.code === 0){
+        if(res && res.data && res.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
             yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
         }else if (res && res.data.code ===3){
@@ -94,7 +88,7 @@ export function* addTagFlow(){
         if(res && res.headers.authorization){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
-        if(res.data.code === 0){
+        if(res && res.data && res.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
             yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
         }else if (res && res.data.code ===3){

@@ -7,8 +7,7 @@ import {clear_userinfo} from './baseSaga'
 export function* getArticleList(tag, pageNum){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
-        let token = JSON.parse(localStorage.getItem("token"))
-        return yield call(get, `/getArticles?pageNum=${pageNum}&isPublish=true&tag=${tag}`, token) 
+        return yield call(get, `/getArticles?pageNum=${pageNum}&isPublish=true&tag=${tag}`) 
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
     }finally{
@@ -19,12 +18,10 @@ export function* getArticleList(tag, pageNum){
 export function* getAllArticleFlow(){
     while(true){
         let req = yield take(FrontActionTypes.GET_ARTICLE_LIST)
+        console.log("req:", req)
         let res = yield call(getArticleList, req.tag, req.pageNum)
-        if(res && res.headers.authorization){
-            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
-        }
         console.log(res)
-        if(res && res.data.code ===0 && res.data.result){
+        if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: FrontActionTypes.RESPONSE_ARTICLE_LIST,data: res.data.result})
         }else if (res && res.data.code ===3){
             yield clear_userinfo()
@@ -37,8 +34,7 @@ export function* getAllArticleFlow(){
 export function* getArticleDetail(id){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
-        let token = JSON.parse(localStorage.getItem("token"))
-        return yield call(get, `/getArticleDetail?id=${id}`, token)
+        return yield call(get, `/getArticleDetail?id=${id}`)
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
     }finally{
@@ -51,11 +47,7 @@ export function* getArticleDetailFlow(){
         let req = yield take(FrontActionTypes.GET_ARTICLE_DETAIL)
         let res = yield call(getArticleDetail, req.id)
 
-        if(res && res.headers.authorization){
-            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
-        }
-
-        if(res && res.data.code ===0 && res.data.result){
+        if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: FrontActionTypes.RESPONSE_ARTICLE_DETAIL,data: res.data.result})
         }else if (res && res.data.code ===3){
             yield clear_userinfo()
