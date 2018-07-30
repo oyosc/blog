@@ -11,9 +11,9 @@ export default class CommentInputCom extends Component{
         }
     }
 
-    componentDidMount(){
-        this.textarea.focus()
-    }
+    // componentDidMount(){
+    //     this.textarea.focus()
+    // }
 
     handleUserNameChange(event){
         this.setState({comment_user: event.target.value})
@@ -39,23 +39,36 @@ export default class CommentInputCom extends Component{
 
     render(){
         return (
-            <div className={`${style.commentInput}`}>
-                <div className={`${style.commentField}`}>
-                    <span className={`${style.commentFieldName}`}>用户名: </span>
-                    <div className={`${style.commentFieldInput}`}>
-                        <input value={this.state.comment_user} onChange={this.handleUserNameBlur.bind(this)} onBlur={this.handleUserNameBlur.bind(this)}/>
+            <div>
+                <div lang="en-US" className={`${style.gitmentContainer} ${style.gitmentEditorContainer}`}>
+                    <a className={`${style.gitmentEditorAvatar}`} href="https://github.com/oyosc" target="_blank">
+                        <img className={`${style.gitmentEditorAvatarImg}`} src="https://avatars1.githubusercontent.com/u/13896491?v=4" />
+                    </a>
+                    <div className={`${style.gitmentEditorMain}`}>
+                        <div className={`${style.gitmentEditorHeader}`}>
+                            <nav className={`${style.gitmentEditorTabs}`}>
+                                <button className={`${style.gitmentEditorTab} ${style.gitmentSelected}`} >Write</button>
+                                {/* <button className={`${style.gitmentEditorTab}`}>Preview</button> */}
+                            </nav>
+                            <div className={`${style.gitmentEditorLogin}`}>
+                                <a className={`${style.gitmentEditorLogoutLink}`} >Logout</a>
+                            </div>
+                        </div>
+                        <div className={`${style.gitmentEditorBody}`}>
+                            <div className={`${style.gitmentEditorWriteField}`}>
+                                <textarea placeholder="Leave a comment" title=""></textarea>
+                            </div>
+                            <div className={`${style.gitmentEditorPreviewField} ${style.gitmentHidden}`}>
+                                <div className={`${style.gitmentEditorPreview} ${style.gitmentMarkdown}`}></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div className={`${style.commentField}`}>
-                    <span className={`${style.commentFieldName}`}>评论内容: </span>
-                    <div className={`${style.commentFieldInput}`}>
-                        <textarea ref={(textarea)=> this.textarea = textarea }value={this.state.content} onChange={this.handleContentChange.bind(this)}/>
+                    <div className={`${style.gitmentEditorFooter}`}>
+                        {/* <a className={`${style.gitmentEditorFooterTip}`} href="https://guides.github.com/features/mastering-markdown/" target="_blank">
+                            Styling with Markdown is supported
+                        </a> */}
+                        <button className={`${style.gitmentEditorSubmit}`} title="">Comment</button>
                     </div>
-                </div>
-                <div className={`${style.commentFieldButton}`}>
-                    <button onClick = {this.handleSubmit.bind(this)}>
-                        发布
-                    </button>
                 </div>
             </div>
         )
