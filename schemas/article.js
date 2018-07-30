@@ -9,5 +9,7 @@ module.exports = new mongoose.Schema({
     coverImg: String,
     author: String,
     tags: Array,
-    isPublish: Boolean
+    isPublish: Boolean,
+    createdTime: String,
+    updatedTime: String
 })
