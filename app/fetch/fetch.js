@@ -18,7 +18,8 @@ let config = {
         }
     ],
     headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'access-control-allow-origin': '*'
     },
     timeout: 10000,
     responseType: 'json'

@@ -24,7 +24,7 @@ class Front extends Component{
     render(){
         const {url} = this.props.match;
         console.log(url)
-        const {login} = this.props;
+        const {login, login_with_github} = this.props;
         if(this.props.userInfo.userId){
             localStorage.setItem('userInfo', JSON.stringify({userId: this.props.userInfo.userId, username: this.props.userInfo.username, userType: this.props.userInfo.userType}));
         }
@@ -49,7 +49,7 @@ class Front extends Component{
                             {
                                 this.props.userInfo.userId?
                                 <Logined history={this.props.history} userInfo={this.props.userInfo} />:
-                                <Login login={login} />
+                                <Login login={login} login_with_github={login_with_github}/>
                             }
                         </div>
                     </div>
@@ -81,6 +81,7 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
     return {
         login: bindActionCreators(IndexActions.get_login, dispatch),
+        login_with_github: bindActionCreators(IndexActions.get_github_login, dispatch),
         get_all_tags: bindActionCreators(get_all_tags, dispatch),
         get_article_list: bindActionCreators(get_article_list, dispatch)
     }

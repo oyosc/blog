@@ -16,32 +16,41 @@ class LoginFormCom extends Component{
         });
     }
 
+    handleLoginWithGithub = () => {
+        this.props.login_with_github()
+    }
+
     render(){
         const {getFieldDecorator} = this.props.form;
         return (
-            <Form onSubmit={this.handleLogin} className={`${style.formStyle}`}>
-                <FormItem>
-                    {getFieldDecorator('userName', {
-                        rules: [{required:true, message: '请输入用户名！'}],
-                    })(
-                        <Input prefix={<Icon type="user" style={{fontSize:13}}/>} placeholder="Username" />
-                    )}
-                </FormItem>
-                <FormItem>
-                    {getFieldDecorator('password', {
-                        rules: [{required: true, message: '请输入密码！'}],
-                    })(
-                        <Input prefix={<Icon type='lock' style={{fontSize: 13}}/>} type="password" placeholder="Password"/>
-                    )
-                    
-                    }
-                </FormItem>
-                <FormItem>
-                    <Button className={`${style.loginButton}`} type="primary" htmlType="submit">
-                        登录
-                    </Button>
-                </FormItem>
-            </Form>
+            <div>
+                <Form onSubmit={this.handleLogin} className={`${style.formStyle}`}>
+                    <FormItem>
+                        {getFieldDecorator('userName', {
+                            rules: [{required:true, message: '请输入用户名！'}],
+                        })(
+                            <Input prefix={<Icon type="user" style={{fontSize:13}}/>} placeholder="Username" />
+                        )}
+                    </FormItem>
+                    <FormItem>
+                        {getFieldDecorator('password', {
+                            rules: [{required: true, message: '请输入密码！'}],
+                        })(
+                            <Input prefix={<Icon type='lock' style={{fontSize: 13}}/>} type="password" placeholder="Password"/>
+                        )
+                        
+                        }
+                    </FormItem>
+                    <FormItem>
+                        <Button className={`${style.loginButton}`} type="primary" htmlType="submit">
+                            登录
+                        </Button>
+                    </FormItem>
+                </Form>
+                <Button className={`${style.loginButton}`} type="primary" onClick={this.handleLoginWithGithub.bind(this)}>
+                    login with github
+                </Button>
+            </div>
         )
     }
 }

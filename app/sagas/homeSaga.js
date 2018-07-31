@@ -33,6 +33,30 @@ export function* loginFlow(){
     }
 }
 
+export function* loginWithGithub(){
+    yield put({type: IndexActionTypes.FETCH_START});
+    console.log("loginwithgithub")
+    try{
+        let result = window.open("https://github.com/login/oauth/authorize?client_id=4c44c1800fc3ea625eb7")
+        console.log("window open")
+        console.log(result)
+        // return yield call(get, 'https://github.com/login/oauth/authorize?client_id=4c44c1800fc3ea625eb7')
+    } catch(error){
+        yield put({type:IndexActionTypes.SET_MESSAGE, msgContent:'github第三方登录出现错误，请重试', msgType: 2});
+    }finally{
+        yield put({type: IndexActionTypes.FETCH_END})
+    }
+}
+
+export function* loginWithGithubFlow(){
+    while(true){
+        yield take(IndexActionTypes.GITHUB_USER_LOGIN);
+        let response = yield call(loginWithGithub);
+        console.log("login with github")
+        console.log(response)
+    }
+}
+
 export function* user_auth(){
     while(true){
         let result = yield take(IndexActionTypes.USER_AUTH)

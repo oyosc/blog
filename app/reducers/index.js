@@ -19,7 +19,8 @@ export const actionsTypes = {
     RESPONSE_USER_INFO: "RESPONSE_USER_INFO",
     SET_MESSAGE: "SET_MESSAGE",
     USER_AUTH: "USER_AUTH",
-    CLEAR_USER_AUTH: "CLEAR_USER_AUTH"
+    CLEAR_USER_AUTH: "CLEAR_USER_AUTH",
+    GITHUB_USER_LOGIN: "GITHUB_USER_LOGIN"
 };
 
 
@@ -30,6 +31,11 @@ export const actions = {
             type: actionsTypes.USER_LOGIN,
             username,
             password
+        }
+    },
+    get_github_login: function(){
+        return {
+            type: actionsTypes.GITHUB_USER_LOGIN
         }
     },
     get_register: function(data){
