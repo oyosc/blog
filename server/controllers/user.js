@@ -1,6 +1,7 @@
 
 import User from '../models/user'
 import {MD5_SUFFIX, responseClient, md5} from '../util'
+import {github_oauth} from '../config'
 import {signToke} from '../base/token'
 const jwt = require('jsonwebtoken')
 
@@ -22,6 +23,11 @@ async function login(ctx){
     }else{
         responseClient(ctx.response, 200, 1, '用户名密码错误');
     }
+}
+
+async function login_with_github(ctx){
+    console.log("node login with github")
+    ctx.response.redirect("https://github.com/login/oauth/authorize?client_id="+ github_oauth.client_id + "&state='5432'")
 }
 
 async function userInfo(ctx){
@@ -54,5 +60,6 @@ async function manageAllUsers(ctx){
 module.exports = {
     login,
     userInfo,
-    manageAllUsers
+    manageAllUsers,
+    login_with_github
 }
