@@ -1,5 +1,6 @@
 import axios from 'axios'
 import Qs from 'qs'
+axios.defaults.timeout = 100000;
 
 let config = {
     baseURL: '/api',

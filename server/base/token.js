@@ -46,9 +46,11 @@ async function checkToke(authorization){
             let [ttlErr, ttlTime] = await handleErr(ttlAsync(baseJti)); //查询redis中是否有该token
             let [err, message] = await handleErr(setAsync(baseJti, '1', 'EX', ttlTime));
             if(err || ttlErr) return {'statusCode': '30001', 'message': {err: getRedisErr}};
+            console.log("usertype")
+            console.log(decoded.payload['usertype'])
             let userInfo = {
                 _id: decoded.payload['userId'],
-                type: decoded.payload['usertype'] == 'user' ? 1 : 0,
+                type: decoded.payload['userType'] == 'user' ? 1 : 0,
                 username: decoded.payload['username']
             };
             let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo));//生成新的token

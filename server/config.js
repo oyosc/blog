@@ -11,5 +11,7 @@ export const redisConfig = {
 
 export const github_oauth = {
     client_id: "4c44c1800fc3ea625eb7",
-    client_secret: "730740923ddff6294cefe4ab719eaaf417ad443d"
+    client_secret: "730740923ddff6294cefe4ab719eaaf417ad443d",
+    token_path: "https://github.com/login/oauth/access_token",
+    user_path: "https://api.github.com/user?"
 }

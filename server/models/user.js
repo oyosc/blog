@@ -23,6 +23,19 @@ async function findOneUser(info){
     return result;
 }
 
+//在数据库中注册用户
+async function registerUser(info){
+    let newUser = new User(
+        info
+    )
+    let result = await newUser.save().then(data => {
+        return {'statusCode': '200', 'message': '用户注册成功', data}
+    }).catch(err => {
+        return {'statusCode': '20008', 'message': '用户注册失败'}
+    })
+    return result
+}
+
 //在数据库中查询多个用户
 async function findUsers(userInfo, pageNum){
     let skip = pageNum - 1<0?0:(pageNum-1)*10;
@@ -51,5 +64,6 @@ async function countUsers(userInfo){
 module.exports = {
     findOneUser,
     findUsers,
-    countUsers
+    countUsers,
+    registerUser
 }

@@ -37,9 +37,7 @@ export function* loginWithGithub(){
     yield put({type: IndexActionTypes.FETCH_START});
     console.log("loginwithgithub")
     try{
-        let result = window.open("https://github.com/login/oauth/authorize?client_id=4c44c1800fc3ea625eb7")
-        console.log("window open")
-        console.log(result)
+        window.open("https://github.com/login/oauth/authorize?client_id=4c44c1800fc3ea625eb7", "_self")
         // return yield call(get, 'https://github.com/login/oauth/authorize?client_id=4c44c1800fc3ea625eb7')
     } catch(error){
         yield put({type:IndexActionTypes.SET_MESSAGE, msgContent:'github第三方登录出现错误，请重试', msgType: 2});
@@ -51,9 +49,44 @@ export function* loginWithGithub(){
 export function* loginWithGithubFlow(){
     while(true){
         yield take(IndexActionTypes.GITHUB_USER_LOGIN);
-        let response = yield call(loginWithGithub);
-        console.log("login with github")
+        yield call(loginWithGithub);
+    }
+}
+
+export function* loginedWithGithub(code){
+    yield put({type: IndexActionTypes.FETCH_START});
+    console.log("loginwithgithub")
+    try{
+        return yield call(post, '/user/loginedWithGithub', {code})
+    } catch(error){
+        console.log(error)
+        yield put({type:IndexActionTypes.SET_MESSAGE, msgContent:'github第三方登录出现错误，请重试', msgType: 2});
+    }finally{
+        yield put({type: IndexActionTypes.FETCH_END})
+    }
+}
+
+export function* loginedWithGithubFlow(){
+    while(true){
+        let request = yield take(IndexActionTypes.GITHUB_USER_LOGINED);
+        let response = yield call(loginedWithGithub, request.code);
+        alert("github_respnse")
         console.log(response)
+        if(response && response.data && response.data.code === 0){
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1});
+            let userInfo;
+            if(response.headers.authorization){
+                userInfo = resolveToken(response.headers.authorization);
+                localStorage.setItem('token', JSON.stringify(response.headers.authorization));
+            }
+            let data = Object.assign(response.data, userInfo);
+            yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
+            window.location.href = "http://localhost:3000"
+        }else if(response){
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:response.data.message, msgType:0})
+        }else{
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'github第三方授权出错，请重新授权', msgType:0})
+        }
     }
 }
 
@@ -73,6 +106,8 @@ export function* user_auth(){
                     userInfo = resolveToken(response.headers.authorization);
                     localStorage.setItem('token', JSON.stringify(response.headers.authorization));
                 }
+                console.log("user_auth")
+                console.log(userInfo)
                 let data = Object.assign(response.data, userInfo);
                 yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             }

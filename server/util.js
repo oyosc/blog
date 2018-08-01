@@ -1,9 +1,21 @@
 import crypto from 'crypto'
+import request from 'request'
+import util from 'util'
+const requestPromisify = util.promisify(request)
 
 const handleErr = (promise) => {
     return promise.then((data) => {
         return [null, data];
     }).catch(err => [err]);
+}
+
+const asyncRequest = async (options) => {
+    let [err, data] = await handleErr(requestPromisify(options))
+    if(err){
+        return {code:0, err}
+    }else{
+        return {code:1, data}
+    }
 }
 
 const getLocalTime = () => {
@@ -35,5 +47,6 @@ module.exports = {
         res.body = JSON.stringify(responseData)
     },
     handleErr,
-    getLocalTime
+    getLocalTime,
+    asyncRequest
 }

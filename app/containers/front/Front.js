@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import style from './style.css'
-import {Switch, Route} from 'react-router-dom'
+import {Switch, Route, Redirect} from 'react-router-dom'
 import {bindActionCreators} from 'redux'
 import Login from '../home/components/login/Login'
 import {Logined} from '../home/components/logined/logined'
@@ -39,7 +39,8 @@ class Front extends Component{
                     <div className={`${style.contentContainer}`}>
                         <div className={`${style.content}`}>
                             <Switch>
-                                <Route exact path={url} component={Home} />
+                                {/* <Redirect from="/oauth/callback/:params' to='/:params'/> */}
+                                <Route exact path={url} component={Home} history={this.props.history}/>
                                 <Route path={"/detail/:id"} component={Detail} />
                                 <Route path={"/:tag"} component={Home} />
                                 <Route component={NotFound} />

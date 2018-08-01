@@ -7,7 +7,7 @@ const router = Router();
 router.post('/login', login);
 
 //github第三方登录
-router.get('/loginWithGithub', login_with_github)
+router.post('/loginedWithGithub', login_with_github)
 
 //获取用户信息
 router.get('/userInfo', userInfo);

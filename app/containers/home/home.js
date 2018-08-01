@@ -9,6 +9,7 @@ import {Pagination} from 'antd'
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {actions as frontActions} from '../../reducers/frontReducer'
+import {actions as IndexActions} from '../../reducers/index'
 import {Logined} from './components/logined/Logined'
 import anStyle from '../../lib/animate.css'
 
@@ -52,7 +53,21 @@ class Home extends Component{
 
     componentDidMount(){
         this.props.get_article_list(this.props.match.params.tag || '')
+        let href = window.location.href
+        if(href.indexOf('?code=') !== -1){
+            let result = href.split('?code=')
+            this.props.logined_with_github(result[1])
+        }
     }
+
+    // componentDidMount(){
+    //     let href = window.location.href
+    //     if(href.indexOf('/oauth/callback/?code=') !== -1){
+    //         let result = href.split('/oauth/callback/?code=')
+    //         this.props.logined_with_github(result[1])
+    //         window.location.href = result[0]
+    //     }
+    // }
 }
 
 Home.defaultProps = {
@@ -84,7 +99,8 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
     return {
         get_article_list: bindActionCreators(get_article_list, dispatch),
-        get_article_detail: bindActionCreators(get_article_detail, dispatch)
+        get_article_detail: bindActionCreators(get_article_detail, dispatch),
+        logined_with_github: bindActionCreators(IndexActions.get_github_logined, dispatch),
     }
 }
 
