@@ -6,5 +6,6 @@ export function resolveToken(authorization){
     let userId = decoded.payload['userId'];
     let username = decoded.payload['username'];
     let userType = decoded.payload['userType'];
-    return {userId, username, userType}
+    let avatarUrl = decoded.payload['avatar_url'];
+    return {userId, username, userType, avatarUrl}
 }

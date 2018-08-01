@@ -26,7 +26,7 @@ class Front extends Component{
         console.log(url)
         const {login, login_with_github} = this.props;
         if(this.props.userInfo.userId){
-            localStorage.setItem('userInfo', JSON.stringify({userId: this.props.userInfo.userId, username: this.props.userInfo.username, userType: this.props.userInfo.userType}));
+            localStorage.setItem('userInfo', JSON.stringify({userId: this.props.userInfo.userId, username: this.props.userInfo.username, userType: this.props.userInfo.userType, avatarUrl: this.props.userInfo.avatar_url}));
         }
         console.log("path:", this.props.history.location)
         return (

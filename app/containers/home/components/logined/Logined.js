@@ -4,7 +4,7 @@ import {Button} from 'antd'
 
 export const Logined = (props) => (
     <div className={`${style.container}`}>
-        <img src={require('./timg.jpeg')} />
+        <img src={props.userInfo.avatarUrl?props.userInfo.avatarUrl:require('./timg.jpeg')} />
         <p>欢迎: {props.userInfo.username}</p>
         <p className={`${style.centerP}`}>光临我的博客</p>
         {props.userInfo.userType === 'admin' ?

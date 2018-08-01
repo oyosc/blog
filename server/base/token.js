@@ -16,6 +16,7 @@ async function signToke(user){
         userId: user._id,
         userType: user.type?'user':'admin',
         username: user.username,
+        avatar_url: user.avatar,
         jti: baseJti,
         iat: Date.parse(new Date()),
         exp: Date.parse(new Date()) + 1000*60
@@ -46,12 +47,11 @@ async function checkToke(authorization){
             let [ttlErr, ttlTime] = await handleErr(ttlAsync(baseJti)); //查询redis中是否有该token
             let [err, message] = await handleErr(setAsync(baseJti, '1', 'EX', ttlTime));
             if(err || ttlErr) return {'statusCode': '30001', 'message': {err: getRedisErr}};
-            console.log("usertype")
-            console.log(decoded.payload['usertype'])
             let userInfo = {
                 _id: decoded.payload['userId'],
                 type: decoded.payload['userType'] == 'user' ? 1 : 0,
-                username: decoded.payload['username']
+                username: decoded.payload['username'],
+                avatar: decoded.payload['avatar_url']
             };
             let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo));//生成新的token
             if(registerTokenErr) return {'statusCode': '30004', 'message': {err: registerTokenErr}};
