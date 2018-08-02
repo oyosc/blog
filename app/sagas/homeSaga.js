@@ -81,7 +81,7 @@ export function* loginedWithGithubFlow(){
             }
             let data = Object.assign(response.data, userInfo);
             yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
-            window.location.href = "http://localhost:3000"
+            window.location.href = request.url
         }else if(response){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:response.data.message, msgType:0})
         }else{

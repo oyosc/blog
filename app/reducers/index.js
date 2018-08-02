@@ -39,10 +39,11 @@ export const actions = {
             type: actionsTypes.GITHUB_USER_LOGIN
         }
     },
-    get_github_logined: function(code){
+    get_github_logined: function(code, url){
         return {
             type: actionsTypes.GITHUB_USER_LOGINED,
-            code
+            code,
+            url
         }
     },
     get_register: function(data){

@@ -23,7 +23,7 @@ export function* getAllArticleFlow(){
         console.log(res)
         if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: FrontActionTypes.RESPONSE_ARTICLE_LIST,data: res.data.result})
-        }else if (res && res.data.code ===3){
+        }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})

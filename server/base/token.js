@@ -17,6 +17,7 @@ async function signToke(user){
         userType: user.type?'user':'admin',
         username: user.username,
         avatar_url: user.avatar,
+        github_url: user.github_url,
         jti: baseJti,
         iat: Date.parse(new Date()),
         exp: Date.parse(new Date()) + 1000*60
@@ -51,7 +52,8 @@ async function checkToke(authorization){
                 _id: decoded.payload['userId'],
                 type: decoded.payload['userType'] == 'user' ? 1 : 0,
                 username: decoded.payload['username'],
-                avatar: decoded.payload['avatar_url']
+                avatar: decoded.payload['avatar_url'],
+                github_url: decoded.payload['github_url']
             };
             let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo));//生成新的token
             if(registerTokenErr) return {'statusCode': '30004', 'message': {err: registerTokenErr}};

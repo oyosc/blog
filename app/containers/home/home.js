@@ -56,7 +56,7 @@ class Home extends Component{
         let href = window.location.href
         if(href.indexOf('?code=') !== -1){
             let result = href.split('?code=')
-            this.props.logined_with_github(result[1])
+            this.props.logined_with_github(result[1], result[0])
         }
     }
 
