@@ -11,39 +11,11 @@ class CommentInput extends Component{
         this.state = {username: ''}
     }
 
-    componentWillMount(){
-        this._loadUsername
-    }
-
-    _loadUsername(){
-        const username = localStorage.getItem('username')
-        if(username){
-            this.setState({username})
-        }
-    }
-
-    _saveUsername(username){
-        localStorage.setItem('username', username)
-    }
-
-    handleSubmitComment(comment){
-        if(!comment) return
-        if(!comment.username)   return alert('请输入用户名')
-        if(!comment.content)    return alert('请输入评论内存')
-        const {comments} = this.props
-        const newComments = [...comments, comment]
-        localStorage.setItem('commments', JSON.stringify(newComments))
-        if(this.props.onSubmit){
-            this.props.onSubmit(comment)
-        }
-    }
-
     render(){
         return (
             <CommentInputCom
-                username = {this.state.username}
-                onUserNameInputBlur={this._saveUsername.bind(this)}
-                onSubmit = {this.handleSubmitComment.bind(this)}
+            onSubmit = {this.props.onSubmit}
+            userInfo = {this.props.userInfo}
             />
         )
     }
@@ -60,7 +32,7 @@ CommentInput.PropTypes = {
 
 function mapStateToProps(state){
     return {
-        comments: state.comments
+        userInfo: state.globalState.userInfo
     }
 }
 

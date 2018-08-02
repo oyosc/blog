@@ -38,7 +38,7 @@ export function* loginWithGithub(){
     console.log("loginwithgithub")
     try{
         window.open("https://github.com/login/oauth/authorize?client_id=4c44c1800fc3ea625eb7", "_self")
-        // return yield call(get, 'https://github.com/login/oauth/authorize?client_id=4c44c1800fc3ea625eb7')
+        // return yield call(get, '/user/loginedWithGithub')
     } catch(error){
         yield put({type:IndexActionTypes.SET_MESSAGE, msgContent:'github第三方登录出现错误，请重试', msgType: 2});
     }finally{

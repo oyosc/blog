@@ -26,7 +26,7 @@ class Front extends Component{
         console.log(url)
         const {login, login_with_github} = this.props;
         if(this.props.userInfo.userId){
-            localStorage.setItem('userInfo', JSON.stringify({userId: this.props.userInfo.userId, username: this.props.userInfo.username, userType: this.props.userInfo.userType, avatarUrl: this.props.userInfo.avatar_url}));
+            localStorage.setItem('userInfo', JSON.stringify({userId: this.props.userInfo.userId, username: this.props.userInfo.username, userType: this.props.userInfo.userType, avatarUrl: this.props.userInfo.avatar_url, github_url: this.props.userInfo.github_url}));
         }
         console.log("path:", this.props.history.location)
         return (
@@ -39,7 +39,7 @@ class Front extends Component{
                     <div className={`${style.contentContainer}`}>
                         <div className={`${style.content}`}>
                             <Switch>
-                                {/* <Redirect from="/oauth/callback/:params' to='/:params'/> */}
+                                {/* <Redirect from='/oauth/callback/' to='/' /> */}
                                 <Route exact path={url} component={Home} history={this.props.history}/>
                                 <Route path={"/detail/:id"} component={Detail} />
                                 <Route path={"/:tag"} component={Home} />

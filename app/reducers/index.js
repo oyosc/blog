@@ -2,6 +2,7 @@
 import {combineReducers} from 'redux'
 import admin from './admin'
 import {reducer as front} from './frontReducer'
+import {reducer as comment} from './comments'
 const initialState = {
     isFetching: true,
     msg: {
@@ -101,5 +102,6 @@ export function reducer(state = initialState, action){
 export default combineReducers({
     globalState: reducer,
     admin,
-    front
+    front,
+    comment
 })

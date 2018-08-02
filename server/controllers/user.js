@@ -82,7 +82,7 @@ async function login_with_github(ctx){
                 console.log('register_result')
                 console.log(register_result)
                 if(register_result.statusCode == '200'){
-                    register_result.data.username = register_result.data.github_name
+                    is_exist_result.userInfo.username = is_exist_result.userInfo.github_name
                     let token = await signToke(register_result.data);
                     responseClient(ctx.response, 200, 0, 'github用户注册成功', {token});
                 }else{
