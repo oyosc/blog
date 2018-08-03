@@ -46,7 +46,7 @@ export function* showCommentFlow(){
     while(true){
         let req = yield take(CommentActionTypes.INIT_COMMENT)
         console.log("comment_Req: ", req)
-        let res = yield call(showComment, {articleId: req.article_id, pageNum: req.pageNum})
+        let res = yield call(showComment, req.article_id, req.pageNum)
         console.log(res)
         if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: CommentActionTypes.RESPONSE_ADD_COMMENT,data: res.data.result})

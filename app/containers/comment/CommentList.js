@@ -12,7 +12,7 @@ class CommentList extends Component{
         }else{
             let href = window.location.href
             alert(href)
-            let article_id = href.split("/")[2]
+            let article_id = href.split("detail/")[1]
             this.props.initComments(article_id)
         }
     }
