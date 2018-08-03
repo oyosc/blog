@@ -4,25 +4,14 @@ import PropTypes from 'prop-types'
 
 class CommentListCom extends Component{
 
-    handleDeleteComment(index){
-        if(rhis.props.index){
-            this.props.onDeleteComment(index)
-        }
-    }
-
     render(){
-        const comments = [
-            {username: "Jerry", content: "hello"},
-            {username: "Tony", content: "World"},
-            {username: "Lucy", content: "Good"}
-        ]
 
         return (
             <div>{
-                comments.map((comment, i) => {
+                this.props.comments.map((comment) => {
                     return (
-                        <div key={i}>
-                            <Comment comment={comment} index={i} onDeleteComment={this.handleDeleteComment.bind(this)}  key={i} />
+                        <div>
+                            <Comment comment={comment} />
                         </div>
                     )
                 })
@@ -37,8 +26,7 @@ CommentListCom.defaultProps = {
 }
 
 CommentListCom.PropTypes = {
-    comments: PropTypes.array,
-    onDeleteComment: PropTypes.func
+    comments: PropTypes.array
 }
 
 export default CommentListCom

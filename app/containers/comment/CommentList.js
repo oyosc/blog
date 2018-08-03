@@ -6,25 +6,14 @@ import {actions} from '../../reducers/comments'
 import {bindActionCreators} from 'redux'
 
 class CommentList extends Component{
-    componentWillMount(){
-        this._loadComments()
-    }
-
-    _loadComments(){
-        let comments = localStorage.getItem('comments')
-        comments = comments ? JSON.parse(comments) : []
-        this.props.initComments(comments)
-    }
-
-    handleDeleteComment(index){
-        let {comments} = this.props
-        let newComments = [
-            ...comments.slice(0, index),
-            ...comments.slice(index+1)
-        ]
-        localStorage.setItem('comments', JSON.stringify(newComments))
-        if(this.props.onDeleteComment){
-            this.props.onDeleteComment(index)
+    componentDidMount(){
+        if(this.props.state){
+            this.props.initComments(this.props.location.state.id)
+        }else{
+            let href = window.location.href
+            alert(href)
+            let article_id = href.split("/")[2]
+            this.props.initComments(article_id)
         }
     }
 
@@ -32,7 +21,7 @@ class CommentList extends Component{
         return (
             <CommentListCom
                 comments = {this.props.comments}
-                onDeleteComment={this.handleDeleteComment.bind(this)} />
+            />
         )
     }
 }
@@ -44,19 +33,20 @@ CommentList.defaultProps = {
 CommentList.PropTypes = {
     comments: PropTypes.array,
     initComments: PropTypes.func,
-    onDeleteComment: PropTypes.func
+    article_id: PropTypes.string
 }
 
 function mapStateToProps(state){
+    const {_id} = state.front.articleDetail
     return {
-        comments: state.comments
+        article_id: _id,
+        comments: state.comment.comments
     }
 }
 
 function mapDispatchToProps(dispatch){
     return {
         initComments: bindActionCreators(actions.init_comment, dispatch),
-        onDeleteComment: bindActionCreators(actions.delete_comment, dispatch)
     }
 }
 

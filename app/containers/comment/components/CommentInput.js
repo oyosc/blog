@@ -6,7 +6,8 @@ export default class CommentInputCom extends Component{
     constructor(props){
         super(props),
         this.state = {
-            content: ''
+            content: '',
+            replyToId: ''
         }
     }
 
@@ -16,7 +17,15 @@ export default class CommentInputCom extends Component{
 
     handleSubmit(){
         if(this.props.userInfo.userId){
-            alert(this.state.content)
+            let content = this.state.content
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;")
+                .replace(/`([\S\s]+?)`/g, '<code>$1</code>')
+
+            this.props.onSubmit({replyToId: this.state.replyToId, articleId: this.props.article_id, content})
         }
     }
 
@@ -64,5 +73,6 @@ export default class CommentInputCom extends Component{
 
 CommentInputCom.PropTypes = {
     userInfo: PropTypes.any,
-    onSubmit: PropTypes.func
+    onSubmit: PropTypes.func,
+    article_id: PropTypes.string
 }

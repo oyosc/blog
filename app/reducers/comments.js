@@ -5,14 +5,18 @@ const initialState = {
 export const actionTypes = {
     INIT_COMMENT: "INIT_COMMENT",
     ADD_COMMENT: "ADD_COMMENT",
-    DELETE_COMMENT: "DELETE_COMMENT"
+    RESPONSE_ADD_COMMENT: "RESPONSE_ADD_COMMENT",
+    RESPONSE_INIT_COMMENT: "RESPONSE_INIT_COMMENT",
+    DELETE_COMMENT: "DELETE_COMMENT",
+    RESPONSE_DELETE_COMMENT: "RESPONSE_DELETE_COMMENT"
 }
 
 export const actions = {
-    init_comment: function(comments){
+    init_comment: function(article_id, pageNum=0){
         return {
             type: actionTypes.INIT_COMMENT,
-            comments
+            article_id: article_id,
+            pageNum: pageNum
         }
     },
     add_comment: function(comment){
@@ -31,17 +35,13 @@ export const actions = {
 
 export function reducer(state=initialState, action){
     switch(action.type){
-        case actionTypes.INIT_COMMENT:
-            return {
-                ...state, comments: action.comments
-            }
-        case actionTypes.ADD_COMMENT:
+        case actionTypes.RESPONSE_ADD_COMMENT:
             return {
                 ...state, comments: [...state.comments, action.comment]
             }
-        case actionTypes.DELETE_COMMENT:
+        case actionTypes.RESPONSE_INIT_COMMENT:
             return {
-                ...state, comments: [...state.comments.slice(0, action.commentIndex), ...state.comments.slice(action.commentIndex + 1)]
+                ...state, comments: action.comments
             }
         default:
             return state
