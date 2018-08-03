@@ -50,6 +50,18 @@ async function findUsers(userInfo, pageNum){
         );
 }
 
+async function findUsersByNames(names){
+    if(names.length === 0){
+        return {'statusCode': '200', 'message': '用户名为空', data: []}
+    }
+    let result = User.find({$or: [{username: {$in: names}}, {github_name: {$in: names}}]}).then(data => {
+        return {'statusCode': '200', 'message': '用户查询成功', data}
+    }).catch(err => {
+        return {'statusCode': '20008', 'message': '用户查询失败'}
+    })
+    return result
+}
+
 //在数据库中查询符合条件的用户数量
 async function countUsers(userInfo){
     if(userInfo.id){
@@ -65,5 +77,6 @@ module.exports = {
     findOneUser,
     findUsers,
     countUsers,
-    registerUser
+    registerUser,
+    findUsersByNames
 }
