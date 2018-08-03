@@ -18,8 +18,8 @@ async function addComment(ctx){
 }
 
 async function showComments(ctx){
-    let pageNum = ctx.request.pageNum || 0
-    let articleId = ctx.request.articleId
+    let pageNum = ctx.request.query.pageNum || 0
+    let articleId = ctx.request.query.articleId
     let result = await Comment.showComments(articleId, pageNum)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, '评论查询成功')
