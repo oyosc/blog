@@ -46,18 +46,20 @@ async function showComments(articleId, pageNum){
         let commentResult = await Comment.find(searchCondition, '_id content createdTime likeHot replyToUser userName articleId',{
             skip: skip,
             limit: 5
-        }).then(async (result) => {
-            if(result.code == 1){
-                commentInfos.list = result.data
-                return {'statusCode': '200', 'message': '成功查询到comment信息', commentInfos}
-            }else{
-                return {'statusCode': '20002', 'message': result.data}
-            }
-        }).catch(err=>{
-            return {'statusCode': '20002', 'message': JSON.stringify(err)}
+        }).then((result) => {
+            return {'code': 1, 'data': result}
+        }).catch(err => {
+            return {'code': 0, 'data': JSON.stringify(err)}
         })
+        if(commentResult.code == 1){
+            commentInfos.list = commentResult.data
+            return {'statusCode': '200', 'message': '成功查询到comment信息', commentInfos}
+        }else{
+            return {'statusCode': '20002', 'message': commentResult.data}
+        }
+    }).catch(err => {
+        return {'statusCode': '20002', 'message': JSON.stringify(err)}
     })
-
     return result
 
 }

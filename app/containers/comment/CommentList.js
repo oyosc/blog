@@ -7,14 +7,10 @@ import {bindActionCreators} from 'redux'
 
 class CommentList extends Component{
     componentDidMount(){
-        if(this.props.state){
-            this.props.initComments(this.props.location.state.id)
-        }else{
-            let href = window.location.href
-            alert(href)
-            let article_id = href.split("detail/")[1]
-            this.props.initComments(article_id)
-        }
+        let href = window.location.href
+        alert(href)
+        let article_id = href.split("detail/")[1]
+        this.props.initComments(article_id)
     }
 
     render(){
