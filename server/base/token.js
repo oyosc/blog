@@ -57,7 +57,7 @@ async function checkToke(authorization){
             };
             let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo));//生成新的token
             if(registerTokenErr) return {'statusCode': '30004', 'message': {err: registerTokenErr}};
-            return {'statusCode': '200', 'message': {'token': registerToken, 'username': decoded.payload['username']}};
+            return {'statusCode': '200', 'message': {'token': registerToken, 'userId': decoded.payload['userId'],'username': decoded.payload['username']}};
         }else{
             return {'statusCode': '30003', 'message': {err: errCodes['30003']}}
         }

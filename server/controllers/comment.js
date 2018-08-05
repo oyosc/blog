@@ -5,6 +5,7 @@ const objectId = require('mongodb').ObjectID
 async function addComment(ctx){
     let body = ctx.request.body
     let userId = ctx.session.userId
+    console.log("userid: ", userId)
     let names = fetchUsers(body.content)
     let text = await linkUser(body.content, names)
     console.log("addComment", body)

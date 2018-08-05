@@ -43,12 +43,19 @@ async function showComments(articleId, pageNum){
     let skip = pageNum - 1 < 0 ? 0 : (pageNum-1)*5
     let result = await Comment.count(searchCondition).then(async (count) => {
         commentInfos.total = count
-        let commentResult = await Comment.find(searchCondition, '_id content createdTime likeHot replyToUser userName articleId',{
+        let commentResult = await Comment.find(searchCondition, '_id content createdTime likeHot replyToId articleId',{
             skip: skip,
             limit: 5
-        }).then((result) => {
+        }).populate({
+            path: 'userId',
+            select: 'github_name github_url username type',
+            model: 'User'
+        })
+        .then((result) => {
+            console.log(result)
             return {'code': 1, 'data': result}
         }).catch(err => {
+            console.log(err)
             return {'code': 0, 'data': JSON.stringify(err)}
         })
         if(commentResult.code == 1){
@@ -60,6 +67,7 @@ async function showComments(articleId, pageNum){
     }).catch(err => {
         return {'statusCode': '20002', 'message': JSON.stringify(err)}
     })
+    console.log(result)
     return result
 
 }

@@ -5,6 +5,6 @@ module.exports = new mongoose.Schema({
     createdTime: String,
     likeHot: String,
     replyToId: String,
-    userId: String,
+    userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     articleId: String
 })

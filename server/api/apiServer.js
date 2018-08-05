@@ -65,6 +65,7 @@ let tokenMiddleware = async function(ctx, next){
             log.debug(__filename, 60, JSON.stringify(tokenResult));
             if(tokenResult.statusCode == '200'){
                 ctx.session.username = tokenResult.message.username
+                ctx.session.userId = tokenResult.message.userId
                 await next();
                 if(tokenResult.message.token){
                     log.debug(__filename, 65, tokenResult.message.token);
