@@ -49,7 +49,7 @@ export function* showCommentFlow(){
         let res = yield call(showComment, req.article_id, req.pageNum)
         console.log(res)
         if(res && res.data && res.data.code ===0 && res.data.result){
-            yield put({type: CommentActionTypes.RESPONSE_ADD_COMMENT,data: res.data.result})
+            yield put({type: CommentActionTypes.RESPONSE_INIT_COMMENT,data: res.data.result})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
         }

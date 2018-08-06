@@ -16,18 +16,18 @@ class CommentList extends Component{
     render(){
         return (
             <CommentListCom
-                comments = {this.props.comments}
+                comments = {this.props.commentList}
             />
         )
     }
 }
 
 CommentList.defaultProps = {
-    comments: []
+    commentList: []
 }
 
 CommentList.PropTypes = {
-    comments: PropTypes.array,
+    commentList: PropTypes.array,
     initComments: PropTypes.func,
     article_id: PropTypes.string
 }
@@ -36,7 +36,7 @@ function mapStateToProps(state){
     const {_id} = state.front.articleDetail
     return {
         article_id: _id,
-        comments: state.comment.comments
+        commentList: state.comment.commentList
     }
 }
 

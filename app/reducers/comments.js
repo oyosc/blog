@@ -1,5 +1,8 @@
 const initialState = {
-    comments: []
+    commentList: [],
+    comment: [],
+    pageNum: 1,
+    total: 0
 }
 
 export const actionTypes = {
@@ -37,11 +40,11 @@ export function reducer(state=initialState, action){
     switch(action.type){
         case actionTypes.RESPONSE_ADD_COMMENT:
             return {
-                ...state, comments: [...state.comments, action.comment]
+                ...state, commentList: [...state.commentList, action.comment]
             }
         case actionTypes.RESPONSE_INIT_COMMENT:
             return {
-                ...state, comments: action.comments
+                ...state, commentList: [...action.data.list], pageNum: action.data.pageNum, total: action.data.total
             }
         default:
             return state

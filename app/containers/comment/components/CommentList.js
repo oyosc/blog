@@ -5,10 +5,10 @@ import PropTypes from 'prop-types'
 class CommentListCom extends Component{
 
     render(){
-
         return (
             <div>{
                 this.props.comments.map((comment) => {
+                    console.log(comment)
                     return (
                         <div>
                             <Comment comment={comment} />

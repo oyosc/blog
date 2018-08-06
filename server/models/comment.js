@@ -10,9 +10,7 @@ async function addComment(commentInfo, userId){
         articleId
     } = commentInfo
     let finalReplyToId
-    if(replyToId == ''){
-        finalReplyToId = userId
-    }
+    console.log(replyToId)
     const createdTime = Date.now()
     const likeHot = '0'
     const newComment = new Comment({
@@ -48,11 +46,19 @@ async function showComments(articleId, pageNum){
             limit: 5
         }).populate({
             path: 'userId',
-            select: 'github_name github_url username type',
+            select: 'github_name github_url username type -_id avatar',
             model: 'User'
         })
         .then((result) => {
-            console.log(result)
+            result = JSON.parse(JSON.stringify(result).replace(/userId/g, 'userInfo'))
+            for(let i=0; i<result.length; i++){
+                if(typeof result[i].replyToId === 'undefined'){
+                    result[i].replyToId = result[i]._id
+                }
+                if(result[i].userInfo && (typeof result[i].userInfo.github_name === 'undefined')){
+                    result[i].userInfo.github_name = result[i].userInfo.username
+                }
+            }
             return {'code': 1, 'data': result}
         }).catch(err => {
             console.log(err)
@@ -67,7 +73,7 @@ async function showComments(articleId, pageNum){
     }).catch(err => {
         return {'statusCode': '20002', 'message': JSON.stringify(err)}
     })
-    console.log(result)
+    console.log(JSON.stringify(result))
     return result
 
 }

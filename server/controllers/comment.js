@@ -23,7 +23,7 @@ async function showComments(ctx){
     let articleId = ctx.request.query.articleId
     let result = await Comment.showComments(articleId, pageNum)
     if(result.statusCode == '200'){
-        responseClient(ctx.response, 200, 0, '评论查询成功')
+        responseClient(ctx.response, 200, 0, '评论查询成功', result.commentInfos)
     }else{
         responseClient(ctx.response, 200, 1, '评论查询失败')
     }

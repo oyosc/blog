@@ -40,7 +40,7 @@ export default class CommentInputCom extends Component{
             <div>
                 <div lang="en-US" className={`${style.gitmentContainer} ${style.gitmentEditorContainer}`}>
                     <a className={`${style.gitmentEditorAvatar}`} href={this.props.userInfo.githubUrl} target="_blank">
-                        <img className={`${style.gitmentEditorAvatarImg}`} src={this.props.userInfo.userId ? this.props.userInfo.avatarUrl : require('../../home/components/logined/timg.jpeg')} />
+                        <img className={`${style.gitmentEditorAvatarImg}`} src={this.props.userInfo.userId ? this.props.userInfo.avatarUrl ? this.props.userInfo.avatarUrl : require('../../home/components/logined/timg.jpeg') : require('../../home/components/logined/timg.jpeg')} />
                     </a>
                     <div className={`${style.gitmentEditorMain}`}>
                         <div className={`${style.gitmentEditorHeader}`}>
