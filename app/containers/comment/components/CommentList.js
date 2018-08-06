@@ -11,7 +11,12 @@ class CommentListCom extends Component{
                     console.log(comment)
                     return (
                         <div>
-                            <Comment comment={comment} />
+                            <Comment 
+                                comment={comment} 
+                                userInfo={this.props.userInfo}
+                                addLikeHot = {this.props.addLikeHot}
+                                deleteLikeHot = {this.props.deleteLikeHot}
+                            />
                         </div>
                     )
                 })

@@ -11,7 +11,7 @@ async function findOneUser(info){
     }
     let result = await User.findOne(
         info
-    ).then((userInfo) => {
+    ).select('-password').then((userInfo) => {
         if(userInfo){
             return {'statusCode':'200','message':'该用户在数据库中', userInfo}
         }else{

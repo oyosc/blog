@@ -26,6 +26,7 @@ export default class CommentInputCom extends Component{
                 .replace(/`([\S\s]+?)`/g, '<code>$1</code>')
 
             this.props.onSubmit({replyToId: this.state.replyToId, articleId: this.props.article_id, content})
+            this.setState({content: ''})
         }
     }
 

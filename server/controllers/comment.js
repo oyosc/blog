@@ -21,7 +21,9 @@ async function addComment(ctx){
 async function showComments(ctx){
     let pageNum = ctx.request.query.pageNum || 0
     let articleId = ctx.request.query.articleId
-    let result = await Comment.showComments(articleId, pageNum)
+    let userId = ctx.session.userId
+    console.log("userId:", userId)
+    let result = await Comment.showComments(articleId, pageNum, userId)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, '评论查询成功', result.commentInfos)
     }else{
@@ -29,7 +31,35 @@ async function showComments(ctx){
     }
 }
 
+async function addLikeHot(ctx){
+    let body = ctx.request.body
+    let userId = ctx.session.userId
+    console.log("userid: ", userId)
+    console.log("addLikeHot", body)
+    let result = await Comment.addLikeHot(body, userId)
+    if(result.statusCode == '200'){
+        responseClient(ctx.response, 200, 0, 'likeHot添加成功', result.data)
+    }else{
+        responseClient(ctx.response, 200, 1, 'likeHot添加失败')
+    }
+}
+
+async function deleteLikeHot(ctx){
+    let body = ctx.request.body
+    let userId = ctx.session.userId
+    console.log("userid: ", userId)
+    console.log("addLikeHot", body)
+    let result = await Comment.deleteLikeHot(body, userId)
+    if(result.statusCode == '200'){
+        responseClient(ctx.response, 200, 0, 'likeHot删除成功', result.data)
+    }else{
+        responseClient(ctx.response, 200, 1, 'likeHot删除失败')
+    }
+}
+
 module.exports = {
     addComment,
-    showComments
+    showComments,
+    addLikeHot,
+    deleteLikeHot
 }

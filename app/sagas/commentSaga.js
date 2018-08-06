@@ -21,8 +21,12 @@ export function* addCommentFlow(){
         let req = yield take(CommentActionTypes.ADD_COMMENT)
         let res = yield call(addComment, req.comment)
         console.log(res)
+        if(res.headers.authorization){
+            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
+        }
         if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: CommentActionTypes.RESPONSE_ADD_COMMENT,data: res.data.result})
+            return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '评论添加成功', msgType: 1});
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
@@ -50,6 +54,68 @@ export function* showCommentFlow(){
         console.log(res)
         if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: CommentActionTypes.RESPONSE_INIT_COMMENT,data: res.data.result})
+        }else{
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+        }
+    }
+}
+
+//添加likehot
+export function* addLikeHot(comment_id){
+    yield put({type: IndexActionTypes.FETCH_START})
+    try{
+        let token =  JSON.parse(localStorage.getItem('token'));
+        return yield call(post, '/user/comment/likeHot/add', {comment_id}, token) 
+    }catch(err){
+        yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
+    }finally{
+        yield put({type: IndexActionTypes.FETCH_END})
+    }
+}
+
+export function* addLikeHotFlow(){
+    while(true){
+        let req = yield take(CommentActionTypes.ADD_LIKEHOT)
+        let res = yield call(addLikeHot, req.comment_id)
+        console.log(res)
+        if(res.headers.authorization){
+            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
+        }
+        if(res && res.data && res.data.code ===0 && res.data.result){
+            yield put({type: CommentActionTypes.RESPONSE_ADD_LIKEHOT,data: res.data.result})
+        }else if (res && res.data && res.data.code ===3){
+            yield clear_userinfo()
+        }else{
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+        }
+    }
+}
+
+//删除likehot
+export function* deleteLikeHot(comment_id){
+    yield put({type: IndexActionTypes.FETCH_START})
+    try{
+        let token =  JSON.parse(localStorage.getItem('token'));
+        return yield call(post, '/user/comment/likeHot/delete', {comment_id}, token) 
+    }catch(err){
+        yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
+    }finally{
+        yield put({type: IndexActionTypes.FETCH_END})
+    }
+}
+
+export function* deleteLikeHotFlow(){
+    while(true){
+        let req = yield take(CommentActionTypes.DELETE_LIKEHOT)
+        let res = yield call(deleteLikeHot, req.comment_id)
+        console.log(res)
+        if(res.headers.authorization){
+            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
+        }
+        if(res && res.data && res.data.code ===0 && res.data.result){
+            yield put({type: CommentActionTypes.RESPONSE_DELETE_LIKEHOT,data: res.data.result})
+        }else if (res && res.data && res.data.code ===3){
+            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
         }

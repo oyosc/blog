@@ -57,6 +57,7 @@ let tokenMiddleware = async function(ctx, next){
     if(verifyPath(path)){
         return await next();
     }else{
+        ctx.request.session.destroy()
         if(!ctx.header.authorization){
             return responseClient(ctx.response, 200, 3, '没有token信息，请进行登录')
         }else{

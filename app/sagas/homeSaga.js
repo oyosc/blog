@@ -59,7 +59,6 @@ export function* loginedWithGithub(code){
     try{
         return yield call(post, '/user/loginedWithGithub', {code})
     } catch(error){
-        console.log(error)
         yield put({type:IndexActionTypes.SET_MESSAGE, msgContent:'github第三方登录出现错误，请重试', msgType: 2});
     }finally{
         yield put({type: IndexActionTypes.FETCH_END})
@@ -84,8 +83,6 @@ export function* loginedWithGithubFlow(){
             window.location.href = request.url
         }else if(response){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:response.data.message, msgType:0})
-        }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'github第三方授权出错，请重新授权', msgType:0})
         }
     }
 }

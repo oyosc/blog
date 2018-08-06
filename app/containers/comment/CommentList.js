@@ -17,6 +17,9 @@ class CommentList extends Component{
         return (
             <CommentListCom
                 comments = {this.props.commentList}
+                userInfo = {this.props.userInfo}
+                addLikeHot = {this.props.addLikeHot}
+                deleteLikeHot = {this.props.deleteLikeHot}
             />
         )
     }
@@ -36,13 +39,16 @@ function mapStateToProps(state){
     const {_id} = state.front.articleDetail
     return {
         article_id: _id,
-        commentList: state.comment.commentList
+        commentList: state.comment.commentList,
+        userInfo: state.globalState.userInfo,
     }
 }
 
 function mapDispatchToProps(dispatch){
     return {
         initComments: bindActionCreators(actions.init_comment, dispatch),
+        addLikeHot: bindActionCreators(actions.add_likehot, dispatch),
+        deleteLikeHot: bindActionCreators(actions.delete_likehot, dispatch)
     }
 }
 

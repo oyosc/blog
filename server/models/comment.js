@@ -1,4 +1,6 @@
 import Comment from '../../models/comment'
+import Like from '../../models/like'
+import {findOneUser} from './user'
 import log from "../log/log"
 const objectId = require('mongodb').ObjectID
 
@@ -12,24 +14,35 @@ async function addComment(commentInfo, userId){
     let finalReplyToId
     console.log(replyToId)
     const createdTime = Date.now()
-    const likeHot = '0'
     const newComment = new Comment({
         content,
         finalReplyToId,
         userId,
         createdTime,
-        likeHot,
-        articleId
+        likeHot: 0,
+        articleId,
+        type: '0'
     })
-    let result = await newComment.save().then(data => {
+    let result = await newComment.save().then(async data => {
+        let userResult = await findOneUser({'id': userId})
+        if(userResult.statusCode === '200'){
+            if(userResult.userInfo && (typeof userResult.userInfo.github_name === 'undefined')){
+                userResult.userInfo.github_name = userResult.userInfo.username
+            }
+            data = data.toObject()
+            data["userInfo"] = userResult.userInfo
+        }else{
+            return {'statusCode': '20002', 'message': '评论获取用户信息失败'}
+        }
         return {'statusCode': '200', 'message': '评论保存成功', data}
     }).catch(err => {
         return {'statusCode': '20008', 'message': '评论保存失败'}
     })
+    console.log(result)
     return result
 }
 
-async function showComments(articleId, pageNum){
+async function showComments(articleId, pageNum, userId){
     let searchCondition = {
         articleId
     }
@@ -46,10 +59,10 @@ async function showComments(articleId, pageNum){
             limit: 5
         }).populate({
             path: 'userId',
-            select: 'github_name github_url username type -_id avatar',
+            select: 'github_name github_url username type _id avatar',
             model: 'User'
         })
-        .then((result) => {
+        .then(async (result) => {
             result = JSON.parse(JSON.stringify(result).replace(/userId/g, 'userInfo'))
             for(let i=0; i<result.length; i++){
                 if(typeof result[i].replyToId === 'undefined'){
@@ -58,6 +71,23 @@ async function showComments(articleId, pageNum){
                 if(result[i].userInfo && (typeof result[i].userInfo.github_name === 'undefined')){
                     result[i].userInfo.github_name = result[i].userInfo.username
                 }
+                let isLike
+                if(typeof userId === 'undefined'){
+                    isLike = 0
+                }else{
+                    isLike = await Like.findOne({"likeId": result[i]._id, "userId": userId, "type": '1'}).then((likeInfo) => {
+                        if(likeInfo){
+                            return 1
+                        }else{
+                            return 0
+                        }
+                    }).catch((err) => {
+                        console.log("isLike: ", err)
+                        return 0
+                    })
+                }
+                // result[i] = result[i].toObject()
+                result[i]["isLike"] = isLike
             }
             return {'code': 1, 'data': result}
         }).catch(err => {
@@ -75,10 +105,143 @@ async function showComments(articleId, pageNum){
     })
     console.log(JSON.stringify(result))
     return result
+}
 
+//查询单个评论
+async function getOneComment(info){
+    if(info.id){
+        info._id = objectId(info.id);
+        delete info.id;
+    }
+    let result = await Comment.findOne(
+        info
+    ).populate({
+        path: 'userId',
+        select: 'github_name github_url username type -_id avatar',
+        model: 'User'
+    }).then((commentInfo) => {
+        if(!commentInfo){
+            return {'statusCode':'20016','message':'get commentInfo 为空'}
+        }
+        commentInfo = JSON.parse(JSON.stringify(commentInfo).replace(/userId/g, 'userInfo'))
+        for(let i=0; i<commentInfo.length; i++){
+            if(typeof commentInfo[i].replyToId === 'undefined'){
+                commentInfo[i].replyToId = commentInfo[i]._id
+            }
+            if(commentInfo[i].userInfo && (typeof commentInfo[i].userInfo.github_name === 'undefined')){
+                commentInfo[i].userInfo.github_name = commentInfo[i].userInfo.username
+            }
+        }
+        if(commentInfo){
+            return {'statusCode':'200','message':'已查询到该评论', commentInfo}
+        }else{
+            return {'statusCode':'20001','message':errCodes['20001']}
+        }
+    }).catch((err) =>{
+        return {'statusCode': '20002', 'message': JSON.stringify(err)};
+    })
+    return result
+}
+
+//添加Likehot
+async function addLikeHot(likeInfo, userId){
+    const {
+        comment_id
+    } = likeInfo
+    let commentResult = await getOneComment({id: objectId(comment_id)})
+    if(commentResult.statusCode !== '200'){
+        return {'statusCode': '20009', 'message': '添加Likehot的评论无此数据'}
+    }
+    let likeResult = await Like.findOne({
+        likeId: comment_id,
+        userId,
+        type: 1
+    }).then((like)=>{
+        console.log("like:", like)
+        if(like){
+            return {'code': 1,'message':'已查询到该likeHot'}
+        }else{
+            return {'code': 0,'message':'未查询到该likeHot'}
+        }
+    }).catch((err) => {
+        return {'code': 2, 'message': '查询likehot出现错误'}
+    })
+    
+    if(likeResult.code === 1 || likeResult.code === 2){
+        return {'statusCode': '20011', 'message': '查询likeHot出错或者已经存在该数据'}
+    }
+
+    const createdTime = Date.now()
+    const newLike = new Like({
+        likeId: comment_id,
+        userId,
+        type: 1,
+        createdTime
+    })
+    let result = await newLike.save().then(async () => {
+        let updateResult = await Comment.update({"_id": objectId(comment_id)}, {"likeHot": commentResult.commentInfo.likeHot + 1})
+            .then((result)=>{
+                return {'code': 1, 'data': "comment更新成功"}
+            }).catch(err=> {
+                return {'code': 0, 'data': JSON.stringify(err)}
+            })
+        if(updateResult.code === 0){
+            return {'statusCode': '20010', 'message': 'commment更新likeHot失败'}
+        }
+        let finalCommentResult = await getOneComment({"_id": objectId(comment_id)})
+        if(finalCommentResult.statusCode === '200'){
+            finalCommentResult.commentInfo["isLike"] = 1
+            return {'statusCode': '200', 'message': 'likeHot添加成功', data: finalCommentResult.commentInfo}
+        }else{
+            return {'statusCode': '20008', 'message': 'likeHot添加失败'}
+        }
+    }).catch(err => {
+        return {'statusCode': '20008', 'message': 'likeHot添加失败'}
+    })
+    return result
+}
+
+//删除likeHot
+async function deleteLikeHot(likeInfo, userId){
+    const {
+        comment_id
+    } = likeInfo
+    let commentResult = await getOneComment({id: objectId(comment_id)})
+    if(commentResult.statusCode !== '200'){
+        return {'statusCode': '20009', 'message': '删除Likehot的评论无此数据'}
+    }
+    let result = await Like.remove({
+        likeId: objectId(comment_id),
+        userId,
+        type: 1
+    }).then(async (likeData) => {
+        if(likeData.n !== 1){
+            return {'statusCode': '20012', 'message': 'likeHot删除失败'}
+        }
+        let updateResult = await Comment.update({"_id": objectId(comment_id)}, {commentResult: commentResult.commentInfo.likeHot - 1})
+            .then((result)=>{
+                return {'code': 1, 'data': "comment更新成功"}
+            }).catch(err=> {
+                return {'code': 0, 'data': JSON.stringify(err)}
+            })
+        if(updateResult.code === 0){
+            return {'statusCode': '20013', 'message': 'commment更新likeHot失败'}
+        }
+        let finalCommentResult = await getOneComment({id: objectId(comment_id)})
+        if(finalCommentResult.statusCode === '200'){
+            return {'statusCode': '200', 'message': 'likeHot删除成功', data: finalCommentResult.commentInfo}
+        }else{
+            return {'statusCode': '200014', 'message': 'likeHots删除失败'}
+        }
+    }).catch(err => {
+        return {'statusCode': '200015', 'message': 'likeHot删除失败'}
+    })
+    return result
 }
 
 module.exports = {
     addComment,
-    showComments
+    showComments,
+    addLikeHot,
+    deleteLikeHot
 }
