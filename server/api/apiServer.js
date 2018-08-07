@@ -54,11 +54,12 @@ let verifyPath = function(path){
 
 let tokenMiddleware = async function(ctx, next){
     let path = ctx.request.path;
+    console.log(ctx.session.username)
+    console.log(ctx.header.authorization)
+    console.log(path)
     if(verifyPath(path)){
         return await next();
     }else{
-        ctx.session.username = ''
-        ctx.session.userId = ''
         if(!ctx.header.authorization){
             return responseClient(ctx.response, 200, 3, '没有token信息，请进行登录')
         }else{
@@ -74,7 +75,9 @@ let tokenMiddleware = async function(ctx, next){
                     ctx.response.set({'Authorization': tokenResult.message.token})
                 }
             }else{
-                 return responseClient(ctx.response, 200, 3, tokenResult.message.err)
+                ctx.session.username = ''
+                ctx.session.userId = ''
+                return responseClient(ctx.response, 200, 3, tokenResult.message.err)
             }
         }
     }

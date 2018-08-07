@@ -53,9 +53,14 @@ export const actions = {
 
 export function reducer(state=initialState, action){
     switch(action.type){
+        case actionTypes.RESPONSE_DELETE_LIKEHOT:
         case actionTypes.RESPONSE_ADD_LIKEHOT:
             for(let i =0; i < state.commentList.length; i++){
                 if(state.commentList[i]._id === action.data._id){
+                    console.log("reducer")
+                    console.log(action.data)
+                    console.log("reducer-to")
+                    console.log(state.commentList[i])
                     state.commentList[i].likeHot = action.data.likeHot
                     state.commentList[i].isLike = action.data.isLike
                 }
@@ -63,7 +68,6 @@ export function reducer(state=initialState, action){
             return {
                 ...state, commentList: [...state.commentList]
             }
-        case actionTypes.RESPONSE_DELETE_LIKEHOT:
         case actionTypes.RESPONSE_ADD_COMMENT:
             console.log("comment_reducer:", action.data)
             return {

@@ -28,9 +28,10 @@ export const actionsTypes = {
 
 
 export const actions = {
-    get_login: function(username, password){
+    get_login: function(url, username, password){
         return {
             type: actionsTypes.USER_LOGIN,
+            url,
             username,
             password
         }

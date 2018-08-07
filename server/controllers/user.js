@@ -20,6 +20,11 @@ async function login(ctx){
     let result = await User.findOneUser({username, password});
     if(result.statusCode == '200'){
         let token = await signToke(result.userInfo);
+        ctx.session.username = result.userInfo.username
+        ctx.session.userId = result.userInfo._id
+        console.log("ctx_login")
+        console.log(ctx.session.username)
+        console.log(ctx.session.userId)
         responseClient(ctx.response, 200, 0, '登陆成功', {token});
     }else{
         responseClient(ctx.response, 200, 1, '用户名密码错误');

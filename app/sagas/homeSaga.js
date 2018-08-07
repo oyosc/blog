@@ -3,7 +3,8 @@ import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 import {resolveToken} from '../base/util'
 
-export function* login(username, password){
+export function* login(url, username, password){
+    alert(url)
     yield put({type: IndexActionTypes.FETCH_START});
     try{
         return yield call(post, '/user/login', {username, password})
@@ -17,7 +18,7 @@ export function* login(username, password){
 export function* loginFlow(){
     while(true){
         let request = yield take(IndexActionTypes.USER_LOGIN);
-        let response = yield call(login, request.username, request.password);
+        let response = yield call(login, request.url, request.username, request.password);
         if(response && response.data && response.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1});
             let userInfo;
@@ -26,6 +27,7 @@ export function* loginFlow(){
                 localStorage.setItem('token', JSON.stringify(response.headers.authorization));
             }
             let data = Object.assign(response.data, userInfo);
+            window.location.href = request.url
             yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:response.data.message, msgType:0})

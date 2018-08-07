@@ -114,24 +114,25 @@ async function getOneComment(info){
         delete info.id;
     }
     let result = await Comment.findOne(
-        info
+        info,
+        '_id content createdTime likeHot replyToId articleId'
     ).populate({
         path: 'userId',
-        select: 'github_name github_url username type -_id avatar',
+        select: 'github_name github_url username type _id avatar',
         model: 'User'
     }).then((commentInfo) => {
         if(!commentInfo){
             return {'statusCode':'20016','message':'get commentInfo 为空'}
         }
         commentInfo = JSON.parse(JSON.stringify(commentInfo).replace(/userId/g, 'userInfo'))
-        for(let i=0; i<commentInfo.length; i++){
-            if(typeof commentInfo[i].replyToId === 'undefined'){
-                commentInfo[i].replyToId = commentInfo[i]._id
-            }
-            if(commentInfo[i].userInfo && (typeof commentInfo[i].userInfo.github_name === 'undefined')){
-                commentInfo[i].userInfo.github_name = commentInfo[i].userInfo.username
-            }
+        console.log("commentInfo:", commentInfo)
+        if(typeof commentInfo.replyToId === 'undefined'){
+            commentInfo.replyToId = commentInfo._id
         }
+        if(commentInfo.userInfo && (typeof commentInfo.userInfo.github_name === 'undefined')){
+            commentInfo.userInfo.github_name = commentInfo.userInfo.username
+        }
+        console.log("final_commentInfo: ", commentInfo)
         if(commentInfo){
             return {'statusCode':'200','message':'已查询到该评论', commentInfo}
         }else{
@@ -149,6 +150,7 @@ async function addLikeHot(likeInfo, userId){
         comment_id
     } = likeInfo
     let commentResult = await getOneComment({id: objectId(comment_id)})
+    console.log(commentResult)
     if(commentResult.statusCode !== '200'){
         return {'statusCode': '20009', 'message': '添加Likehot的评论无此数据'}
     }
@@ -218,7 +220,7 @@ async function deleteLikeHot(likeInfo, userId){
         if(likeData.n !== 1){
             return {'statusCode': '20012', 'message': 'likeHot删除失败'}
         }
-        let updateResult = await Comment.update({"_id": objectId(comment_id)}, {commentResult: commentResult.commentInfo.likeHot - 1})
+        let updateResult = await Comment.update({"_id": objectId(comment_id)}, {"likeHot": commentResult.commentInfo.likeHot - 1})
             .then((result)=>{
                 return {'code': 1, 'data': "comment更新成功"}
             }).catch(err=> {
@@ -229,6 +231,7 @@ async function deleteLikeHot(likeInfo, userId){
         }
         let finalCommentResult = await getOneComment({id: objectId(comment_id)})
         if(finalCommentResult.statusCode === '200'){
+            finalCommentResult.commentInfo["isLike"] = 0
             return {'statusCode': '200', 'message': 'likeHot删除成功', data: finalCommentResult.commentInfo}
         }else{
             return {'statusCode': '200014', 'message': 'likeHots删除失败'}

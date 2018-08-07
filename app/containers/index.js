@@ -72,7 +72,7 @@ class AppIndex extends Component{
         )
     }
 
-    componentDidMount(){
+    componentWillMount(){
         this.props.user_auth();
     }
 }

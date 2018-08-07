@@ -37,6 +37,7 @@ async function addLikeHot(ctx){
     console.log("userid: ", userId)
     console.log("addLikeHot", body)
     let result = await Comment.addLikeHot(body, userId)
+    console.log(result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, 'likeHot添加成功', result.data)
     }else{

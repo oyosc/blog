@@ -11,7 +11,7 @@ class LoginFormCom extends Component{
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if(!err){
-                this.props.login(values.userName, values.password)
+                this.props.login(window.location.href, values.userName, values.password)
             }
         });
     }

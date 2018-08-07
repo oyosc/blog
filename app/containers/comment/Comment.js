@@ -7,9 +7,7 @@ class Comment extends Component{
     constructor(){
         super()
         this.state = {
-            timeString: '',
-            isLike: 0,
-            comment_id: ''
+            timeString: ''
         }
     }
 
@@ -19,11 +17,10 @@ class Comment extends Component{
             return
         }
 
-        if(this.state.isLike){  
-            this.props.deleteLikeHot(this.state.comment_id)
+        if(this.props.comment.isLike){  
+            this.props.deleteLikeHot(this.props.comment._id)
         }else{
-            this.props.addLikeHot(this.state.comment_id)
-            this.setState({likeHot: this.props.comment.likeHot+1})
+            this.props.addLikeHot(this.props.comment._id)
         }
     }
 
@@ -34,8 +31,6 @@ class Comment extends Component{
 
     componentWillMount(){
         this._updateTimeString()
-        this.setState({comment_id: this.props.comment._id})
-        this.setState({isLike: this.props.comment.isLike})
         this._timer = setInterval(this._updateTimeString.bind(this), 5000)
     }
     componentWillUnmount(){
@@ -67,7 +62,7 @@ class Comment extends Component{
                                     commented on
                                     <span > {this.state.timeString}</span>
             
-                                    <div className={this.state.isLike === 1 ?`${style.gitmentCommentLikeBtn} ${style.liked}` : `${style.gitmentCommentLikeBtn}`}><svg className={`${style.gitmentHeartIcon}`} onClick = {this.likeHot.bind(this)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M25 39.7l-.6-.5C11.5 28.7 8 25 8 19c0-5 4-9 9-9 4.1 0 6.4 2.3 8 4.1 1.6-1.8 3.9-4.1 8-4.1 5 0 9 4 9 9 0 6-3.5 9.7-16.4 20.2l-.6.5zM17 12c-3.9 0-7 3.1-7 7 0 5.1 3.2 8.5 15 18.1 11.8-9.6 15-13 15-18.1 0-3.9-3.1-7-7-7-3.5 0-5.4 2.1-6.9 3.8L25 17.1l-1.1-1.3C22.4 14.1 20.5 12 17 12z"></path></svg> {this.props.comment.likeHot}</div>
+                                    <div className={this.props.comment.isLike === 1 ?`${style.gitmentCommentLikeBtn} ${style.liked}` : `${style.gitmentCommentLikeBtn}`}><svg className={`${style.gitmentHeartIcon}`} onClick = {this.likeHot.bind(this)} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50"><path d="M25 39.7l-.6-.5C11.5 28.7 8 25 8 19c0-5 4-9 9-9 4.1 0 6.4 2.3 8 4.1 1.6-1.8 3.9-4.1 8-4.1 5 0 9 4 9 9 0 6-3.5 9.7-16.4 20.2l-.6.5zM17 12c-3.9 0-7 3.1-7 7 0 5.1 3.2 8.5 15 18.1 11.8-9.6 15-13 15-18.1 0-3.9-3.1-7-7-7-3.5 0-5.4 2.1-6.9 3.8L25 17.1l-1.1-1.3C22.4 14.1 20.5 12 17 12z"></path></svg> {this.props.comment.likeHot}</div>
                                 </div>
                                 <div className={`${style.gitmentCommentBody} ${style.gitmentMarkdown}`}><p>{this.props.comment.content}</p></div>
                             </div>
