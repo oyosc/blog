@@ -3,6 +3,7 @@ import {users} from './adminManagerUser'
 import {reducer as tags} from './adminManagerTags'
 import {reducer as newArticle} from './adminManagerNewArticle'
 import {articles} from './adminManagerArticle'
+import {reducer as comments} from './adminManagerComment'
 
 export const actionTypes = {
     ADMIN_URI_LOCATION: 'ADMIN_URI_LOCATION'
@@ -38,7 +39,8 @@ const admin = combineReducers({
     users,
     tags,
     newArticle,
-    articles
+    articles,
+    comments
 })
 
 export default admin

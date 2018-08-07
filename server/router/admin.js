@@ -3,6 +3,7 @@ import Router from 'koa-router'
 import {manageAllUsers} from '../controllers/user'
 import {addTag, delTag} from '../controllers/tags'
 import {addArticle, delArticle, updateArticle} from '../controllers/article'
+import {showCommentsByAdmin} from '../controllers/comment'
 
 const router = Router();
 
@@ -23,6 +24,9 @@ router.get('/article/delete', delArticle)
 
 //更新文章
 router.post('/article/update', updateArticle)
+
+//查询评论
+router.get('/comment/show', showCommentsByAdmin)
 
 module.exports = router;
 

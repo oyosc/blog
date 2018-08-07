@@ -13,6 +13,7 @@ import AdminIndex from '../adminIndex/AdminIndex'
 import AdminManagerUser from '../adminManagerUser/AdminManagerUser'
 import AdminManagerTags from '../adminManagerTags/AdminManagerTags'
 import AdminManagerArticles from '../adminManagerArticle/AdminManagerArticle'
+import AdminManagerComment from '../adminManagerComment/AdminManagerComment'
 import AdminNewArticle from '../adminNewArticle/AdminNewArticle'
 import style from './style.css'
 import {bindActionCreators} from 'redux'
@@ -48,6 +49,7 @@ class Admin extends Component{
                                         <Route path={`${url}/managerUser`} component={AdminManagerUser} />
                                         <Route path={`${url}/managerTags`} component={AdminManagerTags}/>
                                         <Route path={`${url}/managerArticles`} component={AdminManagerArticles}/>
+                                        <Route path={`${url}/managerComments`} component={AdminManagerComment}/>
                                         <Route path={`${url}/newArticle`} component={AdminNewArticle}/>
                                         <Route path={`${url}/detail`} component={Detail} />
                                     </Switch>
@@ -78,7 +80,9 @@ class Admin extends Component{
                                             <Route path={`${url}/managerUser`} component={AdminManagerUser} />
                                             <Route path={`${url}/managerTags`} component={AdminManagerTags}/>
                                             <Route path={`${url}/managerArticles`} component={AdminManagerArticles}/>
+                                            <Route path={`${url}/managerComments`} component={AdminManagerComment}/>
                                             <Route path={`${url}/newArticle`} component={AdminNewArticle}/>
+                                            <Route path={`${url}/detail`} component={Detail} />
                                         </Switch>
                                     </div>
                                 </div> :

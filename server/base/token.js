@@ -14,7 +14,7 @@ async function signToke(user){
     let baseJti = user._id + Base64.encode(user.username) + Date.parse(new Date());
     const token = jwt.sign({
         userId: user._id,
-        userType: user.type?'user':'admin',
+        userType: user.type === '1' ?'user':'admin',
         username: user.username,
         avatar_url: user.avatar,
         github_url: user.github_url,

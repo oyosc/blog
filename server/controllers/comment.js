@@ -58,9 +58,23 @@ async function deleteLikeHot(ctx){
     }
 }
 
+async function showCommentsByAdmin(ctx){
+    let pageNum = ctx.request.query.pageNum || 0
+    let userId = ctx.session.userId
+    console.log("userId:", userId)
+    let result = await Comment.showCommentsByAdmin(userId, pageNum)
+    console.log(result)
+    if(result.statusCode == '200'){
+        responseClient(ctx.response, 200, 0, 'admin评论查询成功', result.commentInfos)
+    }else{
+        responseClient(ctx.response, 200, 1, 'admin评论查询失败')
+    }
+}
+
 module.exports = {
     addComment,
     showComments,
     addLikeHot,
-    deleteLikeHot
+    deleteLikeHot,
+    showCommentsByAdmin
 }

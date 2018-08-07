@@ -43,9 +43,12 @@ async function addComment(commentInfo, userId){
 }
 
 async function showComments(articleId, pageNum, userId){
+    console.log("show comments userId: ", userId)
     let searchCondition = {
-        articleId
-    }
+            articleId,
+            type: '1'
+        }
+    
     let commentInfos = {
         total: 0,
         list: []
@@ -242,9 +245,87 @@ async function deleteLikeHot(likeInfo, userId){
     return result
 }
 
+//管理员查询所有评论
+async function showCommentsByAdmin(userId, pageNum){
+    let searchCondition
+    if(userId){
+        let userResult = await findOneUser({'id': userId})
+        if(userResult.statusCode === '200'){
+            console.log(userResult)
+            if(userResult.userInfo.type === '0'){
+                searchCondition = {}
+            }else{
+                return {'statusCode': '20018', 'message': '非管理员禁止访问'}
+            }
+        }else{
+            return {'statusCode': '20017', 'message': '获取用户信息失败'}
+        }
+    }else{
+        return {'statusCode': '20019', 'message': '未查询到用户信息'}
+    }
+
+    let commentInfos = {
+        total: 0,
+        list: []
+    }
+
+    console.log("searchCondition: ",searchCondition)
+    let skip = pageNum - 1 < 0 ? 0 : (pageNum-1)*5
+    let result = await Comment.count(searchCondition).then(async (count) => {
+        console.log(count)
+        commentInfos.total = count
+        let commentResult = await Comment.find(searchCondition, '_id content createdTime articleId',{
+            skip: skip,
+            limit: 5
+        }).populate({
+            path: 'userId',
+            select: 'username',
+            model: 'User'
+        }).populate({
+            path: 'articleId',
+            select: 'title',
+            model: 'Article'
+        }).then((result) =>{
+            console.log("first_result:", result)
+            result = JSON.parse(JSON.stringify(result).replace(/userId/g, 'userInfo'))
+            result = JSON.parse(JSON.stringify(result).replace(/articleId/g, 'articleInfo'))
+            let finalResult = []
+            for(let i=0; i<result.length; i++){
+                console.log("result[i]", result[i])
+                let finalComment = {}
+                finalComment.article_title = result[i].articleInfo.title
+                finalComment.comment_content = result[i].content
+                finalComment.comment_time = result[i].createdTime
+                finalComment.comment_user = result[i].userInfo.username
+                finalComment.whether_audit = result[i].type
+                console.log("finalComment:", finalComment)
+                finalResult.push(finalComment)
+            }
+            return {'code': 1, 'data': finalResult}
+        }).catch(err => {
+            console.log(err)
+            return {'code': 0, 'data': JSON.stringify(err)}
+        })
+        console.log("commentResult: ", commentResult)
+        if(commentResult.code == 1){
+            commentInfos.list = commentResult.data
+            return {'statusCode': '200', 'message': '成功查询到comment信息', commentInfos}
+        }else{
+            return {'statusCode': '20020', 'message': commentResult.data}
+        }
+    }).catch((err) => {
+        console.log(err)
+        return {'statusCode': '20021', 'message': JSON.stringify(err)}
+    })
+
+    console.log("adminResult: ", result)
+    return result
+}
+
 module.exports = {
     addComment,
     showComments,
     addLikeHot,
-    deleteLikeHot
+    deleteLikeHot,
+    showCommentsByAdmin
 }

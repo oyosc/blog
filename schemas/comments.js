@@ -6,6 +6,6 @@ module.exports = new mongoose.Schema({
     likeHot: Number,
     replyToId: String,
     userId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    articleId: String,
+    articleId: {type: mongoose.Schema.Types.ObjectId, ref: 'Article'},
     type: String //0代表未审核，1代表已审核
 })
