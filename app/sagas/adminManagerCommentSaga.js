@@ -31,11 +31,11 @@ export function* showCommentListFlow(){
             data.list = res.data.result.list
             data.pageNum = res.data.result.pageNum
             data.total = res.data.result.total
-            yield put({type: AdminCommentActionTypes.RESOLVE_GET_ALL_COMMENTS,data: data})
+            return yield put({type: AdminCommentActionTypes.RESOLVE_GET_ALL_COMMENTS,data: data})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }
@@ -69,11 +69,11 @@ export function* auditCommentFlow(){
         console.log("auditComment: ", res)
         if(res && res.data && res.data.code ===0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '审核成功', msgType: 1})
-            yield put({type: AdminCommentActionTypes.GET_ALL_COMMENTS, pageNum})
+            return yield put({type: AdminCommentActionTypes.GET_ALL_COMMENTS, pageNum})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }

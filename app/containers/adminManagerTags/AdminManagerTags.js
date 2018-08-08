@@ -73,7 +73,7 @@ class AdminManagerTags extends Component{
         )
     }
 
-    componentDidMount(){
+    componentWillMount(){
         this.props.getAllTags();
     }
 }

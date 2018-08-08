@@ -34,11 +34,11 @@ export function* get_all_users_flow(){
             data.total = res.data.result.total;
             data.list = res.data.result.list;
             data.pageNum = Number.parseInt(pageNum);
-            yield put({type:ManagerUserActionTypes.RESOLVE_GET_ALL_USERS, data: data})
+            return yield put({type:ManagerUserActionTypes.RESOLVE_GET_ALL_USERS, data: data})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType:0});
         }
     }
 }

@@ -28,11 +28,11 @@ export function* saveArticleFlow(){
     while(true){
         let request = yield take(NewArticleActionTypes.SAVE_ARTICLE)
         if(request.data.title === ''){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '请输入文章标题', msgType: 0})
+            return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '请输入文章标题', msgType: 0})
         }else if(request.data.content === ''){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '请输入文章内容', msgType: 0})
+            return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '请输入文章内容', msgType: 0})
         }else if(request.data.tags.length === 0){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '请选择文章分类', msgType: 0})
+            return yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '请选择文章分类', msgType: 0})
         }
 
         if(request.data.title && request.data.content && request.data.tags.length > 0){
@@ -45,10 +45,11 @@ export function* saveArticleFlow(){
                 setTimeout(function(){
                     location.replace('/admin/managerArticles')
                 }, 1000)
+                return
             }else if (res && res.data && res.data.code ===3){
                 yield clear_userinfo()
             }else{
-                yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+                yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
             }
         }
     }

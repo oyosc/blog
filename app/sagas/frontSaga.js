@@ -22,11 +22,11 @@ export function* getAllArticleFlow(){
         let res = yield call(getArticleList, req.tag, req.pageNum)
         console.log(res)
         if(res && res.data && res.data.code ===0 && res.data.result){
-            yield put({type: FrontActionTypes.RESPONSE_ARTICLE_LIST,data: res.data.result})
+            return yield put({type: FrontActionTypes.RESPONSE_ARTICLE_LIST,data: res.data.result})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }
@@ -48,11 +48,11 @@ export function* getArticleDetailFlow(){
         let res = yield call(getArticleDetail, req.id)
 
         if(res && res.data && res.data.code ===0 && res.data.result){
-            yield put({type: FrontActionTypes.RESPONSE_ARTICLE_DETAIL,data: res.data.result})
+            return yield put({type: FrontActionTypes.RESPONSE_ARTICLE_DETAIL,data: res.data.result})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }

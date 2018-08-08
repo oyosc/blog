@@ -22,9 +22,9 @@ async function signToke(user){
         github_url: user.github_url,
         jti: baseJti,
         iat: Date.parse(new Date()),
-        exp: Date.parse(new Date()) + 1000*60
+        exp: Date.parse(new Date()) + 1000*60*30
     }, jwt_config.jwt_secret);
-    let [err, message] = await handleErr(setAsync(baseJti, '0', 'EX', 30));
+    let [err, message] = await handleErr(setAsync(baseJti, '0', 'EX', 60*30));
     if(err) log.error(__filename, 24, "redis存储key失败");
     return token;
 }

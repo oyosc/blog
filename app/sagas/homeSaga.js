@@ -28,9 +28,9 @@ export function* loginFlow(){
             }
             let data = Object.assign(response.data, userInfo);
             window.location.href = request.url
-            yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
+            return yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:response.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }
@@ -51,7 +51,7 @@ export function* loginWithGithub(){
 export function* loginWithGithubFlow(){
     while(true){
         yield take(IndexActionTypes.GITHUB_USER_LOGIN);
-        yield call(loginWithGithub);
+        return yield call(loginWithGithub);
     }
 }
 
@@ -83,8 +83,9 @@ export function* loginedWithGithubFlow(){
             let data = Object.assign(response.data, userInfo);
             yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             window.location.href = request.url
+            return
         }else if(response){
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:response.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }
@@ -108,7 +109,7 @@ export function* user_auth(){
                 console.log("user_auth")
                 console.log(userInfo)
                 let data = Object.assign(response.data, userInfo);
-                yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
+                return yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             }
         }catch(err){
             console.log(err)

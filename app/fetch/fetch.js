@@ -34,7 +34,7 @@ export function get(url, token){
     if(token){
         config.headers.authorization = token;
     }
-    console.log(config);
+    console.log(url);
     return axios.get(url, config)
 }
 

@@ -30,7 +30,7 @@ export function* addCommentFlow(){
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }
@@ -53,9 +53,9 @@ export function* showCommentFlow(){
         let res = yield call(showComment, req.article_id, req.pageNum)
         console.log(res)
         if(res && res.data && res.data.code ===0 && res.data.result){
-            yield put({type: CommentActionTypes.RESPONSE_INIT_COMMENT,data: res.data.result})
+            return yield put({type: CommentActionTypes.RESPONSE_INIT_COMMENT,data: res.data.result})
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }
@@ -82,11 +82,11 @@ export function* addLikeHotFlow(){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
         if(res && res.data && res.data.code ===0 && res.data.result){
-            yield put({type: CommentActionTypes.RESPONSE_ADD_LIKEHOT,data: res.data.result})
+            return yield put({type: CommentActionTypes.RESPONSE_ADD_LIKEHOT,data: res.data.result})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }
@@ -113,11 +113,11 @@ export function* deleteLikeHotFlow(){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
         if(res && res.data && res.data.code ===0 && res.data.result){
-            yield put({type: CommentActionTypes.RESPONSE_DELETE_LIKEHOT,data: res.data.result})
+            return yield put({type: CommentActionTypes.RESPONSE_DELETE_LIKEHOT,data: res.data.result})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }
