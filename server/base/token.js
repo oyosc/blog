@@ -11,6 +11,8 @@ const util = require('util')
 
 //token进行签名
 async function signToke(user){
+    console.log("signToke: ", user)
+    console.log(user.type === '1')
     let baseJti = user._id + Base64.encode(user.username) + Date.parse(new Date());
     const token = jwt.sign({
         userId: user._id,
@@ -50,7 +52,7 @@ async function checkToke(authorization){
             if(err || ttlErr) return {'statusCode': '30001', 'message': {err: getRedisErr}};
             let userInfo = {
                 _id: decoded.payload['userId'],
-                type: decoded.payload['userType'] == 'user' ? 1 : 0,
+                type: decoded.payload['userType'] == 'user' ? '1' : '0',
                 username: decoded.payload['username'],
                 avatar: decoded.payload['avatar_url'],
                 github_url: decoded.payload['github_url']

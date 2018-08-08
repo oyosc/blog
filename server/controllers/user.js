@@ -78,7 +78,7 @@ async function login_with_github(ctx){
             }else{
                 let register_user_info = {
                     username: Math.random().toString(36).substr(2),
-                    type: 1, 
+                    type: '1', 
                     github_url: user_info.html_url,
                     github_name: githubName,
                     avatar: user_info.avatar_url
