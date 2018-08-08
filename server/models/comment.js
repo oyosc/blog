@@ -247,22 +247,7 @@ async function deleteLikeHot(likeInfo, userId){
 
 //管理员查询所有评论
 async function showCommentsByAdmin(userId, pageNum){
-    let searchCondition
-    if(userId){
-        let userResult = await findOneUser({'id': userId})
-        if(userResult.statusCode === '200'){
-            console.log(userResult)
-            if(userResult.userInfo.type === '0'){
-                searchCondition = {}
-            }else{
-                return {'statusCode': '20018', 'message': '非管理员禁止访问'}
-            }
-        }else{
-            return {'statusCode': '20017', 'message': '获取用户信息失败'}
-        }
-    }else{
-        return {'statusCode': '20019', 'message': '未查询到用户信息'}
-    }
+    let searchCondition = {}
 
     let commentInfos = {
         total: 0,
@@ -326,27 +311,13 @@ async function showCommentsByAdmin(userId, pageNum){
 
 //管理员审核评论
 async function auditCommentByAdmin(userId, body){
-    let searchCondition
     let {
         switchType,
         comment_id
     } = body
-    if(userId){
-        let userResult = await findOneUser({'id': userId})
-        if(userResult.statusCode === '200'){
-            console.log(userResult)
-            if(userResult.userInfo.type === '0'){
-                searchCondition = {
-                    "_id": comment_id,
-                }
-            }else{
-                return {'statusCode': '20018', 'message': '非管理员禁止访问'}
-            }
-        }else{
-            return {'statusCode': '20017', 'message': '获取用户信息失败'}
-        }
-    }else{
-        return {'statusCode': '20019', 'message': '未查询到用户信息'}
+
+    let searchCondition = {
+        "_id": comment_id,
     }
 
     let result = await Comment.update(searchCondition, {"type": switchType})

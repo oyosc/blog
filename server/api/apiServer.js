@@ -9,6 +9,7 @@ import {checkToke} from '../base/token'
 import {MD5_SUFFIX, responseClient, md5} from '../util'
 import router from '../router/main'
 import log from "../log/log"
+import {findOneUser} from '../models/user'
 
 const koaBody = require('koa-body')
 
@@ -83,6 +84,31 @@ let tokenMiddleware = async function(ctx, next){
     }
 }
 
+//非admin用户禁止访问接口
+let adminMiddleware = async function(ctx, next){
+    let path = ctx.request.path
+    let userId = ctx.session.userId
+    if(/\/admin([\s\S])*?/.test(path)){
+        if(userId){
+            let userResult = await findOneUser({'id': userId})
+            if(userResult.statusCode === '200'){
+                console.log(userResult)
+                if(userResult.userInfo.type === '0'){
+                    return await next()
+                }else{
+                    responseClient(ctx.response, 200, 3, '非管理员禁止访问')
+                }
+            }else{
+                responseClient(ctx.response, 200, 3, '获取用户信息失败')
+            }
+        }else{
+            responseClient(ctx.response, 200, 3, '未查询到用户信息')
+        }
+    }else{
+        return await next()
+    }
+}
+
 const CONFIG = {
     key: 'koa_react_cookie',
     maxAge: 86400000,
@@ -90,6 +116,8 @@ const CONFIG = {
 };
 
 app.use(session(CONFIG, app));
+
+app.use(adminMiddleware)
 
 app.use(tokenMiddleware);
 
