@@ -36,8 +36,11 @@ export const actions = {
 export function reducer(state = initialState, action){
     switch(action.type){
         case actionTypes.RESOLVE_GET_ALL_COMMENTS:
+        console.log("RESOLVE_GET_ALL_COMMENTS")
+        console.log(action.data)
             return {
-                list: action.data.list,
+                ...state,
+                list: [...action.data.list],
                 pageNum: action.data.pageNum,
                 total: action.data.total
             }

@@ -22,6 +22,9 @@ export function* showCommentListFlow(){
         let req = yield take(AdminCommentActionTypes.GET_ALL_COMMENTS)
         console.log("comment_Req: ", req)
         let res = yield call(showCommentList, req.article_id, req.pageNum)
+        if(res && res.data && res.headers.authorization){
+            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
+        }
         console.log("adminCommentList: ", res)
         if(res && res.data && res.data.code ===0 && res.data.result){
             let data = {}

@@ -274,7 +274,7 @@ async function showCommentsByAdmin(userId, pageNum){
     let result = await Comment.count(searchCondition).then(async (count) => {
         console.log(count)
         commentInfos.total = count
-        let commentResult = await Comment.find(searchCondition, '_id content createdTime articleId',{
+        let commentResult = await Comment.find(searchCondition, '_id content createdTime articleId type',{
             skip: skip,
             limit: 5
         }).populate({
@@ -283,7 +283,7 @@ async function showCommentsByAdmin(userId, pageNum){
             model: 'User'
         }).populate({
             path: 'articleId',
-            select: 'title',
+            select: 'title _id',
             model: 'Article'
         }).then((result) =>{
             console.log("first_result:", result)
@@ -293,6 +293,8 @@ async function showCommentsByAdmin(userId, pageNum){
             for(let i=0; i<result.length; i++){
                 console.log("result[i]", result[i])
                 let finalComment = {}
+                finalComment.comment_id = result[i]._id
+                finalComment.article_id = result[i].articleInfo._id
                 finalComment.article_title = result[i].articleInfo.title
                 finalComment.comment_content = result[i].content
                 finalComment.comment_time = result[i].createdTime

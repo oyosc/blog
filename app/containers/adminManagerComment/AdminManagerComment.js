@@ -7,13 +7,18 @@ import {actions} from '../../reducers/adminManagerComment'
 import {Table, Pagination} from 'antd'
 import style from './style.css'
 
+function toLocalDate(timeString){
+    let unixTime = new Date(parseInt(timeString))
+    return unixTime.getFullYear() + "/" + (unixTime.getMonth() + 1) + "/" + unixTime.getDate() + "/ " + unixTime.getHours() + ":" + unixTime.getMinutes() + ":" + unixTime.getSeconds();
+}
+
 const {get_all_comments} = actions;
 
 const columns = [{
     title: '文章标题',
     dataIndex: 'article_title',
     key: 'article_title',
-    render: (article_id, article_title) => <a href={`/detail/${article_id}`}>{article_title}</a>
+    render: (text, row) => <a href={`/detail/${row.article_id}`}>{text}</a>
 },{
     title: '评论内容',
     dataIndex: 'comment_content',
@@ -22,18 +27,15 @@ const columns = [{
     title: '评论时间',
     dataIndex: 'comment_time',
     key: 'comment_time',
+    render: (comment_time) =>  {return toLocalDate(comment_time)}
 },{
     title: '评论用户',
     dataIndex: 'comment_user',
     key: 'comment_user'
 },{
-    title: '是否审核',
+    title: '审核',
     dataIndex: 'whether_audit',
     key: 'whether_audit'
-},{
-    title: '是否删除',
-    dataIndex: 'whether_delete',
-    key: 'whether_delete'
 }];
 
 class AdminManagerComment extends Component{
@@ -46,6 +48,8 @@ class AdminManagerComment extends Component{
         if(this.props.list.length===0){
             this.props.get_all_comments();
         }
+        console.log("allcomments")
+        console.log(this.props.list)
     }
 
     render(){

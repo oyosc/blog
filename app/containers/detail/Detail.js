@@ -44,8 +44,8 @@ class Detail extends Component{
             this.props.get_article_detail(this.props.location.state.id)
         }else{
             let href = window.location.href
-            let article_id = href.split("/")[2]
-            this.props.get_article_detail(this.props.location.state.id)
+            let article_id = href.split("detail/")[1]
+            this.props.get_article_detail(article_id)
         }
         
     }
