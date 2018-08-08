@@ -21,24 +21,24 @@ export function* get_all_users_flow(){
     while(true){
         let request = yield take(ManagerUserActionTypes.GET_ALL_USER);
         let pageNum = request.pageNum || 1;
-        let response = yield call(fetch_users, pageNum);
-        alert(JSON.stringify(response));
-        if(response && response.headers.authorization){
-            localStorage.setItem('token', JSON.stringify(response.headers.authorization));
+        let res = yield call(fetch_users, pageNum);
+        alert(JSON.stringify(res));
+        if(res && res.headers.authorization){
+            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
-        if(response&&response.data&&response.data.code === 0&&response.data.result){
-            for(let i = 0;i<response.data.result.list.length; i++){
-                response.data.result.list[i].key = i;
+        if(res&&res.data&&res.data.code === 0&&res.data.result){
+            for(let i = 0;i<res.data.result.list.length; i++){
+                res.data.result.list[i].key = i;
             }
             let data = {};
-            data.total = response.data.result.total;
-            data.list = response.data.result.list;
+            data.total = res.data.result.total;
+            data.list = res.data.result.list;
             data.pageNum = Number.parseInt(pageNum);
             yield put({type:ManagerUserActionTypes.RESOLVE_GET_ALL_USERS, data: data})
-        }else if (res && res.data.code ===3){
+        }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: response.data.message, msgType:0});
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
         }
     }
 }

@@ -52,7 +52,7 @@ export function* getAllTagsFlow(){
                 tagArr.push(res.data.result[i].name)
             }
             yield put({type: ManagerTagsTypes.SET_TAGS, data: tagArr})
-        }else if (res && res.data.code ===3){
+        }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
@@ -72,7 +72,7 @@ export function* delTagFlow(){
         if(res && res.data && res.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
             yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
-        }else if (res && res.data.code ===3){
+        }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});
@@ -91,7 +91,7 @@ export function* addTagFlow(){
         if(res && res.data && res.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
             yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
-        }else if (res && res.data.code ===3){
+        }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType:0});

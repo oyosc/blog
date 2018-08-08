@@ -71,10 +71,25 @@ async function showCommentsByAdmin(ctx){
     }
 }
 
+async function auditCommentByAdmin(ctx){
+    let body = ctx.request.body
+    let userId = ctx.session.userId
+    console.log("userId:", userId)
+    console.log("audit_comment:", body)
+    let result = await Comment.auditCommentByAdmin(userId, body)
+    console.log(result)
+    if(result.statusCode == '200'){
+        responseClient(ctx.response, 200, 0, 'admin评论审核成功')
+    }else{
+        responseClient(ctx.response, 200, 1, 'admin评论审核失败')
+    }
+}
+
 module.exports = {
     addComment,
     showComments,
     addLikeHot,
     deleteLikeHot,
-    showCommentsByAdmin
+    showCommentsByAdmin,
+    auditCommentByAdmin
 }

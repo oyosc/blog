@@ -8,7 +8,7 @@ export const actionTypes = {
     'GET_ALL_COMMENTS': 'GET_ALL_COMMENTS',
     'RESOLVE_GET_ALL_COMMENTS': 'RESOLVE_GET_ALL_COMMENTS',
     'DELETE_COMMENT': "DELETE_COMMENT",
-    "DEAL_COMMENT": "DEAL_COMMENT"
+    "AUDIT_COMMENT": "AUDIT_COMMENT"
 }
 
 export const actions = {
@@ -24,10 +24,10 @@ export const actions = {
             comment_id
         }
     },
-    deal_comment: function(comment_id, deal_type){
+    audit_comment: function(comment_id, audit_type){
         return {
-            type: actionTypes.DEAL_COMMENT,
-            deal_type,
+            type: actionTypes.AUDIT_COMMENT,
+            audit_type,
             comment_id
         }
     }

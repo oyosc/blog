@@ -45,7 +45,7 @@ export function* saveArticleFlow(){
                 setTimeout(function(){
                     location.replace('/admin/managerArticles')
                 }, 1000)
-            }else if (res && res.data.code ===3){
+            }else if (res && res.data && res.data.code ===3){
                 yield clear_userinfo()
             }else{
                 yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:res.data.message, msgType:0})
