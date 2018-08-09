@@ -21,7 +21,7 @@ export function* getAllArticlesFlow(){
         let req = yield take(ManagerArticlesTypes.ADMIN_GET_ARTICLE_LIST)
         let res = yield call(getArticlesList, req.pageNum)
         if(res && res.data && res.data.code ===0 && res.data.result){
-            return yield put({type: ManagerArticlesTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST,data: res.data.result})
+            yield put({type: ManagerArticlesTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST,data: res.data.result})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
@@ -53,7 +53,7 @@ export function* deleteArticleFlow(){
         console.log(res)
         if(res  && res.data && res.data.code ===0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '删除成功', msgType: 1})
-            return yield put({type: ManagerArticlesTypes.ADMIN_GET_ARTICLE_LIST, pageNum})
+            yield put({type: ManagerArticlesTypes.ADMIN_GET_ARTICLE_LIST, pageNum})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
@@ -85,7 +85,7 @@ export function* editArticleFlow(){
             yield put({type: NewArticleTypes.SET_ARTICLE_ID, id})
             yield put({type: NewArticleTypes.UPDATING_TAGS, tags})
             yield put({type: NewArticleTypes.UPDATING_CONTENT, content})
-            return yield put({type: NewArticleTypes.UPDATING_TITLE, title})
+            yield put({type: NewArticleTypes.UPDATING_TITLE, title})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{

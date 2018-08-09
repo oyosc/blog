@@ -5,7 +5,6 @@ import {resolveToken} from '../base/util'
 import {clear_userinfo} from './baseSaga'
 
 export function* login(url, username, password){
-    alert(url)
     yield put({type: IndexActionTypes.FETCH_START});
     try{
         return yield call(post, '/user/login', {username, password})
@@ -33,7 +32,7 @@ export function* loginFlow(){
             if(request.url.indexOf("detail/") !== -1){
                 window.location.href = request.url
             }
-            return yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
+            yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
@@ -76,7 +75,6 @@ export function* loginedWithGithubFlow(){
     while(true){
         let request = yield take(IndexActionTypes.GITHUB_USER_LOGINED);
         let response = yield call(loginedWithGithub, request.code);
-        alert("github_respnse")
         console.log(response)
         if(response && response.data && response.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1});
@@ -88,7 +86,6 @@ export function* loginedWithGithubFlow(){
             let data = Object.assign(response.data, userInfo);
             yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             window.location.href = request.url
-            return
         }else if(response){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
@@ -114,7 +111,7 @@ export function* user_auth(){
                 console.log("user_auth")
                 console.log(userInfo)
                 let data = Object.assign(response.data, userInfo);
-                return yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
+                yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             }
         }catch(err){
             console.log(err)
@@ -143,12 +140,10 @@ export function* logoutFlow(){
         console.log("注销")
         let response = yield call(logout);
         if(response && response.data && response.data.code === 0){
-            alert(document.cookie)
             localStorage.clear()
             yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '注销成功', msgType: 1})  
-            window.location.href = request.url
-            return 
+            // window.location.href = request.url
         }else if (response && response.data && response.data.code ===3){
             yield clear_userinfo()
         }else{

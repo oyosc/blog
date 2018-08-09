@@ -15,6 +15,7 @@ export const actionTypes = {
 
 export const actions = {
     get_article_list: function(tag='', pageNum=1){
+        console.log("tag: ", tag)
         return {
             type: actionTypes.GET_ARTICLE_LIST,
             tag,

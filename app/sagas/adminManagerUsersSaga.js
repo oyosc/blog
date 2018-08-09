@@ -22,7 +22,6 @@ export function* get_all_users_flow(){
         let request = yield take(ManagerUserActionTypes.GET_ALL_USER);
         let pageNum = request.pageNum || 1;
         let res = yield call(fetch_users, pageNum);
-        alert(JSON.stringify(res));
         if(res && res.headers.authorization){
             localStorage.setItem('token', JSON.stringify(res.headers.authorization));
         }
@@ -34,7 +33,7 @@ export function* get_all_users_flow(){
             data.total = res.data.result.total;
             data.list = res.data.result.list;
             data.pageNum = Number.parseInt(pageNum);
-            return yield put({type:ManagerUserActionTypes.RESOLVE_GET_ALL_USERS, data: data})
+            yield put({type:ManagerUserActionTypes.RESOLVE_GET_ALL_USERS, data: data})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{

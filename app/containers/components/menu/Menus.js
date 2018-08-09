@@ -14,6 +14,7 @@ export default class Menus extends Component{
         if(e.key === '首页'){
             this.props.getArticleList('')
         }else{
+            console.log("e.key: ", e.key)
             this.props.getArticleList(e.key)
         }
         let toPath = e.key === '首页'?'/':'/'+e.key

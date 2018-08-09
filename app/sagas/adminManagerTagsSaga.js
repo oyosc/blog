@@ -52,7 +52,7 @@ export function* getAllTagsFlow(){
             for(let i=0; i< res.data.result.length; i++){
                 tagArr.push(res.data.result[i].name)
             }
-            return yield put({type: ManagerTagsTypes.SET_TAGS, data: tagArr})
+            yield put({type: ManagerTagsTypes.SET_TAGS, data: tagArr})
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
@@ -72,7 +72,7 @@ export function* delTagFlow(){
         }
         if(res && res.data && res.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
-            return yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
+            yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{
@@ -91,7 +91,7 @@ export function* addTagFlow(){
         }
         if(res && res.data && res.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: res.data.message, msgType: 1});
-            return yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
+            yield put({type: ManagerTagsTypes.GET_ALL_TAGS});
         }else if (res && res.data && res.data.code ===3){
             yield clear_userinfo()
         }else{

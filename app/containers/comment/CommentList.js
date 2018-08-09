@@ -8,7 +8,6 @@ import {bindActionCreators} from 'redux'
 class CommentList extends Component{
     componentDidMount(){
         let href = window.location.href
-        alert(href)
         let article_id = href.split("detail/")[1]
         this.props.initComments(article_id)
     }

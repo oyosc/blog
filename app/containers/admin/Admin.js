@@ -91,7 +91,6 @@ class Admin extends Component{
                     </div>
                 )
             }else{
-                alert("no");
                 return <Redirect to='/' />
             }
         }
