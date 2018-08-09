@@ -1,6 +1,6 @@
 import Koa from 'koa'
 import Router from 'koa-router'
-import {login, login_with_github, userInfo, manageAllUsers} from '../controllers/user'
+import {login, login_with_github, userInfo, manageAllUsers, logout} from '../controllers/user'
 import {addComment, showComments, addLikeHot, deleteLikeHot} from '../controllers/comment'
 
 const router = Router();
@@ -12,6 +12,9 @@ router.post('/loginedWithGithub', login_with_github)
 
 //获取用户信息
 router.get('/userInfo', userInfo);
+
+//用户注销
+router.post('/logout', logout)
 
 //添加评论
 router.post('/comment/add', addComment)

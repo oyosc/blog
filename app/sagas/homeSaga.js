@@ -2,6 +2,7 @@ import {put, take, call, fork} from 'redux-saga/effects'
 import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 import {resolveToken} from '../base/util'
+import {clear_userinfo} from './baseSaga'
 
 export function* login(url, username, password){
     alert(url)
@@ -18,10 +19,12 @@ export function* login(url, username, password){
 export function* loginFlow(){
     while(true){
         let request = yield take(IndexActionTypes.USER_LOGIN);
+        console.log("login_request: ", request)
         let response = yield call(login, request.url, request.username, request.password);
         if(response && response.data && response.data.code === 0){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1});
             let userInfo;
+            console.log("login_response: ", response)
             if(response.headers.authorization){
                 userInfo = resolveToken(response.headers.authorization);
                 localStorage.setItem('token', JSON.stringify(response.headers.authorization));
@@ -118,6 +121,38 @@ export function* user_auth(){
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: "网络错误,请重试", msgType: 2});
         }finally{
             yield put({type: IndexActionTypes.FETCH_END})
+        }
+    }
+}
+
+export function* logout(){
+    yield put({type: IndexActionTypes.FETCH_START});
+    try{
+        let token =  JSON.parse(localStorage.getItem('token'))
+        return yield call(post, '/user/logout', {}, token)
+    } catch(error){
+        yield put({type:IndexActionTypes.SET_MESSAGE, msgContent:'注销失败', msgType: 2});
+    }finally{
+        yield put({type: IndexActionTypes.FETCH_END})
+    }
+}
+
+export function* logoutFlow(){
+    while(true){
+        let request = yield take(IndexActionTypes.LOGOUT);
+        console.log("注销")
+        let response = yield call(logout);
+        if(response && response.data && response.data.code === 0){
+            alert(document.cookie)
+            localStorage.clear()
+            yield put({type: IndexActionTypes.CLEAR_USER_AUTH})
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '注销成功', msgType: 1})  
+            window.location.href = request.url
+            return 
+        }else if (response && response.data && response.data.code ===3){
+            yield clear_userinfo()
+        }else{
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
     }
 }

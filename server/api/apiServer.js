@@ -42,6 +42,8 @@ let verifyPath = function(path){
     switch(true){
         case /\/user\/login([\s\S])*?/.test(path):
             return true
+        case /logout([\s\S])*?/.test(path):
+            return true
         case /\/user\/comment\/show([\s\S])*?/.test(path):
             return true
         case /\/admin([\s\S])*?/.test(path):
@@ -55,9 +57,6 @@ let verifyPath = function(path){
 
 let tokenMiddleware = async function(ctx, next){
     let path = ctx.request.path;
-    console.log(ctx.session.username)
-    console.log(ctx.header.authorization)
-    console.log(path)
     if(verifyPath(path)){
         return await next();
     }else{

@@ -8,7 +8,7 @@ import {clear_userinfo} from './baseSaga'
 export function* fetch_users(pageNum){
     yield put({type: IndexActionTypes.FETCH_START});
     try{
-        let token =  JSON.parse(localStorage.getItem('token'));
+        let token =  JSON.parse(localStorage.getItem('token'))
         return yield call(get, `/admin/getUsers?pageNum=${pageNum}`, token);
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0});

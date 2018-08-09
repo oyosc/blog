@@ -2,7 +2,7 @@
 import User from '../models/user'
 import {MD5_SUFFIX, responseClient, md5, asyncRequest} from '../util'
 import {github_oauth} from '../config'
-import {signToke} from '../base/token'
+import {signToke, deleteToke} from '../base/token'
 import request from 'request'
 const jwt = require('jsonwebtoken')
 
@@ -128,9 +128,31 @@ async function manageAllUsers(ctx){
     responseClient(ctx.response, 200, 0, '管理用户查询成功', responseData);
 }
 
+//注销
+async function logout(ctx){
+    console.log(ctx.header.authorization)
+    let decoded =jwt.decode(ctx.header.authorization, {complete: true});
+    if(!decoded) return responseClient(ctx.response, 200, 1, 'token验证失败'); //这里要进行判断，因为jwt.decode这个不会返回错误
+    let result = await User.findOneUser({id: decoded.payload['userId']});
+    if(result.statusCode == '200'){
+        let result = await deleteToke(ctx.header.authorization)
+        if(result.code === '1'){
+            ctx.session.username = ''
+            ctx.session.userId = ''
+            responseClient(ctx.response, 200, 0, '注销成功');
+        }else{
+            responseClient(ctx.response, 200, 1, '注销失败');
+        }
+        
+    }else{
+        responseClient(ctx.response, 200, 1, '用户信息错误');
+    }
+}
+
 module.exports = {
     login,
     userInfo,
     manageAllUsers,
-    login_with_github
+    login_with_github,
+    logout
 }

@@ -22,13 +22,15 @@ export const actionsTypes = {
     USER_AUTH: "USER_AUTH",
     CLEAR_USER_AUTH: "CLEAR_USER_AUTH",
     GITHUB_USER_LOGIN: "GITHUB_USER_LOGIN",
-    GITHUB_USER_LOGINED: "GITHUB_USER_LOGINED"
+    GITHUB_USER_LOGINED: "GITHUB_USER_LOGINED",
+    LOGOUT: "LOGOUT"
 };
 
 
 
 export const actions = {
     get_login: function(url, username, password){
+        console.log("get_login_actions")
         return {
             type: actionsTypes.USER_LOGIN,
             url,
@@ -64,6 +66,13 @@ export const actions = {
     user_auth: function(){
         return {
             type: actionsTypes.USER_AUTH
+        }
+    },
+    logout: function(url){
+        console.log("logout")
+        return {
+            type: actionsTypes.LOGOUT,
+            url
         }
     }
 };

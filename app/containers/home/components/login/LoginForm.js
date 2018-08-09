@@ -8,6 +8,7 @@ class LoginFormCom extends Component{
         super(props);
     }
     handleLogin = (e) =>{
+        console.log("handle_login")
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if(!err){
