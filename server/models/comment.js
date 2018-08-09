@@ -44,10 +44,18 @@ async function addComment(commentInfo, userId){
 
 async function showComments(articleId, pageNum, userId){
     console.log("show comments userId: ", userId)
-    let searchCondition = {
+    let searchCondition
+    console.log("showComments:", global.audit_status)
+    if(!global.audit_status || (global.audit_status && global.audit_status === '1')){
+        searchCondition = {
             articleId,
             type: '1'
         }
+    }else{
+        searchCondition = {
+            articleId
+        }
+    }
     
     let commentInfos = {
         total: 0,
@@ -116,6 +124,13 @@ async function getOneComment(info){
         info._id = objectId(info.id);
         delete info.id;
     }
+    
+    if(!global.audit_status || (global.audit_status && global.audit_status === '1')){
+        info.type = '1'
+    }
+
+    console.log("getOneComment:", global.audit_status)
+
     let result = await Comment.findOne(
         info,
         '_id content createdTime likeHot replyToId articleId'
@@ -330,11 +345,26 @@ async function auditCommentByAdmin(userId, body){
     return result
 }
 
+async function configAuditByAdmin(body){
+    let {
+        audit_status
+    } = body
+
+    if(audit_status === '1'){
+        global.audit_status = '1'
+    }else{
+        global.audit_status = '0'
+    }
+
+    return {'statusCode': '200', 'message': '评论审核配置成功'}
+}
+
 module.exports = {
     addComment,
     showComments,
     addLikeHot,
     deleteLikeHot,
     showCommentsByAdmin,
-    auditCommentByAdmin
+    auditCommentByAdmin,
+    configAuditByAdmin
 }

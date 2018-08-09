@@ -13,7 +13,7 @@ function toLocalDate(timeString){
 }
 
 
-const {get_all_comments, audit_comment} = actions;
+const {get_all_comments, audit_comment, config_audit} = actions;
 
 class AdminManagerComment extends Component{
     constructor(props){
@@ -69,6 +69,7 @@ class AdminManagerComment extends Component{
         return (
             <div>
                 <h2>评论管理</h2>
+                <Switch checkedChildren="开启审核" unCheckedChildren="关闭审核" defaultChecked onChange={this.props.config_audit.bind(this)} />
                 <Table
                     className={style.table}
                     pagination={false}
@@ -111,7 +112,8 @@ function mapStateToProps(state){
 function mapDispatchToProps(dispatch){
     return {
         get_all_comments: bindActionCreators(get_all_comments, dispatch),
-        audit_comment: bindActionCreators(audit_comment, dispatch)
+        audit_comment: bindActionCreators(audit_comment, dispatch),
+        config_audit: bindActionCreators(config_audit, dispatch)
     }
 }
 

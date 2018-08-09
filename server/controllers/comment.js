@@ -85,11 +85,25 @@ async function auditCommentByAdmin(ctx){
     }
 }
 
+//开启审核或者不审核评论
+async function configAuditByAdmin(ctx){
+    let body = ctx.request.body
+    console.log("open_audit:", body)
+    let result = await Comment.configAuditByAdmin(body)
+    console.log(result)
+    if(result.statusCode == '200'){
+        responseClient(ctx.response, 200, 0, 'admin修改审核成功')
+    }else{
+        responseClient(ctx.response, 200, 1, 'admin修改审核失败')
+    }
+}
+
 module.exports = {
     addComment,
     showComments,
     addLikeHot,
     deleteLikeHot,
     showCommentsByAdmin,
-    auditCommentByAdmin
+    auditCommentByAdmin,
+    configAuditByAdmin
 }

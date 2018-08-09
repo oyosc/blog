@@ -8,7 +8,8 @@ export const actionTypes = {
     'GET_ALL_COMMENTS': 'GET_ALL_COMMENTS',
     'RESOLVE_GET_ALL_COMMENTS': 'RESOLVE_GET_ALL_COMMENTS',
     'DELETE_COMMENT': "DELETE_COMMENT",
-    "AUDIT_COMMENT": "AUDIT_COMMENT"
+    "AUDIT_COMMENT": "AUDIT_COMMENT",
+    "CONFIG_AUDIT": "CONFIG_AUDIT"
 }
 
 export const actions = {
@@ -25,10 +26,27 @@ export const actions = {
         }
     },
     audit_comment: function(comment_id, audit_type){
+        if(audit_type === true){
+            audit_type = '1'
+        }else{
+            audit_type = '0'
+        }
+
         return {
             type: actionTypes.AUDIT_COMMENT,
             audit_type,
             comment_id
+        }
+    },
+    config_audit: function(audit_status){
+        if(audit_status === true){
+            audit_status = '1'
+        }else{
+            audit_status = '0'
+        }
+        return {
+            type: actionTypes.CONFIG_AUDIT,
+            audit_status
         }
     }
 }

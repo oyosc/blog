@@ -3,7 +3,7 @@ import Router from 'koa-router'
 import {manageAllUsers} from '../controllers/user'
 import {addTag, delTag} from '../controllers/tags'
 import {addArticle, delArticle, updateArticle} from '../controllers/article'
-import {showCommentsByAdmin, auditCommentByAdmin} from '../controllers/comment'
+import {showCommentsByAdmin, auditCommentByAdmin, configAuditByAdmin} from '../controllers/comment'
 
 const router = Router();
 
@@ -30,6 +30,9 @@ router.get('/comment/show', showCommentsByAdmin)
 
 //审核评论
 router.post('/comment/audit', auditCommentByAdmin)
+
+//配置审核
+router.post('/comment/config', configAuditByAdmin)
 
 module.exports = router;
 

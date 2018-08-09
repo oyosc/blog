@@ -26,8 +26,10 @@ export function* loginFlow(){
                 userInfo = resolveToken(response.headers.authorization);
                 localStorage.setItem('token', JSON.stringify(response.headers.authorization));
             }
-            let data = Object.assign(response.data, userInfo);
-            window.location.href = request.url
+            let data = Object.assign(response.data, userInfo)
+            if(request.url.indexOf("detail/") !== -1){
+                window.location.href = request.url
+            }
             return yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
