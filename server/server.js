@@ -40,23 +40,25 @@ console.log(BUILD_PATH);
 //     ctx.body = frontFile
 // })
 
-// app.use(serve(ROOT_PATH + "/build/"))
-
-
-app.use(history()); //react是signal page,防止刷新无响应或者404,单纯测试后端接口的时候要注释，防止请求被拦截
-
 router.all('/api/*', async (ctx, next) => {
+    console.log("ctx.req.url: ", ctx.req.url)
     ctx.req.url = ctx.req.url.split("api")[1];
     ctx.respond = false;
     proxy.web(ctx.req, ctx.res, {target: targetUrl});
     await next()
 })
 
+app.use(history()); //react是signal page,防止刷新无响应或者404,单纯测试后端接口的时候要注释，防止请求被拦截
+
+app.use(serve(ROOT_PATH + "/build/"))
+app.use(serve(ROOT_PATH + "/static/"))
+
 // app.use(ctx => {
 //     ctx.respond = false;
 //     proxy.web(ctx.req, ctx.res, { target: 'http://localhost:8080' })
 //   })
 
+console.log("process.env.NODE_ENV: ", process.env.NODE_ENV)
 
 if(process.env.NODE_ENV !== 'production'){
     const webpack = require('webpack');

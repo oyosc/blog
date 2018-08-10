@@ -1,7 +1,7 @@
 const pathLib = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+// const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
 
@@ -29,22 +29,21 @@ module.exports = {
                 use: ['babel-loader']
             },
             {
-                test: /\.css$/,
-                exclude: /node_modules/,
-                use:[{
-                    loader: 'css-loader',
-                    options: {
-                        modules: true,
-                        localIdentName: '[name]-[local]-[hash:base64:5]',
-                        importLoaders: 1
-                    }
-                },
-                    'postcss-loader'
-                ]
+                test: /\.less$/,
+                use: [{loader: "style-loader"}, {loader: "css-loader"}, {loader: "postcss-loader"}, {loader: "less-loader", options: {javascriptEnabled: true}}]
             },
             {
-                test: /\.less$/,
-                use: ["style-loader", "css-loader", "postcss-loader", "less-loader"]
+                test: /\.css$/,
+                // exclude: /node_mudules/,
+                use:['style-loader',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                        }
+                    },
+                    'postcss-loader'
+                ]
             },
             {
                 test: /\.(png|jpg|gif|JPG|GIF|PNG|BMP|bmp|JPEG|jpeg)$/,
@@ -64,6 +63,18 @@ module.exports = {
             }
         ]
     },
+    // optimization: {
+    //     splitChunks: {
+    //       cacheGroups: {
+    //         styles: {
+    //           name: 'styles',
+    //           test: /\.css$/,
+    //           chunks: 'all',
+    //           enforce: true
+    //         }
+    //       }
+    //     }
+    // },
     plugins: [
         new CleanPlugin(['build']),
         new ProgressBarPlugin(),
@@ -76,21 +87,7 @@ module.exports = {
             showErrors: true,
         }),
         new webpack.NoEmitOnErrorsPlugin(),
-        new ExtractTextPlugin({
-            filename: 'bundle.[contenthash].css',
-            disable: false,
-            allChunks: true
-        }),
-        new webpack.HashedModuleIdsPlugin(),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-            minChunks: function(module){
-                return module.context && module.context.indexOf('node_modules') !== -1;
-            }
-        }),
-        new webpack.optimize.CommonsChunkPlugin({
-            name: 'mainfest'
-        })
+        new webpack.HashedModuleIdsPlugin()
     ],
     resolve: {
         extensions: ['.js', '.json', '.sass', '.scss', '.less', 'jsx']

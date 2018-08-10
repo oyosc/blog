@@ -128,6 +128,7 @@ export function* logout(){
         let token =  JSON.parse(localStorage.getItem('token'))
         return yield call(post, '/user/logout', {}, token)
     } catch(error){
+        console.log(error)
         yield put({type:IndexActionTypes.SET_MESSAGE, msgContent:'注销失败', msgType: 2});
     }finally{
         yield put({type: IndexActionTypes.FETCH_END})
