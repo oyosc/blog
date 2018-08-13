@@ -1,20 +1,19 @@
 import Koa from 'koa'
-import config from '../../config/config'
 import bodyParser from 'koa-bodyparser'
 import mongoose from 'mongoose'
 import session from 'koa-session'
-import {redisConfig} from '../config'
+import {redisConfig, mongo_config, api_proxy} from '../base/config'
 import {redis_init} from '../database/redis/redis'
 import {checkToke} from '../base/token'
-import {MD5_SUFFIX, responseClient, md5} from '../util'
+import {MD5_SUFFIX, responseClient, md5} from '../base/util'
 import router from '../router/main'
 import log from "../log/log"
 import {findOneUser} from '../models/user'
 
 const koaBody = require('koa-body')
 
-const port = '8080';
 const app = new Koa();
+const mongodb_url = "mongodb://" + mongo_config.ip + ":" + mongo_config.port + "/" + mongo_config.db
 const redis_client = redis_init(redisConfig.port, redisConfig.url);
 
 console.log("api_server@@@@@@@@@@@@")
@@ -139,17 +138,17 @@ if(redis_client){
 }
 
 mongoose.Promise = require('bluebird');
-mongoose.connect('mongodb://127.0.0.1:27017/blog', function(err){
+mongoose.connect(mongodb_url, function(err){
     if(err){
         log.error(__filename, 105, err);
         return;
     }
     console.log('数据库连接成功');
-    app.listen('8080', function(err){
+    app.listen(api_proxy.port, function(err){
         if(err){
             log.error(__filename, 111, err);
         }else{
-            log.info(__filename, 112, '===> api server is running at 8080');
+            log.info(__filename, 112, '===> api server is running at ' + api_proxy.port);
         }
     });
 });

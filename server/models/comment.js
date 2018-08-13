@@ -1,6 +1,7 @@
-import Comment from '../../models/comment'
-import Like from '../../models/like'
+import Comment from '../database/mongodb/models/comment'
+import Like from '../database/mongodb/models/like'
 import {findOneUser} from './user'
+import errCodes from '../base/errCodes'
 import log from "../log/log"
 const objectId = require('mongodb').ObjectID
 

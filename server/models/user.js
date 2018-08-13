@@ -1,6 +1,6 @@
-import User from '../../models/user'
+import User from '../database/mongodb/models/user'
 const objectId = require('mongodb').ObjectID;
-import errCodes from '../errCodes'
+import errCodes from '../base/errCodes'
 
 //在数据库中查询用户
 async function findOneUser(info){

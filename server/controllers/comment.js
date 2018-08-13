@@ -1,5 +1,5 @@
 import Comment from '../models/comment'
-import {responseClient, fetchUsers, linkUser} from '../util'
+import {responseClient, fetchUsers, linkUser} from '../base/util'
 const objectId = require('mongodb').ObjectID
 
 async function addComment(ctx){

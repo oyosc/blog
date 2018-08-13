@@ -1,7 +1,7 @@
 
 import User from '../models/user'
-import {MD5_SUFFIX, responseClient, md5, asyncRequest} from '../util'
-import {github_oauth} from '../config'
+import {MD5_SUFFIX, responseClient, md5, asyncRequest} from '../base/util'
+import {github_oauth} from '../base/config'
 import {signToke, deleteToke} from '../base/token'
 import request from 'request'
 const jwt = require('jsonwebtoken')

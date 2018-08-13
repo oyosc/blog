@@ -1,4 +1,4 @@
-import Article from '../../models/article'
+import Article from '../database/mongodb/models/article'
 import log from "../log/log"
 const objectId = require('mongodb').ObjectID
 

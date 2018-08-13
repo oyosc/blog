@@ -1,5 +1,5 @@
-import Tags from '../../models/tags'
-import errCodes from '../errCodes'
+import Tags from '../database/mongodb/models/tags'
+import errCodes from '../base/errCodes'
 
 //获取所有标签
 async function getAllTags(){

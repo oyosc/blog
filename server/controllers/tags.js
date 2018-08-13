@@ -1,5 +1,5 @@
 import Tags from '../models/tags'
-import {responseClient} from '../util'
+import {responseClient} from '../base/util'
 
 async function addTag(ctx){
     let {name} = ctx.request.body;

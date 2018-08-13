@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import request from 'request'
-import {findUsersByNames} from './models/user'
+import {findUsersByNames} from '../models/user'
 import util from 'util'
 import _ from 'lodash'
 const requestPromisify = util.promisify(request)

@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken')
 import {Base64} from 'js-base64'
-import {jwt_config} from '../config'
+import {jwt_config} from './config'
 import {getAsync, setAsync, ttlAsync, delAsync} from '../database/redis/redis'
-import {handleErr} from '../util'
+import {handleErr} from './util'
 import {findOneUser} from '../models/user'
-import errCodes from '../errCodes'
+import errCodes from './errCodes'
 import log from "../log/log"
 
 const util = require('util')

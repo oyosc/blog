@@ -1,7 +1,7 @@
 // import http from 'http'
 import Koa from 'koa'
 import httpProxy from 'http-proxy'
-import config from '../config/config'
+import {api_proxy, node_config} from './base/config'
 import Router from 'koa-router'
 const fs = require('fs')
 const pathLib = require('path');
@@ -10,7 +10,7 @@ const serve = require('koa-static')
 const memwatch = require('memwatch-next')
 
 const router = new Router()
-const targetUrl = 'http://127.0.0.1:8080'
+const targetUrl = 'http://' + api_proxy.ip + ':' + api_proxy.port
 const proxy = httpProxy.createProxyServer();
 const ROOT_PATH = pathLib.resolve(__dirname, '..');
 const BUILD_PATH = pathLib.resolve(ROOT_PATH, 'build');
@@ -81,11 +81,11 @@ if(process.env.NODE_ENV !== 'production'){
 
 app.use(router.routes());
 
-app.listen(3000, (err) => {
+app.listen(node_config.port, (err) => {
     if(err){
         console.error(err);
     }else{
-        console.log("===>open http://127.0.0.1:3000 in a browser to view the app");
+        console.log("===>open " + node_config.ip + ":" + node_config.port + " in a browser to view the app");
     }
 });
 

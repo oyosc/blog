@@ -2,10 +2,28 @@ export const jwt_config = {
     jwt_secret: 'koa_react_secret'
 }
 
+//mongodb config
+export const mongo_config = {
+    ip: '127.0.0.1',
+    port: '27017',
+    db: 'blog'
+}
+
+//api proxy config
+export const api_proxy = {
+    ip: '127.0.0.1',
+    port: '8080'
+}
+
+//node main config
+export const node_config = {
+    ip: '127.0.0.1',
+    port: '3000'
+}
 
 //redis message
 export const redisConfig = {
-    url: '127.0.0.1',
+    ip: '127.0.0.1',
     port: '6379'
 }
 

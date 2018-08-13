@@ -1,5 +1,5 @@
 import Articles from '../models/article'
-import {responseClient} from '../util'
+import {responseClient} from '../base/util'
 const objectId = require('mongodb').ObjectID
 import log from "../log/log"
 

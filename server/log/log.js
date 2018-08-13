@@ -1,5 +1,5 @@
 let root_dir = process.cwd()
-import {getLocalTime} from "../util"
+import {getLocalTime} from "../base/util"
 
 function warning(fileDir, lineNumber, infos){
     let rela_file = fileDir.split(root_dir)[1]
