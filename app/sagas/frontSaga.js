@@ -2,7 +2,6 @@ import {take, put, call} from 'redux-saga/effects'
 import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 import {actionTypes as FrontActionTypes} from '../reducers/frontReducer'
-import {clear_userinfo} from './baseSaga'
 
 export function* getArticleList(tag, pageNum){
     yield put({type: IndexActionTypes.FETCH_START})
@@ -23,8 +22,6 @@ export function* getAllArticleFlow(){
         console.log(res)
         if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: FrontActionTypes.RESPONSE_ARTICLE_LIST,data: res.data.result})
-        }else if (res && res.data && res.data.code ===3){
-            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }
@@ -49,8 +46,6 @@ export function* getArticleDetailFlow(){
 
         if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: FrontActionTypes.RESPONSE_ARTICLE_DETAIL,data: res.data.result})
-        }else if (res && res.data && res.data.code ===3){
-            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }

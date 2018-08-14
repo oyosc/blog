@@ -3,6 +3,7 @@ import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {bindActionCreators} from 'redux'
 import remark from 'remark'
 import {connect} from 'react-redux'
+import {Redirect} from 'react-router-dom'
 import {actions} from '../../reducers/frontReducer'
 const {get_article_detail} = actions
 import reactRenderer from 'remark-react'
@@ -16,7 +17,7 @@ class Detail extends Component{
     }
 
     render(){
-        const {articleContent, title, author, viewCount, commentCount, time} = this.props;
+        const {articleContent, title, author, viewCount, commentCount, time} = this.props
         return (
             <div className={`${style.container}`}>
                 <h2>{title}</h2>
@@ -39,7 +40,7 @@ class Detail extends Component{
         )
     }
 
-    componentDidMount(){
+    componentWillMount(){
         if(this.props.state){
             this.props.get_article_detail(this.props.location.state.id)
         }else{
@@ -53,8 +54,6 @@ class Detail extends Component{
 
 function mapStateToProps(state){
     const {content, title, author, viewCount, commentCount, time} = state.front.articleDetail
-    console.log("content")
-    console.log(content)
     return {
         articleContent: content,
         title,

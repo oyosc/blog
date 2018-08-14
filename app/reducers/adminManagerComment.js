@@ -1,7 +1,8 @@
 const initialState = {
     list: [],
     pageNum: 1,
-    total: 0
+    total: 0,
+    whether_audit: '0'
 }
 
 export const actionTypes = {
@@ -9,7 +10,9 @@ export const actionTypes = {
     'RESOLVE_GET_ALL_COMMENTS': 'RESOLVE_GET_ALL_COMMENTS',
     'DELETE_COMMENT': "DELETE_COMMENT",
     "AUDIT_COMMENT": "AUDIT_COMMENT",
-    "CONFIG_AUDIT": "CONFIG_AUDIT"
+    "CONFIG_AUDIT": "CONFIG_AUDIT",
+    "GET_AUDIT": "GET_AUDIT",
+    "RESPONSE_GET_AUDIT": "RESPONSE_GET_AUDIT"
 }
 
 export const actions = {
@@ -48,6 +51,11 @@ export const actions = {
             type: actionTypes.CONFIG_AUDIT,
             audit_status
         }
+    },
+    get_audit: function(){
+        return {
+            type: actionTypes.GET_AUDIT,
+        }
     }
 }
 
@@ -61,6 +69,11 @@ export function reducer(state = initialState, action){
                 list: [...action.data.list],
                 pageNum: action.data.pageNum,
                 total: action.data.total
+            }
+        case actionTypes.RESPONSE_GET_AUDIT:
+            return {
+                ...state,
+                whether_audit: action.data.audit_status
             }
         default:
             return state;

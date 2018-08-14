@@ -63,7 +63,7 @@ async function showComments(articleId, pageNum, userId){
         list: []
     }
     console.log("show comments", searchCondition)
-    let skip = pageNum - 1 < 0 ? 0 : (pageNum-1)*5
+    let skip = pageNum - 1 <= 0 ? 0 : (pageNum-1)*5
     let result = await Comment.count(searchCondition).then(async (count) => {
         commentInfos.total = count
         let commentResult = await Comment.find(searchCondition, '_id content createdTime likeHot replyToId articleId',{

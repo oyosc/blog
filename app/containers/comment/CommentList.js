@@ -19,6 +19,9 @@ class CommentList extends Component{
                 userInfo = {this.props.userInfo}
                 addLikeHot = {this.props.addLikeHot}
                 deleteLikeHot = {this.props.deleteLikeHot}
+                showComments = {this.props.initComments}
+                article_id = {this.props.article_id}
+                total = {this.props.total}
             />
         )
     }
@@ -40,6 +43,7 @@ function mapStateToProps(state){
         article_id: _id,
         commentList: state.comment.commentList,
         userInfo: state.globalState.userInfo,
+        total: state.comment.total
     }
 }
 

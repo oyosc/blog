@@ -77,7 +77,7 @@ export function* configComment(audit_status){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
         let token =  JSON.parse(localStorage.getItem('token'))
-        return yield call(post, `/admin/comment/config`, {audit_status}, token) 
+        return yield call(post, `/admin/comment/config/set`, {audit_status}, token) 
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
     }finally{
@@ -100,6 +100,37 @@ export function* configCommentFlow(){
             yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'配置失败', msgType:0})
+        }
+    }
+}
+
+export function* getConfigComment(audit_status){
+    yield put({type: IndexActionTypes.FETCH_START})
+    try{
+        let token =  JSON.parse(localStorage.getItem('token'))
+        return yield call(post, `/admin/comment/config/get`, {audit_status}, token) 
+    }catch(err){
+        yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
+    }finally{
+        yield put({type: IndexActionTypes.FETCH_END})
+    }
+}
+
+export function* getConfigCommentFlow(){
+    while(true){
+        let req = yield take(AdminCommentActionTypes.GET_AUDIT)
+        console.log("get_config_audit_Req: ", req)
+        let res = yield call(getConfigComment, req.audit_status)
+        if(res && res.data && res.headers.authorization){
+            localStorage.setItem('token', JSON.stringify(res.headers.authorization));
+        }
+        console.log("getConfigAudit: ", res)
+        if(res && res.data && res.data.code ===0){
+            yield put({type: AdminCommentActionTypes.RESPONSE_GET_AUDIT,data: res.data.result})
+        }else if (res && res.data && res.data.code ===3){
+            yield clear_userinfo()
+        }else{
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'获取审核配置失败', msgType:0})
         }
     }
 }

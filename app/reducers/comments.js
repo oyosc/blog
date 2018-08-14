@@ -18,7 +18,7 @@ export const actionTypes = {
 }
 
 export const actions = {
-    init_comment: function(article_id, pageNum=0){
+    init_comment: function(article_id, pageNum=1){
         return {
             type: actionTypes.INIT_COMMENT,
             article_id: article_id,
@@ -57,10 +57,6 @@ export function reducer(state=initialState, action){
         case actionTypes.RESPONSE_ADD_LIKEHOT:
             for(let i =0; i < state.commentList.length; i++){
                 if(state.commentList[i]._id === action.data._id){
-                    console.log("reducer")
-                    console.log(action.data)
-                    console.log("reducer-to")
-                    console.log(state.commentList[i])
                     state.commentList[i].likeHot = action.data.likeHot
                     state.commentList[i].isLike = action.data.isLike
                 }

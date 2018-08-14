@@ -97,7 +97,9 @@ export function* user_auth(){
         let result = yield take(IndexActionTypes.USER_AUTH)
         try{
             yield put({type: IndexActionTypes.FETCH_START})
+            console.log(localStorage.getItem('token'))
             let token =  JSON.parse(localStorage.getItem('token'));
+            console.log("user_auth: ", token)
             let response = yield call(get, '/user/userInfo', token);
             if(response && response.data && response.data.code === 0){
                 if(!response.headers.authorization){

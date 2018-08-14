@@ -13,11 +13,14 @@ function toLocalDate(timeString){
 }
 
 
-const {get_all_comments, audit_comment, config_audit} = actions;
+const {get_all_comments, audit_comment, config_audit, get_audit} = actions;
 
 class AdminManagerComment extends Component{
     constructor(props){
         super(props);
+        this.state = {
+            whether_audit: '0'
+        }
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
     }
 
@@ -57,12 +60,10 @@ class AdminManagerComment extends Component{
         }
     }];
 
-    componentDidMount(){
+    componentWillMount(){
         if(this.props.list.length===0){
             this.props.get_all_comments();
         }
-        console.log("allcomments")
-        console.log(this.props.list)
     }
 
     render(){
@@ -80,7 +81,8 @@ class AdminManagerComment extends Component{
                     onChange={(pageNum) =>{
                         this.props.get_all_comments(pageNum);
                     }}
-                    current={this.props.pageNum}
+                    defaultCurrent={1}
+                    defaultPageSize={5}
                     total={this.props.total}
                 />
             </div>
@@ -97,15 +99,17 @@ AdminManagerComment.propTypes = {
 AdminManagerComment.defaultProps = {
     pageNum: 1,
     list: [],
-    total: 0
+    total: 0,
+    whether_audit: '0'
 }
 
 function mapStateToProps(state){
-    let {pageNum, list, total} = state.admin.comments;
+    let {pageNum, list, total, whether_audit} = state.admin.comments;
     return {
         pageNum,
         list,
-        total
+        total,
+        whether_audit
     }
 }
 
@@ -113,7 +117,8 @@ function mapDispatchToProps(dispatch){
     return {
         get_all_comments: bindActionCreators(get_all_comments, dispatch),
         audit_comment: bindActionCreators(audit_comment, dispatch),
-        config_audit: bindActionCreators(config_audit, dispatch)
+        config_audit: bindActionCreators(config_audit, dispatch),
+        get_audit: bindActionCreators(get_audit, dispatch)
     }
 }
 

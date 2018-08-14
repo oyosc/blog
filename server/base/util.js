@@ -86,6 +86,7 @@ module.exports = {
         if(result!={})  responseData.result = result;
         console.log("result: " + JSON.stringify(responseData));
         res.body = JSON.stringify(responseData)
+        return
     },
     handleErr,
     getLocalTime,

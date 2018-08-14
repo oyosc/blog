@@ -58,7 +58,9 @@ async function getArticleDetail(ctx){
     let id = objectId(ctx.request.query.id)
     console.log("articledetail")
     console.log(id)
-    let result = await Articles.getArticleDetail(id)
+    let userId= ctx.session.userId
+    let result = await Articles.getArticleDetail(userId, id)
+    console.log(result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, '文章详情查询成功', result.data)
     }else{

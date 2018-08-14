@@ -53,8 +53,6 @@ export function* getAllTagsFlow(){
                 tagArr.push(res.data.result[i].name)
             }
             yield put({type: ManagerTagsTypes.SET_TAGS, data: tagArr})
-        }else if (res && res.data && res.data.code ===3){
-            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType:0});
         }

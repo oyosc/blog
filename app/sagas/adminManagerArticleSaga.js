@@ -22,8 +22,6 @@ export function* getAllArticlesFlow(){
         let res = yield call(getArticlesList, req.pageNum)
         if(res && res.data && res.data.code ===0 && res.data.result){
             yield put({type: ManagerArticlesTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST,data: res.data.result})
-        }else if (res && res.data && res.data.code ===3){
-            yield clear_userinfo()
         }else{
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
         }

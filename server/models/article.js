@@ -1,5 +1,6 @@
 import Article from '../database/mongodb/models/article'
-import log from "../log/log"
+import log from '../log/log'
+import {findOneUser} from './user'
 const objectId = require('mongodb').ObjectID
 
 //获取文章列表
@@ -45,12 +46,28 @@ async function getArticles(tag, isPublish, pageNum){
 }
 
 //获取文章详情
-async function getArticleDetail(id){
-    log.debug(__filename, 48, id)
-    let result = await Article.findOne({"_id": id}).then(async (data)=> {
+async function getArticleDetail(userId, articleId){
+    let searchCondition
+    if(userId){
+        let userResult = await findOneUser({'id': userId})
+        if(userResult.statusCode === '200'){
+            console.log(userResult)
+            if(userResult.userInfo.type === '0'){
+                searchCondition = {"_id": articleId}
+            }else{
+                searchCondition = {"_id": articleId, "isPublish": true}
+            }
+        }else{
+            return {'statusCode': '20017', 'message': '获取用户信息失败'}
+        }
+    }else{
+        searchCondition = {"_id": articleId, "isPublish": true}
+    }
+
+    let result = await Article.findOne(searchCondition).then(async (data)=> {
         data.viewCount = data.viewCount + 1
 
-        let updateResult = await Article.update({"_id": id}, {viewCount: data.viewCount})
+        let updateResult = await Article.update(searchCondition, {viewCount: data.viewCount})
             .then((result)=>{
                 return {'code': 1, 'data': "更新成功"}
             }).catch(err=> {

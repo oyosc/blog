@@ -98,6 +98,15 @@ async function configAuditByAdmin(ctx){
     }
 }
 
+//获取评论审核配置
+async function getConfigAuditByAdmin(ctx){
+    if(global.audit_status){
+        responseClient(ctx.response, 200, 0, '获取评论审核配置成功,有该配置', {audit_status: global.audit_status})
+    }else{
+        responseClient(ctx.response, 200, 0, '获取评论审核配置失败,无该配置')
+    }
+}
+
 module.exports = {
     addComment,
     showComments,
@@ -105,5 +114,6 @@ module.exports = {
     deleteLikeHot,
     showCommentsByAdmin,
     auditCommentByAdmin,
-    configAuditByAdmin
+    configAuditByAdmin,
+    getConfigAuditByAdmin
 }

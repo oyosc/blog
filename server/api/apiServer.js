@@ -9,6 +9,7 @@ import {MD5_SUFFIX, responseClient, md5} from '../base/util'
 import router from '../router/main'
 import log from "../log/log"
 import {findOneUser} from '../models/user'
+import {logout} from '../controllers/user'
 
 const koaBody = require('koa-body')
 
@@ -60,8 +61,10 @@ let tokenMiddleware = async function(ctx, next){
         return await next();
     }else{
         if(!ctx.header.authorization){
+            console.log("!path: ", path)
             return responseClient(ctx.response, 200, 3, '没有token信息，请进行登录')
         }else{
+            console.log("verify path: ", path)
             log.debug(__filename, 58, ctx.header.authorization);
             let tokenResult = await checkToke(ctx.header.authorization);
             log.debug(__filename, 60, JSON.stringify(tokenResult));
@@ -97,9 +100,11 @@ let adminMiddleware = async function(ctx, next){
                     responseClient(ctx.response, 200, 3, '非管理员禁止访问')
                 }
             }else{
+                logout(ctx)
                 responseClient(ctx.response, 200, 3, '获取用户信息失败')
             }
         }else{
+            logout(ctx)
             responseClient(ctx.response, 200, 3, '未查询到用户信息')
         }
     }else{
