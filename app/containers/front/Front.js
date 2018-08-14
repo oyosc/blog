@@ -5,7 +5,7 @@ import style from './style.css'
 import {Switch, Route, Redirect} from 'react-router-dom'
 import {bindActionCreators} from 'redux'
 import Login from '../home/components/login/Login'
-import {Logined} from '../home/components/logined/logined'
+import {Logined} from '../home/components/logined/Logined'
 import {actions as IndexActions} from '../../reducers/index'
 import NotFound from '../../components/notFound/NotFound';
 import {Home} from '../home/index'

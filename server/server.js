@@ -7,7 +7,7 @@ const fs = require('fs')
 const pathLib = require('path');
 const app = new Koa()
 const serve = require('koa-static')
-const memwatch = require('memwatch-next')
+// const memwatch = require('memwatch-next')
 
 const router = new Router()
 const targetUrl = 'http://' + api_proxy.ip + ':' + api_proxy.port
@@ -16,7 +16,7 @@ const ROOT_PATH = pathLib.resolve(__dirname, '..');
 const BUILD_PATH = pathLib.resolve(ROOT_PATH, 'build');
 const history = require('koa-connect-history-api-fallback')
 const util = require('util')
-const heapdump = require('heapdump')
+// const heapdump = require('heapdump')
 console.log(BUILD_PATH);
 
 // router.all('/', async (ctx, next) => {
