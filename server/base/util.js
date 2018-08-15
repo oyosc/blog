@@ -1,8 +1,10 @@
 import crypto from 'crypto'
 import request from 'request'
 import {findUsersByNames} from '../models/user'
+
 import util from 'util'
 import _ from 'lodash'
+import log from "../log/log"
 const requestPromisify = util.promisify(request)
 
 const handleErr = (promise) => {
@@ -84,7 +86,7 @@ module.exports = {
         res.status = httpCode;
         if(result.token) res.set({'Authorization': result.token});
         if(result!={})  responseData.result = result;
-        console.log("result: " + JSON.stringify(responseData));
+        log.debug(__filename, __line, responseData)
         res.body = JSON.stringify(responseData)
         return
     },

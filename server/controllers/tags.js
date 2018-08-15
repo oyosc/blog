@@ -1,10 +1,10 @@
 import Tags from '../models/tags'
 import {responseClient} from '../base/util'
+import log from "../log/log"
 
 async function addTag(ctx){
     let {name} = ctx.request.body;
     let result = await Tags.addTag({name});
-    console.log(JSON.stringify(result));
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, '标签添加成功');
     }else{

@@ -5,6 +5,7 @@ import {github_oauth} from '../base/config'
 import {signToke, deleteToke} from '../base/token'
 import request from 'request'
 const jwt = require('jsonwebtoken')
+import log from "../log/log"
 
 async function login(ctx){
     let {username, password} = ctx.request.body;
@@ -22,9 +23,9 @@ async function login(ctx){
         let token = await signToke(result.userInfo);
         ctx.session.username = result.userInfo.username
         ctx.session.userId = result.userInfo._id
-        console.log("ctx_login")
-        console.log(ctx.session.username)
-        console.log(ctx.session.userId)
+        log.debug(__filename, __line, "ctx_login")
+        log.debug(__filename, __line, ctx.session.username)
+        log.debug(__filename, __line, ctx.session.userId)
         responseClient(ctx.response, 200, 0, '登陆成功', {token});
     }else{
         responseClient(ctx.response, 200, 1, '用户名密码错误');
@@ -32,8 +33,6 @@ async function login(ctx){
 }
 
 async function login_with_github(ctx){
-    console.log("node login with github")
-    console.log(ctx.request.body)
     let {code} = ctx.request.body
 
     let data = {
@@ -62,15 +61,14 @@ async function login_with_github(ctx){
                 'User-Agent': 'oyosc'
             }
         }
-        console.log(getOptions)
+
         let user_result = await asyncRequest(getOptions)
-        console.log(user_result)
+        log.debug(__filename, __line, user_result)
         if(user_result.code == 1){
             let user_info = JSON.parse(user_result.data.body)
             let githubName = user_info.login
             let is_exist_result = await User.findOneUser({github_name: githubName})
-            console.log("is_exist_result")
-            console.log(is_exist_result)
+            
             if(is_exist_result.statusCode == '200'){
                 ctx.session.username = is_exist_result.userInfo.username
                 ctx.session.userId = is_exist_result.userInfo._id
@@ -86,8 +84,7 @@ async function login_with_github(ctx){
                     avatar: user_info.avatar_url
                 }
                 let register_result = await User.registerUser(register_user_info)
-                console.log('register_result')
-                console.log(register_result)
+                log.debug(__filename, __line, register_result)
                 if(register_result.statusCode == '200'){
                     ctx.session.username = register_result.data.username
                     ctx.session.userId = register_result.data._id

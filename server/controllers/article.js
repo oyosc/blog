@@ -9,7 +9,7 @@ async function getArticles(ctx){
     let ispublish = ctx.request.query.isPublish
     let pageNum = ctx.request.query.pageNum
     let result = await Articles.getArticles(tag, ispublish, pageNum)
-    log.debug(__filename, 11, result)
+    log.debug(__filename, __line, result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, '文章查询成功', result.articlesInfo)
     }else{
@@ -32,7 +32,6 @@ async function updateArticle(ctx){
 async function delArticle(ctx){
     let id = objectId(ctx.request.query.id)
     let result = await Articles.delArticle(id)
-    console.log(result)
     if(result.statusCode == '200'||result.statusCode == '201'){
         responseClient(ctx.response, 200, 0, '文章删除成功')
     }else{
@@ -42,7 +41,6 @@ async function delArticle(ctx){
 
 //添加文章
 async function addArticle(ctx){
-    console.log("add article")
     let body = ctx.request.body
     let userName= ctx.session.username
     let result = await Articles.addArticle(body, userName)
@@ -54,13 +52,9 @@ async function addArticle(ctx){
 }
 
 async function getArticleDetail(ctx){
-    console.log(ctx.request.query.id)
     let id = objectId(ctx.request.query.id)
-    console.log("articledetail")
-    console.log(id)
     let userId= ctx.session.userId
     let result = await Articles.getArticleDetail(userId, id)
-    console.log(result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, '文章详情查询成功', result.data)
     }else{

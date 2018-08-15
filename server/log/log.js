@@ -25,6 +25,7 @@ function error(fileDir, lineNumber, infos){
     console.log(getLocalTime() + " [ERROR] [" + rela_file + ":" + lineNumber + "]  " +  JSON.stringify(infos))
 }
 
+
 module.exports = {
     warning,
     debug,

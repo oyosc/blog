@@ -38,6 +38,24 @@ let store = {
     }
 }
 
+Object.defineProperty(global, '__stack', {
+    get: function(){
+        var orig = Error.prepareStackTrace;
+        Error.prepareStackTrace = function(_, stack){ return stack; };
+        var err = new Error;
+        Error.captureStackTrace(err);
+        var stack = err.stack;
+        Error.prepareStackTrace = orig;
+        return stack;
+    }
+  });
+   
+Object.defineProperty(global, '__line', {
+    get: function(){
+        return __stack[1].getLineNumber();
+    }
+});
+
 let verifyPath = function(path){
     switch(true){
         case /\/user\/login([\s\S])*?/.test(path):
@@ -58,11 +76,11 @@ let verifyPath = function(path){
 
 let tokenMiddleware = async function(ctx, next){
     let path = ctx.request.path;
+    log.debug(__filename, __line, "path: ", path)
     if(verifyPath(path)){
         return await next();
     }else{
         if(!ctx.header.authorization){
-            console.log("!path: ", path)
             return responseClient(ctx.response, 200, 3, '没有token信息，请进行登录')
         }else if(ctx.header.authorization && ctx.session.userId){
             let userId = ctx.session.userId
@@ -70,13 +88,13 @@ let tokenMiddleware = async function(ctx, next){
                 let userResult = await findOneUser({'id': userId})
                 if(userResult.statusCode === '200'){
                     let tokenResult = await checkToke(ctx.header.authorization);
-                    console.log("tokenResult: ", tokenResult)
+                    log.debug(__filename, __line, tokenResult)
                     if(tokenResult.statusCode == '200'){
                         ctx.session.username = tokenResult.message.username
                         ctx.session.userId = tokenResult.message.userId
                         await next();
                         if(tokenResult.message.token){
-                            log.debug(__filename, 65, tokenResult.message.token);
+                            log.debug(__filename, __line, tokenResult.message.token);
                             ctx.response.set({'Authorization': tokenResult.message.token})
                         }
                     }else{
@@ -147,22 +165,22 @@ app.use(router.routes())
 if(redis_client){
     console.log("redis 启动成功，端口号：" + redisConfig.port);
     redis_client.on('error', (error) => {
-        log.error(__filename, 98, error);
+        log.error(__filename, __line, error);
     })
 }
 
 mongoose.Promise = require('bluebird');
 mongoose.connect(mongodb_url, function(err){
     if(err){
-        log.error(__filename, 105, err);
+        log.error(__filename, __line, err);
         return;
     }
     console.log('数据库连接成功');
     app.listen(api_proxy.port, function(err){
         if(err){
-            log.error(__filename, 111, err);
+            log.error(__filename, __line, err);
         }else{
-            log.info(__filename, 112, '===> api server is running at ' + api_proxy.port);
+            log.info(__filename, __line, '===> api server is running at ' + api_proxy.port);
         }
     });
 });
