@@ -55,6 +55,7 @@ let verifyPath = function(path){
     }
 }
 
+
 let tokenMiddleware = async function(ctx, next){
     let path = ctx.request.path;
     if(verifyPath(path)){
@@ -69,6 +70,7 @@ let tokenMiddleware = async function(ctx, next){
                 let userResult = await findOneUser({'id': userId})
                 if(userResult.statusCode === '200'){
                     let tokenResult = await checkToke(ctx.header.authorization);
+                    console.log("tokenResult: ", tokenResult)
                     if(tokenResult.statusCode == '200'){
                         ctx.session.username = tokenResult.message.username
                         ctx.session.userId = tokenResult.message.userId
@@ -78,8 +80,7 @@ let tokenMiddleware = async function(ctx, next){
                             ctx.response.set({'Authorization': tokenResult.message.token})
                         }
                     }else{
-                        ctx.session.username = ''
-                        ctx.session.userId = ''
+                        await logout(ctx)
                         responseClient(ctx.response, 200, 3, tokenResult.message.err)
                     }
                 }else{
@@ -110,11 +111,9 @@ let adminMiddleware = async function(ctx, next){
                     responseClient(ctx.response, 200, 3, '非管理员禁止访问')
                 }
             }else{
-                await logout(ctx)
                 responseClient(ctx.response, 200, 3, '获取用户信息失败')
             }
         }else{
-            await logout(ctx)
             responseClient(ctx.response, 200, 3, '未查询到用户信息')
         }
     }else{

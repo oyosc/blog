@@ -275,6 +275,7 @@ async function showCommentsByAdmin(userId, pageNum){
     let result = await Comment.count(searchCondition).then(async (count) => {
         console.log(count)
         commentInfos.total = count
+        commentInfos.pageNum = pageNum
         let commentResult = await Comment.find(searchCondition, '_id content createdTime articleId type',{
             skip: skip,
             limit: 5

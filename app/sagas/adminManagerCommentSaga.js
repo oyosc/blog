@@ -9,6 +9,7 @@ export function* showCommentList(pageNum){
     yield put({type: IndexActionTypes.FETCH_START})
     try{
         let token =  JSON.parse(localStorage.getItem('token'))
+        console.log("admin_show_comemnt_list: ", token)
         return yield call(get, `/admin/comment/show?pageNum=${pageNum}`, token) 
     }catch(err){
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})

@@ -70,11 +70,6 @@ export function reducer(state = initialState, action){
                 pageNum: action.data.pageNum,
                 total: action.data.total
             }
-        case actionTypes.RESPONSE_GET_AUDIT:
-            return {
-                ...state,
-                whether_audit: action.data.audit_status
-            }
         default:
             return state;
     }

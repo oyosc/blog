@@ -25,7 +25,7 @@ import {actions} from '../reducers'
 // import Admin from './admin/Admin'
 import Front from './front/Front'
 // import animationStyle from '../lib/animate.css'
-const {clear_msg, user_auth} = actions;
+const {clear_msg} = actions;
 
 class AppIndex extends Component{
     constructor(props){
@@ -71,10 +71,6 @@ class AppIndex extends Component{
             </Router>
         )
     }
-
-    componentWillMount(){
-        this.props.user_auth();
-    }
 }
 
 function mapStateToProps(state){
@@ -87,8 +83,7 @@ function mapStateToProps(state){
 
 function mapDispatchToProps(dispatch){
     return {
-        clear_msg: bindActionCreators(clear_msg, dispatch),
-        user_auth: bindActionCreators(user_auth, dispatch)
+        clear_msg: bindActionCreators(clear_msg, dispatch)
     }
 }
 

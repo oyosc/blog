@@ -17,11 +17,8 @@ const {get_all_comments, audit_comment, config_audit, get_audit} = actions;
 
 class AdminManagerComment extends Component{
     constructor(props){
-        super(props);
-        this.state = {
-            whether_audit: '0'
-        }
-        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+        super(props)
+        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     }
 
     columns = [{
@@ -46,16 +43,11 @@ class AdminManagerComment extends Component{
         title: '审核',
         dataIndex: 'whether_audit',
         key: 'whether_audit',
-        onCell: (record) => {
-            onClick: (e) => {
-                return e
-            }
-        },
         render: (whether_audit, row) => {
-            if(whether_audit === '0'){
-                return <Switch checkedChildren="已审核" unCheckedChildren="未审核" onChange = {this.props.audit_comment.bind(this, row.comment_id)}/>
+            if(whether_audit === '1'){
+                return <Switch checkedChildren="已审核" unCheckedChildren="未审核" checked={true} onChange = {this.props.audit_comment.bind(this, row.comment_id)}/>
             }else{
-                return <Switch checkedChildren="已审核" unCheckedChildren="未审核" defaultChecked  onChange = {this.props.audit_comment.bind(this, row.comment_id)}/>
+                return <Switch checkedChildren="已审核" unCheckedChildren="未审核" checked={false} onChange = {this.props.audit_comment.bind(this, row.comment_id)}/>
             }
         }
     }];
@@ -83,6 +75,7 @@ class AdminManagerComment extends Component{
                     }}
                     defaultCurrent={1}
                     defaultPageSize={5}
+                    current={this.props.pageNum}
                     total={this.props.total}
                 />
             </div>
@@ -99,17 +92,15 @@ AdminManagerComment.propTypes = {
 AdminManagerComment.defaultProps = {
     pageNum: 1,
     list: [],
-    total: 0,
-    whether_audit: '0'
+    total: 0
 }
 
 function mapStateToProps(state){
-    let {pageNum, list, total, whether_audit} = state.admin.comments;
+    let {pageNum, list, total} = state.admin.comments;
     return {
         pageNum,
         list,
-        total,
-        whether_audit
+        total
     }
 }
 

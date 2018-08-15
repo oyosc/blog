@@ -16,6 +16,7 @@ import {actions} from '../../reducers/adminManagerTags'
 import {actions as FrontActions} from '../../reducers/frontReducer'
 const {get_all_tags} = actions
 const {get_article_list} = FrontActions
+const {user_auth} = IndexActions;
 
 class Front extends Component{
     constructor(props){
@@ -62,6 +63,10 @@ class Front extends Component{
     componentDidMount(){
         this.props.get_all_tags()
     }
+
+    componentWillMount(){
+        this.props.user_auth()
+    }
 }
 
 Front.defaultProps = {
@@ -86,6 +91,7 @@ function mapDispatchToProps(dispatch){
         get_all_tags: bindActionCreators(get_all_tags, dispatch),
         get_article_list: bindActionCreators(get_article_list, dispatch),
         logout: bindActionCreators(IndexActions.logout, dispatch),
+        user_auth: bindActionCreators(user_auth, dispatch)
     }
 }
 

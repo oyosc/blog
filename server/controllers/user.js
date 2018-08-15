@@ -72,6 +72,8 @@ async function login_with_github(ctx){
             console.log("is_exist_result")
             console.log(is_exist_result)
             if(is_exist_result.statusCode == '200'){
+                ctx.session.username = is_exist_result.userInfo.username
+                ctx.session.userId = is_exist_result.userInfo._id
                 is_exist_result.userInfo.username = is_exist_result.userInfo.github_name
                 let token = await signToke(is_exist_result.userInfo);
                 responseClient(ctx.response, 200, 0, 'github用户已经存在正确信息', {token});
@@ -87,7 +89,9 @@ async function login_with_github(ctx){
                 console.log('register_result')
                 console.log(register_result)
                 if(register_result.statusCode == '200'){
-                    is_exist_result.userInfo.username = is_exist_result.userInfo.github_name
+                    ctx.session.username = register_result.data.username
+                    ctx.session.userId = register_result.data._id
+                    register_result.data.username = register_result.data.github_name
                     let token = await signToke(register_result.data);
                     responseClient(ctx.response, 200, 0, 'github用户注册成功', {token});
                 }else{
@@ -131,6 +135,7 @@ async function manageAllUsers(ctx){
 //注销
 async function logout(ctx){
     console.log(ctx.header.authorization)
+    console.log("logout_path: ", ctx.request.path)
     let decoded =jwt.decode(ctx.header.authorization, {complete: true});
     if(!decoded) return responseClient(ctx.response, 200, 1, 'token验证失败'); //这里要进行判断，因为jwt.decode这个不会返回错误
     let result = await User.findOneUser({id: decoded.payload['userId']});
