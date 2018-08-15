@@ -110,8 +110,6 @@ export function* user_auth(){
                     userInfo = resolveToken(response.headers.authorization);
                     localStorage.setItem('token', JSON.stringify(response.headers.authorization));
                 }
-                console.log("user_auth")
-                console.log(userInfo)
                 let data = Object.assign(response.data, userInfo);
                 yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
             }

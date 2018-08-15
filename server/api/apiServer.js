@@ -63,24 +63,35 @@ let tokenMiddleware = async function(ctx, next){
         if(!ctx.header.authorization){
             console.log("!path: ", path)
             return responseClient(ctx.response, 200, 3, '没有token信息，请进行登录')
-        }else{
-            console.log("verify path: ", path)
-            log.debug(__filename, 58, ctx.header.authorization);
-            let tokenResult = await checkToke(ctx.header.authorization);
-            log.debug(__filename, 60, JSON.stringify(tokenResult));
-            if(tokenResult.statusCode == '200'){
-                ctx.session.username = tokenResult.message.username
-                ctx.session.userId = tokenResult.message.userId
-                await next();
-                if(tokenResult.message.token){
-                    log.debug(__filename, 65, tokenResult.message.token);
-                    ctx.response.set({'Authorization': tokenResult.message.token})
+        }else if(ctx.header.authorization && ctx.session.userId){
+            let userId = ctx.session.userId
+            if(userId){
+                let userResult = await findOneUser({'id': userId})
+                if(userResult.statusCode === '200'){
+                    let tokenResult = await checkToke(ctx.header.authorization);
+                    if(tokenResult.statusCode == '200'){
+                        ctx.session.username = tokenResult.message.username
+                        ctx.session.userId = tokenResult.message.userId
+                        await next();
+                        if(tokenResult.message.token){
+                            log.debug(__filename, 65, tokenResult.message.token);
+                            ctx.response.set({'Authorization': tokenResult.message.token})
+                        }
+                    }else{
+                        ctx.session.username = ''
+                        ctx.session.userId = ''
+                        responseClient(ctx.response, 200, 3, tokenResult.message.err)
+                    }
+                }else{
+                    await logout(ctx)
+                    responseClient(ctx.response, 200, 3, '获取用户信息失败')
                 }
             }else{
-                ctx.session.username = ''
-                ctx.session.userId = ''
-                return responseClient(ctx.response, 200, 3, tokenResult.message.err)
+                await logout(ctx)
+                responseClient(ctx.response, 200, 3, '未查询到用户信息')
             }
+        }else{
+            responseClient(ctx.response, 200, 3, '请重新登录')
         }
     }
 }
@@ -93,18 +104,17 @@ let adminMiddleware = async function(ctx, next){
         if(userId){
             let userResult = await findOneUser({'id': userId})
             if(userResult.statusCode === '200'){
-                console.log(userResult)
                 if(userResult.userInfo.type === '0'){
                     return await next()
                 }else{
                     responseClient(ctx.response, 200, 3, '非管理员禁止访问')
                 }
             }else{
-                logout(ctx)
+                await logout(ctx)
                 responseClient(ctx.response, 200, 3, '获取用户信息失败')
             }
         }else{
-            logout(ctx)
+            await logout(ctx)
             responseClient(ctx.response, 200, 3, '未查询到用户信息')
         }
     }else{
