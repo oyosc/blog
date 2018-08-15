@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Comment from '../Comment'
 import PropTypes from 'prop-types'
 import {Pagination} from 'antd'
+import style from '../index.css'
 
 class CommentListCom extends Component{
 
@@ -22,14 +23,19 @@ class CommentListCom extends Component{
                     )
                 })
             }
-            <Pagination
-                onChange={(pageNum) =>{
-                    this.props.showComments(this.props.article_id, pageNum);
-                }}
-                defaultCurrent={1}
-                defaultPageSize={5}
-                total={this.props.total}
-            />
+            {
+                this.props.comments.length > 0 ?
+                    <Pagination
+                    className={`${style.pagination}`}
+                    onChange={(pageNum) =>{
+                        this.props.showComments(this.props.article_id, pageNum);
+                    }}
+                    defaultCurrent={1}
+                    defaultPageSize={5}
+                    total={this.props.total}
+                    /> : null
+            }
+            
             </div>
         )
     }

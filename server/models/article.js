@@ -1,4 +1,5 @@
 import Article from '../database/mongodb/models/article'
+import Comment from '../database/mongodb/models/comment'
 import log from '../log/log'
 import {findOneUser} from './user'
 const objectId = require('mongodb').ObjectID
@@ -23,6 +24,7 @@ async function getArticles(tag, isPublish, pageNum){
 
     let result = await Article.count(searchCondition).then(async count => {
         articlesInfo.total = count
+        articlesInfo.pageNum = pageNum
         let articleResult = await Article.find(searchCondition, '_id title isPublish author viewCount commentCount time coverImg', {
             skip: skip,
             limit: 5
@@ -64,8 +66,33 @@ async function getArticleDetail(userId, articleId){
         searchCondition = {"_id": articleId, "isPublish": true}
     }
 
+    let commentSearchCondition
+    
+    if(!global.audit_status || (global.audit_status && global.audit_status === '1')){
+        commentSearchCondition = {
+            articleId,
+            type: '1'
+        }
+    }else{
+        commentSearchCondition = {
+            articleId
+        }
+    }
+
+
     let result = await Article.findOne(searchCondition).then(async (data)=> {
         data.viewCount = data.viewCount + 1
+        let commentCountResult = await Comment.count(commentSearchCondition).then((count) => {
+            return {'code': 1, 'data': count}
+        }).catch(err => {
+            return {'code': 0, 'data': JSON.stringify(err)}
+        })
+
+        if(commentCountResult.code == 1){
+            data.commentCount = commentCountResult.data
+        }else{
+            return {'statusCode': '20022', 'message': '获取文章评论数量失败', data: updateResult.data}
+        }
 
         let updateResult = await Article.update(searchCondition, {viewCount: data.viewCount})
             .then((result)=>{
