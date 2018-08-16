@@ -4,7 +4,6 @@ import errCodes from '../base/errCodes'
 
 //在数据库中查询用户
 async function findOneUser(info){
-    console.log("findOneUser");
     if(info.id){
         info._id = objectId(info.id);
         delete info.id;
@@ -18,6 +17,7 @@ async function findOneUser(info){
             return {'statusCode':'20001','message':errCodes['20001']}
         }
     }).catch((err) =>{
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20002', 'message': JSON.stringify(err)};
     })
     return result;
@@ -31,6 +31,7 @@ async function registerUser(info){
     let result = await newUser.save().then(data => {
         return {'statusCode': '200', 'message': '用户注册成功', data}
     }).catch(err => {
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20008', 'message': '用户注册失败'}
     })
     return result
@@ -57,6 +58,7 @@ async function findUsersByNames(names){
     let result = User.find({$or: [{username: {$in: names}}, {github_name: {$in: names}}]}).then(data => {
         return {'statusCode': '200', 'message': '用户查询成功', data}
     }).catch(err => {
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20008', 'message': '用户查询失败'}
     })
     return result

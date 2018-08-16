@@ -23,9 +23,9 @@ async function login(ctx){
         let token = await signToke(result.userInfo);
         ctx.session.username = result.userInfo.username
         ctx.session.userId = result.userInfo._id
-        log.debug(__filename, __line, "ctx_login")
-        log.debug(__filename, __line, ctx.session.username)
-        log.debug(__filename, __line, ctx.session.userId)
+        log.debug(__filename, __line(__filename), "ctx_login")
+        log.debug(__filename, __line(__filename), ctx.session.username)
+        log.debug(__filename, __line(__filename), ctx.session.userId)
         responseClient(ctx.response, 200, 0, '登陆成功', {token});
     }else{
         responseClient(ctx.response, 200, 1, '用户名密码错误');
@@ -63,7 +63,7 @@ async function login_with_github(ctx){
         }
 
         let user_result = await asyncRequest(getOptions)
-        log.debug(__filename, __line, user_result)
+        log.debug(__filename, __line(__filename), user_result)
         if(user_result.code == 1){
             let user_info = JSON.parse(user_result.data.body)
             let githubName = user_info.login
@@ -84,7 +84,8 @@ async function login_with_github(ctx){
                     avatar: user_info.avatar_url
                 }
                 let register_result = await User.registerUser(register_user_info)
-                log.debug(__filename, __line, register_result)
+                
+                (__filename, __line(__filename), register_result)
                 if(register_result.statusCode == '200'){
                     ctx.session.username = register_result.data.username
                     ctx.session.userId = register_result.data._id

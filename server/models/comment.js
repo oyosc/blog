@@ -13,7 +13,6 @@ async function addComment(commentInfo, userId){
         articleId
     } = commentInfo
     let finalReplyToId
-    console.log(replyToId)
     const createdTime = Date.now()
     const newComment = new Comment({
         content,
@@ -37,16 +36,15 @@ async function addComment(commentInfo, userId){
         }
         return {'statusCode': '200', 'message': '评论保存成功', data}
     }).catch(err => {
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20008', 'message': '评论保存失败'}
     })
-    console.log(result)
+    log.debug(__filename, __line(__filename), result)
     return result
 }
 
 async function showComments(articleId, pageNum, userId){
-    console.log("show comments userId: ", userId)
     let searchCondition
-    console.log("showComments:", global.audit_status)
     if(!global.audit_status || (global.audit_status && global.audit_status === '1')){
         searchCondition = {
             articleId,
@@ -62,7 +60,7 @@ async function showComments(articleId, pageNum, userId){
         total: 0,
         list: []
     }
-    console.log("show comments", searchCondition)
+    log.debug(__filename, __line(__filename), searchCondition)
     let skip = pageNum - 1 <= 0 ? 0 : (pageNum-1)*5
     let result = await Comment.count(searchCondition).then(async (count) => {
         commentInfos.total = count
@@ -75,6 +73,7 @@ async function showComments(articleId, pageNum, userId){
             model: 'User'
         })
         .then(async (result) => {
+            log.debug(__filename, __line(__filename), result)
             result = JSON.parse(JSON.stringify(result).replace(/userId/g, 'userInfo'))
             for(let i=0; i<result.length; i++){
                 if(typeof result[i].replyToId === 'undefined'){
@@ -94,7 +93,7 @@ async function showComments(articleId, pageNum, userId){
                             return 0
                         }
                     }).catch((err) => {
-                        console.log("isLike: ", err)
+                        log.error(__filename, __line(__filename), err)
                         return 0
                     })
                 }
@@ -103,7 +102,7 @@ async function showComments(articleId, pageNum, userId){
             }
             return {'code': 1, 'data': result}
         }).catch(err => {
-            console.log(err)
+            log.error(__filename, __line(__filename), err)
             return {'code': 0, 'data': JSON.stringify(err)}
         })
         if(commentResult.code == 1){
@@ -113,9 +112,10 @@ async function showComments(articleId, pageNum, userId){
             return {'statusCode': '20002', 'message': commentResult.data}
         }
     }).catch(err => {
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20002', 'message': JSON.stringify(err)}
     })
-    console.log(JSON.stringify(result))
+    log.debug(__filename, __line(__filename), result)
     return result
 }
 
@@ -130,8 +130,6 @@ async function getOneComment(info){
         info.type = '1'
     }
 
-    console.log("getOneComment:", global.audit_status)
-
     let result = await Comment.findOne(
         info,
         '_id content createdTime likeHot replyToId articleId'
@@ -140,18 +138,17 @@ async function getOneComment(info){
         select: 'github_name github_url username type _id avatar',
         model: 'User'
     }).then((commentInfo) => {
+        log.debug(__filename, __line(__filename), commentInfo)
         if(!commentInfo){
             return {'statusCode':'20016','message':'get commentInfo 为空'}
         }
         commentInfo = JSON.parse(JSON.stringify(commentInfo).replace(/userId/g, 'userInfo'))
-        console.log("commentInfo:", commentInfo)
         if(typeof commentInfo.replyToId === 'undefined'){
             commentInfo.replyToId = commentInfo._id
         }
         if(commentInfo.userInfo && (typeof commentInfo.userInfo.github_name === 'undefined')){
             commentInfo.userInfo.github_name = commentInfo.userInfo.username
         }
-        console.log("final_commentInfo: ", commentInfo)
         if(commentInfo){
             return {'statusCode':'200','message':'已查询到该评论', commentInfo}
         }else{
@@ -169,7 +166,6 @@ async function addLikeHot(likeInfo, userId){
         comment_id
     } = likeInfo
     let commentResult = await getOneComment({id: objectId(comment_id)})
-    console.log(commentResult)
     if(commentResult.statusCode !== '200'){
         return {'statusCode': '20009', 'message': '添加Likehot的评论无此数据'}
     }
@@ -178,13 +174,14 @@ async function addLikeHot(likeInfo, userId){
         userId,
         type: 1
     }).then((like)=>{
-        console.log("like:", like)
+        log.debug(__filename, __line(__filename), like)
         if(like){
             return {'code': 1,'message':'已查询到该likeHot'}
         }else{
             return {'code': 0,'message':'未查询到该likeHot'}
         }
     }).catch((err) => {
+        log.error(__filename, __line(__filename), err)
         return {'code': 2, 'message': '查询likehot出现错误'}
     })
     
@@ -204,6 +201,7 @@ async function addLikeHot(likeInfo, userId){
             .then((result)=>{
                 return {'code': 1, 'data': "comment更新成功"}
             }).catch(err=> {
+                log.error(__filename, __line(__filename), err)
                 return {'code': 0, 'data': JSON.stringify(err)}
             })
         if(updateResult.code === 0){
@@ -217,8 +215,10 @@ async function addLikeHot(likeInfo, userId){
             return {'statusCode': '20008', 'message': 'likeHot添加失败'}
         }
     }).catch(err => {
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20008', 'message': 'likeHot添加失败'}
     })
+    log.debug(__filename, __line(__filename), result)
     return result
 }
 
@@ -243,6 +243,7 @@ async function deleteLikeHot(likeInfo, userId){
             .then((result)=>{
                 return {'code': 1, 'data': "comment更新成功"}
             }).catch(err=> {
+                log.error(__filename, __line(__filename), err)
                 return {'code': 0, 'data': JSON.stringify(err)}
             })
         if(updateResult.code === 0){
@@ -258,6 +259,7 @@ async function deleteLikeHot(likeInfo, userId){
     }).catch(err => {
         return {'statusCode': '200015', 'message': 'likeHot删除失败'}
     })
+    log.debug(__filename, __line(__filename), result)
     return result
 }
 
@@ -270,10 +272,8 @@ async function showCommentsByAdmin(userId, pageNum){
         list: []
     }
 
-    console.log("searchCondition: ",searchCondition)
     let skip = pageNum - 1 < 0 ? 0 : (pageNum-1)*5
     let result = await Comment.count(searchCondition).then(async (count) => {
-        console.log(count)
         commentInfos.total = count
         commentInfos.pageNum = pageNum
         let commentResult = await Comment.find(searchCondition, '_id content createdTime articleId type',{
@@ -293,7 +293,6 @@ async function showCommentsByAdmin(userId, pageNum){
             result = JSON.parse(JSON.stringify(result).replace(/articleId/g, 'articleInfo'))
             let finalResult = []
             for(let i=0; i<result.length; i++){
-                console.log("result[i]", result[i])
                 let finalComment = {}
                 finalComment.comment_id = result[i]._id
                 finalComment.article_id = result[i].articleInfo._id
@@ -302,15 +301,13 @@ async function showCommentsByAdmin(userId, pageNum){
                 finalComment.comment_time = result[i].createdTime
                 finalComment.comment_user = result[i].userInfo.username
                 finalComment.whether_audit = result[i].type
-                console.log("finalComment:", finalComment)
                 finalResult.push(finalComment)
             }
             return {'code': 1, 'data': finalResult}
         }).catch(err => {
-            console.log(err)
+            log.error(__filename, __line(__filename), err)
             return {'code': 0, 'data': JSON.stringify(err)}
         })
-        console.log("commentResult: ", commentResult)
         if(commentResult.code == 1){
             commentInfos.list = commentResult.data
             return {'statusCode': '200', 'message': '成功查询到comment信息', commentInfos}
@@ -318,11 +315,13 @@ async function showCommentsByAdmin(userId, pageNum){
             return {'statusCode': '20020', 'message': commentResult.data}
         }
     }).catch((err) => {
-        console.log(err)
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20021', 'message': JSON.stringify(err)}
     })
 
-    console.log("adminResult: ", result)
+    
+    
+    (__filename, __line(__filename), result)
     return result
 }
 
@@ -341,6 +340,7 @@ async function auditCommentByAdmin(userId, body){
         .then(data => {
             return {'statusCode': '200', 'message': '评论审核成功'}
         }).catch(err => {
+            log.error(__filename, __line(__filename), err)
             return {'statusCode': '20008', 'message': '评论审核失败'}
         })
 

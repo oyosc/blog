@@ -7,9 +7,15 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch-client": "cross-env NODE_ENV=development node ./server/index.js",
     "watch-client-prod": "cross-env NODE_ENV=production node ./server/index.js",
+    "watch-client-debug": "cross-env NODE_ENV=development DEBUG=true node ./server/index.js",
+    "watch-client-prod-debug": "cross-env NODE_ENV=production DEBUG=true node ./server/index.js",
     "start-dev-api": "node server/api/index.js",
+    "start-dev-api-debug": "cross-env DEBUG=true node server/api/index.js",
     "build": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
-    "start-prod": "npm run build & npm run watch-client-prod & npm run start-dev-api"
+    "start-prod": "npm run build & npm run watch-client-prod & npm run start-dev-api",
+    "start-prod-end": "npm run watch-client-prod & npm run start-dev-api",
+    "start-prod-debug":"npm run build & npm run watch-client-prod-debug & npm run start-dev-api-debug",
+    "start-prod-end-debug": "npm run watch-client-prod-debug & npm run start-dev-api-debug"
   },
   "author": "",
   "license": "ISC",

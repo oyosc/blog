@@ -9,7 +9,7 @@ async function getArticles(ctx){
     let ispublish = ctx.request.query.isPublish
     let pageNum = ctx.request.query.pageNum
     let result = await Articles.getArticles(tag, ispublish, pageNum)
-    log.debug(__filename, __line, result)
+    log.debug(__filename, __line(__filename), result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, '文章查询成功', result.articlesInfo)
     }else{
@@ -22,6 +22,8 @@ async function updateArticle(ctx){
     let body = ctx.request.body
     let result = await Articles.updateArticle(body)
     if(result.statusCode == '200'){
+
+        
         responseClient(ctx.response, 200, 0, '文章更新成功')
     }else{
         responseClient(ctx.response, 200, 1, '文章更新失败')

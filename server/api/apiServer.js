@@ -38,23 +38,38 @@ let store = {
     }
 }
 
-Object.defineProperty(global, '__stack', {
-    get: function(){
-        var orig = Error.prepareStackTrace;
-        Error.prepareStackTrace = function(_, stack){ return stack; };
-        var err = new Error;
-        Error.captureStackTrace(err);
-        var stack = err.stack;
-        Error.prepareStackTrace = orig;
-        return stack;
-    }
-  });
+//还可以使用arguments.callee，不过在es5里不再支持，已经被废弃
+// Object.defineProperty(global, '__stack', {
+//     get: function errName(){
+//       var orig = Error.prepareStackTrace;
+//       Error.prepareStackTrace = function(_, stack){ return stack; };
+//       var err = new Error;
+//       Error.captureStackTrace(err, arguments.callee);
+//       var stack = err.stack;
+//       Error.prepareStackTrace = orig;
+//       return stack;
+//     }
+//   });
    
-Object.defineProperty(global, '__line', {
-    get: function(){
-        return __stack[1].getLineNumber();
+// Object.defineProperty(global, '__line', {
+//     get: function(){
+//         return __stack[1].getLineNumber();
+//     }
+// });
+
+
+if(process.env.DEBUG === 'true'){
+    global.__line = function(filePath){
+        let stack = new Error().stack
+        let regexp = new RegExp(filePath+":([0-9]+):([0-9]+)")
+        let result = stack.match(regexp)
+        return result
     }
-});
+}else{
+    global.__line = function(filePath){
+        return false
+    }
+}
 
 let verifyPath = function(path){
     switch(true){
@@ -76,7 +91,7 @@ let verifyPath = function(path){
 
 let tokenMiddleware = async function(ctx, next){
     let path = ctx.request.path;
-    log.debug(__filename, __line, "path: ", path)
+    log.debug(__filename, __line(__filename), "path: " + path)
     if(verifyPath(path)){
         return await next();
     }else{
@@ -88,13 +103,13 @@ let tokenMiddleware = async function(ctx, next){
                 let userResult = await findOneUser({'id': userId})
                 if(userResult.statusCode === '200'){
                     let tokenResult = await checkToke(ctx.header.authorization);
-                    log.debug(__filename, __line, tokenResult)
+                    log.debug(__filename, __line(__filename), tokenResult)
                     if(tokenResult.statusCode == '200'){
                         ctx.session.username = tokenResult.message.username
                         ctx.session.userId = tokenResult.message.userId
                         await next();
                         if(tokenResult.message.token){
-                            log.debug(__filename, __line, tokenResult.message.token);
+                            log.debug(__filename, __line(__filename), tokenResult.message.token);
                             ctx.response.set({'Authorization': tokenResult.message.token})
                         }
                     }else{
@@ -165,22 +180,23 @@ app.use(router.routes())
 if(redis_client){
     console.log("redis 启动成功，端口号：" + redisConfig.port);
     redis_client.on('error', (error) => {
-        log.error(__filename, __line, error);
+        log.error(__filename, __line(__filename), error);
     })
 }
 
 mongoose.Promise = require('bluebird');
 mongoose.connect(mongodb_url, function(err){
     if(err){
-        log.error(__filename, __line, err);
+        log.error(__filename, __line(__filename), err);
         return;
     }
     console.log('数据库连接成功');
     app.listen(api_proxy.port, function(err){
         if(err){
-            log.error(__filename, __line, err);
+            log.error(__filename, __line(__filename), err);
         }else{
-            log.info(__filename, __line, '===> api server is running at ' + api_proxy.port);
+            log.info(__filename, 
+                (__filename), '===> api server is running at ' + api_proxy.port);
         }
     });
 });

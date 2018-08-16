@@ -35,6 +35,8 @@ export const actions = {
 export function articles(state=initialState, action){
     switch(action.type){
         case actionsTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST:
+
+        
             return {
                 ...state, articleList: [...action.data.list], total: action.data.total, pageNum: action.data.pageNum
             };

@@ -28,8 +28,10 @@ async function getArticles(tag, isPublish, pageNum){
         let articleResult = await Article.find(searchCondition, '_id title isPublish author viewCount commentCount time coverImg', {
             skip: skip,
             limit: 5
+
+            
         }).then(result => {
-            log.debug(__filename, 30, result)
+            log.debug(__filename, __line(__filename), result)
             return {'code': 1, 'data': result}
         }).catch(err => {
             return {'code': 0, 'data': JSON.stringify(err)}
@@ -41,7 +43,7 @@ async function getArticles(tag, isPublish, pageNum){
             return {'statusCode': '20002', 'message': articleResult.data}
         }
     }).catch(err => {
-        log.error(__filename, 23, err)
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20002', 'message': JSON.stringify(err)}
     })
     return result
@@ -53,7 +55,6 @@ async function getArticleDetail(userId, articleId){
     if(userId){
         let userResult = await findOneUser({'id': userId})
         if(userResult.statusCode === '200'){
-            console.log(userResult)
             if(userResult.userInfo.type === '0'){
                 searchCondition = {"_id": articleId}
             }else{
@@ -67,7 +68,7 @@ async function getArticleDetail(userId, articleId){
     }
 
     let commentSearchCondition
-    
+
     if(!global.audit_status || (global.audit_status && global.audit_status === '1')){
         commentSearchCondition = {
             articleId,
@@ -79,7 +80,6 @@ async function getArticleDetail(userId, articleId){
         }
     }
 
-
     let result = await Article.findOne(searchCondition).then(async (data)=> {
         data.viewCount = data.viewCount + 1
         let commentCountResult = await Comment.count(commentSearchCondition).then((count) => {
@@ -87,7 +87,7 @@ async function getArticleDetail(userId, articleId){
         }).catch(err => {
             return {'code': 0, 'data': JSON.stringify(err)}
         })
-
+        log.debug(__filename, __line(__filename), commentCountResult)
         if(commentCountResult.code == 1){
             data.commentCount = commentCountResult.data
         }else{
@@ -98,6 +98,7 @@ async function getArticleDetail(userId, articleId){
             .then((result)=>{
                 return {'code': 1, 'data': "更新成功"}
             }).catch(err=> {
+                log.error(__filename, __line(__filename), err)
                 return {'code': 0, 'data': JSON.stringify(err)}
             })
 
@@ -107,6 +108,7 @@ async function getArticleDetail(userId, articleId){
             return {'statusCode': '20002', 'message': '获取文章信息失败', data: updateResult.data}
         }
     }).catch(err=>{
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20002', 'message': JSON.stringify(err)}
     })
     return result
@@ -138,6 +140,7 @@ async function addArticle(articleInfo, userName){
     let result = await tempArticle.save().then(data => {
         return {'statusCode': '200', 'message': '文章保存成功', data}
     }).catch(err => {
+        log.error(__filename, __line(__filename), err)
         return {'statusCode': '20008', 'message': '文章保存失败'}
     })
     return result
@@ -157,6 +160,7 @@ async function updateArticle(articleInfo){
         .then(data => {
             return {'statusCode': '200', 'message': '文章保存成功'}
         }).catch(err => {
+            log.error(__filename, __line(__filename), err)
             return {'statusCode': '20008', 'message': '文章保存失败'}
         })
     return result
@@ -171,7 +175,7 @@ async function delArticle(id){
                 return {'statusCode': '201', 'message': '文章不存在'}
             }
         }).catch(err => {
-            console.log(err)
+            log.error(__filename, __line(__filename), err)
             return {'statusCode': '20006', 'message': '文章删除失败'}
         })
     return result

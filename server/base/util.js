@@ -70,7 +70,6 @@ const getLocalTime = () => {
     let minute = date.getMinutes();
     let second = date.getSeconds();
     return year+"/"+month+"/"+day+" " + hour+":"+minute+":"+second
-
 }
 
 module.exports = {
@@ -86,7 +85,7 @@ module.exports = {
         res.status = httpCode;
         if(result.token) res.set({'Authorization': result.token});
         if(result!={})  responseData.result = result;
-        log.debug(__filename, __line, responseData)
+        log.debug(__filename, __line(__filename), responseData)
         res.body = JSON.stringify(responseData)
         return
     },

@@ -17,7 +17,6 @@ const BUILD_PATH = pathLib.resolve(ROOT_PATH, 'build');
 const history = require('koa-connect-history-api-fallback')
 const util = require('util')
 // const heapdump = require('heapdump')
-console.log(BUILD_PATH);
 
 // router.all('/', async (ctx, next) => {
 //     console.log("this is the first");
@@ -41,7 +40,6 @@ console.log(BUILD_PATH);
 // })
 
 router.all('/api/*', async (ctx, next) => {
-    console.log("ctx.req.url: ", ctx.req.url)
     ctx.req.url = ctx.req.url.split("api")[1];
     ctx.respond = false;
     proxy.web(ctx.req, ctx.res, {target: targetUrl});

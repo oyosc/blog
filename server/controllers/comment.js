@@ -6,7 +6,7 @@ import log from "../log/log"
 async function addComment(ctx){
     let body = ctx.request.body
     let userId = ctx.session.userId
-    log.debug(__filename, __line, "userid: ", userId)
+    log.debug(__filename, __line(__filename), "userid: ", userId)
     let names = fetchUsers(body.content)
     let text = await linkUser(body.content, names)
     body.content = text
@@ -34,7 +34,7 @@ async function addLikeHot(ctx){
     let body = ctx.request.body
     let userId = ctx.session.userId
     let result = await Comment.addLikeHot(body, userId)
-    log.debug(__filename, __line, result)
+    log.debug(__filename, __line(__filename), result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, 'likeHot添加成功', result.data)
     }else{
@@ -57,7 +57,7 @@ async function showCommentsByAdmin(ctx){
     let pageNum = ctx.request.query.pageNum || 0
     let userId = ctx.session.userId
     let result = await Comment.showCommentsByAdmin(userId, pageNum)
-    log.debug(__filename, __line, result)
+    log.debug(__filename, __line(__filename), result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, 'admin评论查询成功', result.commentInfos)
     }else{
@@ -69,7 +69,7 @@ async function auditCommentByAdmin(ctx){
     let body = ctx.request.body
     let userId = ctx.session.userId
     let result = await Comment.auditCommentByAdmin(userId, body)
-    log.debug(__filename, __line, result)
+    log.debug(__filename, __line(__filename), result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, 'admin评论审核成功')
     }else{
@@ -81,7 +81,8 @@ async function auditCommentByAdmin(ctx){
 async function configAuditByAdmin(ctx){
     let body = ctx.request.body
     let result = await Comment.configAuditByAdmin(body)
-    log.debug(__filename, __line, result)
+    
+    (__filename, __line(__filename), result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, 'admin修改审核成功')
     }else{

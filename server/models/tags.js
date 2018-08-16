@@ -1,5 +1,6 @@
 import Tags from '../database/mongodb/models/tags'
 import errCodes from '../base/errCodes'
+import { Z_ERRNO } from 'zlib';
 
 //获取所有标签
 async function getAllTags(){
@@ -11,6 +12,7 @@ async function getAllTags(){
                 return {'statusCode': '20003', 'message': errCodes['20003']}
             }
         }).catch(err => {
+            log.err(__filename, __line(__filename), err)
             return {'statusCode': '20002', 'message': JSON.stringify(err)}
         })
     return result
@@ -18,18 +20,16 @@ async function getAllTags(){
 
 //删除标签
 async function delTag(name){
-    console.log(name)
     let result = await Tags.remove(name)
         .then((result) => {
-            console.log(result);
+            log.debug(__filename, __line(__filename), result)
             if(result.n === 1){
                 return {'statusCode':'200','message':'成功删除tag信息'}
             }else{
                 return {'statusCode': '20006', 'message': errCodes['20006']}
             }
         }).catch(err => {
-            console.log("deltagerr")
-            console.log(err)
+            log.error(__filename, __line(__filename), err)
             return {'statusCode': '20002', 'message': JSON.stringify(err)}
         })
     return result
@@ -50,6 +50,7 @@ async function addTag(name){
                 return {'statusCode': '20007', 'message': errCodes['20007']}
             }
         }).catch(err => {
+            log.error(__filename, __line(__filename), err)
             return {'statusCode': '20002', 'message': JSON.stringify(err)}
         })
     return result

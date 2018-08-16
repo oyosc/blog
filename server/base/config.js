@@ -33,3 +33,5 @@ export const github_oauth = {
     token_path: "https://github.com/login/oauth/access_token",
     user_path: "https://api.github.com/user?"
 }
+
+
