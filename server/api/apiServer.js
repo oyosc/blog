@@ -195,8 +195,7 @@ mongoose.connect(mongodb_url, function(err){
         if(err){
             log.error(__filename, __line(__filename), err);
         }else{
-            log.info(__filename, 
-                (__filename), '===> api server is running at ' + api_proxy.port);
+            log.info(__filename, __line(__filename), '===> api server is running at ' + api_proxy.port);
         }
     });
 });
