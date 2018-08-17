@@ -6,12 +6,23 @@ const objectId = require('mongodb').ObjectID
 
 //获取文章列表
 async function getArticles(tag, isPublish, pageNum){
+    console.log(isPublish)
+    console.log(typeof isPublish)
     let searchCondition = {
-        isPublish
+        isPublish: isPublish === 'true' ? true : false
     }
+    let commentType
+
     if(tag){
         searchCondition.tags = tag;
     }
+
+    if(!global.audit_status || (global.audit_status && global.audit_status === '1')){
+        commentType = "1"
+    }else{
+        commentType = "0"
+    }
+
     if(isPublish === 'false'){
         searchCondition = {}
     }
@@ -21,27 +32,48 @@ async function getArticles(tag, isPublish, pageNum){
         total: 0,
         list: []
     }
+    log.debug(__filename, __line(__filename), searchCondition)
 
     let result = await Article.count(searchCondition).then(async count => {
         articlesInfo.total = count
-        articlesInfo.pageNum = pageNum
-        let articleResult = await Article.find(searchCondition, '_id title isPublish author viewCount commentCount time coverImg', {
-            skip: skip,
-            limit: 5
-
-            
-        }).then(result => {
+        let aggre_result = await Article.aggregate([
+            {$match: searchCondition},
+            {$sort: {"createdTime": 1}},
+            {$limit: 5},
+            {$skip: skip},
+            {$lookup: {
+                from: "comment",
+                let: {article_id: "$_id"},
+                pipeline: [
+                    {$match: {
+                        $expr: {
+                            $and: [
+                                {$eq: ["$articleId", "$$article_id"]},
+                                {$eq: ["$type", commentType]}
+                            ]
+                        }
+                    }},
+                    {$group: {_id: null, count: {$sum: 1}}}
+                ],
+                as: "comment"
+            }}
+        ]).then(result =>{
+            for(let i = 0; i < result.length; i++){
+                result[i].commentCount = result[i].comment.length > 0 ? result[i].comment[0].count : 0
+            }
             log.debug(__filename, __line(__filename), result)
             return {'code': 1, 'data': result}
         }).catch(err => {
+            log.error(__filename, __line(__filename), err)
             return {'code': 0, 'data': JSON.stringify(err)}
         })
-        if(articleResult.code == 1){
-            articlesInfo.list = articleResult.data
+        if(aggre_result.code == 1){
+            articlesInfo.list = aggre_result.data
             return {'statusCode': '200', 'message': '成功查询到article信息', articlesInfo}
         }else{
-            return {'statusCode': '20002', 'message': articleResult.data}
+            return {'statusCode': '20002', 'message': aggre_result.data}
         }
+
     }).catch(err => {
         log.error(__filename, __line(__filename), err)
         return {'statusCode': '20002', 'message': JSON.stringify(err)}
