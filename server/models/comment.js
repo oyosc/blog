@@ -319,9 +319,6 @@ async function showCommentsByAdmin(userId, pageNum){
         return {'statusCode': '20021', 'message': JSON.stringify(err)}
     })
 
-    
-    
-    (__filename, __line(__filename), result)
     return result
 }
 

@@ -81,8 +81,6 @@ async function auditCommentByAdmin(ctx){
 async function configAuditByAdmin(ctx){
     let body = ctx.request.body
     let result = await Comment.configAuditByAdmin(body)
-    
-    (__filename, __line(__filename), result)
     if(result.statusCode == '200'){
         responseClient(ctx.response, 200, 0, 'admin修改审核成功')
     }else{
