@@ -4,7 +4,7 @@ import userRouter from './user'
 import adminRouter from './admin'
 import indexRouter from './index'
 const koaBody = require('koa-body')
-const router = Router();
+const router = Router()
 
 router.use('/user', koaBody(), userRouter.routes())
 

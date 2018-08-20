@@ -1,0 +1,21 @@
+{
+    "extends": "standard",
+    "root": true,
+    "globals": {"__line": true},
+    "rules": {
+        "no-console": 0,
+        "no-empty": 2,
+        "no-extra-semi": 2,
+        "no-irregular-whitespace": 2,
+        "valid-jsdoc": "off",
+        "no-warning-comments": 2,
+        "no-inline-comments": 0,
+        "camelcase":"warn",
+        "no-useless-escape": "warn",
+        "indent": ["error", 4,
+        {
+            "SwitchCase": 1
+        }
+    ]
+    }
+}
