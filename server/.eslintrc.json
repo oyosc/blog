@@ -12,6 +12,7 @@
         "no-inline-comments": 0,
         "camelcase":"warn",
         "no-useless-escape": "warn",
+        "no-return-await": "warn",
         "indent": ["error", 4,
         {
             "SwitchCase": 1

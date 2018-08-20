@@ -89,7 +89,7 @@ let tokenMiddleware = async function (ctx, next) {
     let path = ctx.request.path
     log.debug(__filename, __line(__filename), 'path: ' + path)
     if (verifyPath(path)) {
-        await next()
+        return await next()
     } else {
         if (!ctx.header.authorization) {
             return responseClient(ctx.response, 200, 3, '没有token信息，请进行登录')
@@ -135,7 +135,7 @@ let adminMiddleware = async function (ctx, next) {
             let userResult = await findOneUser({'id': userId})
             if (userResult.statusCode === '200') {
                 if (userResult.userInfo.type === '0') {
-                    await next()
+                    return await next()
                 } else {
                     responseClient(ctx.response, 200, 3, '非管理员禁止访问')
                 }
