@@ -3,15 +3,15 @@ import PropTypes from 'prop-types'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {ArticleListCell} from '../articleListCell/ArticleListCell'
 
-export default class ArticleList extends Component{
-    constructor(props){
+export default class ArticleList extends Component {
+    constructor (props) {
         super(props)
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     }
 
-    render(){
+    render () {
         console.log(this.props.data)
-        return(
+        return (
             <div>
                 {
                     this.props.data.map((item, index) => {

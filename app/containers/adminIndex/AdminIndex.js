@@ -1,19 +1,18 @@
 import React, {Component} from 'react'
-import PropTypes from 'prop-types'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {connect} from 'react-redux'
 import {actions} from '../../reducers/index'
-import { bindActionCreators } from 'redux';
+import { bindActionCreators } from 'redux'
 
-const {user_auth} = actions;
+const {user_auth} = actions
 
-class AdminIndex extends Component{
-    constructor(props){
-        super(props);
+class AdminIndex extends Component {
+    constructor (props) {
+        super(props)
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     }
 
-    render(){
+    render () {
         return (
             <div>
                 <h1>Welcome to my blog</h1>
@@ -26,14 +25,14 @@ AdminIndex.defaultProps = {
     isAdmin: false
 }
 
-function mapStateToProps(state){
+function mapStateToProps (state) {
     return {
-        isAdmin: state.globalState.userInfo.usertype == 'admin',
+        isAdmin: state.globalState.userInfo.usertype === 'admin',
         userInfo: state.globalState.userInfo
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps (dispatch) {
     return {
         user_auth: bindActionCreators(user_auth, dispatch)
     }

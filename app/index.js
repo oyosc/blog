@@ -5,12 +5,12 @@ import {Provider} from 'react-redux'
 import {AppContainer} from 'react-hot-loader'
 import configureStore from './configureStore'
 
-let div = document.createElement('div');
-div.setAttribute('id', 'app');
-document.body.appendChild(div);
+let div = document.createElement('div')
+div.setAttribute('id', 'app')
+document.body.appendChild(div)
 
-const mountNode = document.getElementById('app');
-const store = configureStore();
+const mountNode = document.getElementById('app')
+const store = configureStore()
 
 render(
     <AppContainer>
@@ -22,6 +22,6 @@ render(
     mountNode
 )
 
-if(module.hot && process.env.NODE_ENV !== 'production'){
-    module.hot.accept();
+if (module.hot && process.env.NODE_ENV !== 'production') {
+    module.hot.accept()
 }

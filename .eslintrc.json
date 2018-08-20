@@ -1,7 +1,9 @@
 {
     "extends": "standard",
     "root": true,
-    "globals": {"__line": true},
+    "globals": {"__line": true, "localStorage": true, "alert": true, "location": true},
+    "parser": "babel-eslint",
+    "plugins": ["react"],
     "rules": {
         "no-console": 0,
         "no-empty": 2,
@@ -13,6 +15,9 @@
         "camelcase":"warn",
         "no-useless-escape": "warn",
         "no-return-await": "warn",
+        "no-useless-constructor": "warn",
+        "operator-linebreak": "off",
+        "no-unused-vars": "warn",
         "indent": ["error", 4,
         {
             "SwitchCase": 1

@@ -2,9 +2,9 @@ import React, {Component} from 'react'
 import style from '../index.css'
 import PropTypes from 'prop-types'
 
-export default class CommentInputCom extends Component{
-    constructor(props){
-        super(props),
+export default class CommentInputCom extends Component {
+    constructor (props) {
+        super(props)
         this.state = {
             content: '',
             replyToId: ''
@@ -15,14 +15,14 @@ export default class CommentInputCom extends Component{
     //     this.textarea.focus()
     // }
 
-    handleSubmit(){
-        if(this.props.userInfo.userId){
+    handleSubmit () {
+        if (this.props.userInfo.userId) {
             let content = this.state.content
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;")
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;')
                 .replace(/`([\S\s]+?)`/g, '<code>$1</code>')
 
             this.props.onSubmit({replyToId: this.state.replyToId, articleId: this.props.article_id, content})
@@ -30,13 +30,13 @@ export default class CommentInputCom extends Component{
         }
     }
 
-    handleContentChange(e){
+    handleContentChange (e) {
         this.setState({
             content: e.target.value
         })
     }
 
-    render(){
+    render () {
         return (
             <div>
                 <div lang="en-US" className={`${style.gitmentContainer} ${style.gitmentEditorContainer}`}>
@@ -52,7 +52,7 @@ export default class CommentInputCom extends Component{
                         </div>
                         <div className={`${style.gitmentEditorBody}`}>
                             <div className={`${style.gitmentEditorWriteField}`}>
-                                {this.props.userInfo.userId ? <textarea placeholder="Leave a comment" value={this.state.content} ref={(textarea)=>this.textarea = textarea} onChange={this.handleContentChange.bind(this)} ></textarea> : <textarea placeholder="please login first" readonly="readonly"></textarea>}
+                                {this.props.userInfo.userId ? <textarea placeholder="Leave a comment" value={this.state.content} ref={(textarea) => { this.textarea = textarea }} onChange={this.handleContentChange.bind(this)} ></textarea> : <textarea placeholder="please login first" readonly="readonly"></textarea>}
                             </div>
                             {/* <div className={`${style.gitmentEditorPreviewField} ${style.gitmentHidden}`}>
                                 <div className={`${style.gitmentEditorPreview} ${style.gitmentMarkdown}`}></div>
@@ -70,7 +70,6 @@ export default class CommentInputCom extends Component{
         )
     }
 }
-
 
 CommentInputCom.PropTypes = {
     userInfo: PropTypes.any,

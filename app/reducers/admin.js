@@ -14,7 +14,7 @@ const initialState = {
 }
 
 export const actions = {
-    change_location_admin: function(url){
+    change_location_admin: function (url) {
         return {
             type: actionTypes.ADMIN_URI_LOCATION,
             data: url
@@ -22,13 +22,13 @@ export const actions = {
     }
 }
 
-export function reducer(state=initialState, action){
-    switch(action.type){
+export function reducer (state = initialState, action) {
+    switch (action.type) {
         case actionTypes.ADMIN_URI_LOCATION:
             return {
                 ...state,
                 url: action.data
-            };
+            }
         default:
             return state
     }

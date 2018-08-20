@@ -8,37 +8,37 @@ import {Link} from 'react-router-dom'
 
 export const ArticleListCell = (props) => {
     return (
-        <div className={`${style.container}`} onClick={()=>{props.history.push(`/detail/${props.data._id}`, {id: props.data._id}); props.getArticleDetail(props.data._id)}}>
-        <div>
-            <img src={props.data.coverImg} alt="" />
-        </div>
-        <div className={`${style.bottomContainer}`}>
-            <p className={`${style.title}`}>
-                {props.data.title}
-            </p>
-            <p className={`${style.summary}`}>
-                摘要
-            </p>
+        <div className={`${style.container}`} onClick={() => { props.history.push(`/detail/${props.data._id}`, {id: props.data._id}); props.getArticleDetail(props.data._id) }}>
             <div>
-                <p>
-                    <span>
-                        <img src={require('./calendar.png')} alt='发表日期' />
-                        {props.data.time}
-                    </span>
-                    <span>
-                        <img src={require('./views.png')} alt='阅读数' />
-                        {props.data.viewCount}
-                    </span>
-                    <span>
-                        <img src={require('./comments.png')} alt='评论数' />
-                        {props.data.commentCount}
-                    </span>
+                <img src={props.data.coverImg} alt="" />
+            </div>
+            <div className={`${style.bottomContainer}`}>
+                <p className={`${style.title}`}>
+                    {props.data.title}
                 </p>
-                <span className={`${style.lastSpan}`}>
-                    阅读全文 <span>》</span>
-                </span>
+                <p className={`${style.summary}`}>
+                    摘要
+                </p>
+                <div>
+                    <p>
+                        <span>
+                            <img src={require('./calendar.png')} alt='发表日期' />
+                            {props.data.time}
+                        </span>
+                        <span>
+                            <img src={require('./views.png')} alt='阅读数' />
+                            {props.data.viewCount}
+                        </span>
+                        <span>
+                            <img src={require('./comments.png')} alt='评论数' />
+                            {props.data.commentCount}
+                        </span>
+                    </p>
+                    <span className={`${style.lastSpan}`}>
+                        阅读全文 <span>》</span>
+                    </span>
+                </div>
             </div>
         </div>
-    </div>
     )
 }

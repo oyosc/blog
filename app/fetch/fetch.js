@@ -1,20 +1,20 @@
 import axios from 'axios'
 import Qs from 'qs'
-axios.defaults.timeout = 100000;
+axios.defaults.timeout = 100000
 
 let config = {
     baseURL: '/api',
     transformRequest: [
-        function(data){
-            let ret = '';
-            for(let it in data){
+        function (data) {
+            let ret = ''
+            for (let it in data) {
                 ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
             }
             return ret
         }
     ],
     transformResponse: [
-        function(data){
+        function (data) {
             return data
         }
     ],
@@ -24,23 +24,23 @@ let config = {
     },
     timeout: 10000,
     responseType: 'json'
-};
+}
 
-axios.interceptors.response.use(function(res){
-    return res;
-});
+axios.interceptors.response.use(function (res) {
+    return res
+})
 
-export function get(url, token){
-    if(token){
-        config.headers.authorization = token;
+export function get (url, token) {
+    if (token) {
+        config.headers.authorization = token
     }
-    console.log(url);
+    console.log(url)
     return axios.get(url, config)
 }
 
-export function post(url, data, token){
-    if(token){
-        config.headers.authorization = token;
+export function post (url, data, token) {
+    if (token) {
+        config.headers.authorization = token
     }
     return axios.post(url, data, config)
 }

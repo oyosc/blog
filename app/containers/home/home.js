@@ -17,13 +17,13 @@ const {get_article_list, get_article_detail} = frontActions
 
 const tags = ['html', 'javascript', 'css', 'reactJs', 'redux', 'vue', '']
 
-class Home extends Component{
-    constructor(props){
-        super(props);
+class Home extends Component {
+    constructor (props) {
+        super(props)
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     }
 
-    render(){
+    render () {
         const {tags} = this.props
         // localStorage.setItem('userInfo', JSON.stringify(this.props.userInfo));
         return (
@@ -32,7 +32,7 @@ class Home extends Component{
                 <Redirect to='404' />
                 :
                 <div className={`${style.container}`}>
-                    <ArticleList 
+                    <ArticleList
                         history={this.props.history}
                         data={this.props.articleList}
                         getArticleDetail={this.props.get_article_detail}
@@ -41,7 +41,7 @@ class Home extends Component{
                         <Pagination
                             defaultPageSize={5}
                             onChange={(pageNum) => {
-                                this.props.get_article_list(this.props.match.params.tag||'', pageNum)
+                                this.props.get_article_list(this.props.match.params.tag || '', pageNum)
                             }}
                             current={this.props.pageNum}
                             total={this.props.total}
@@ -51,10 +51,10 @@ class Home extends Component{
         )
     }
 
-    componentDidMount(){
+    componentDidMount () {
         this.props.get_article_list(this.props.match.params.tag || '')
         let href = window.location.href
-        if(href.indexOf('?code=') !== -1){
+        if (href.indexOf('?code=') !== -1) {
             let result = href.split('?code=')
             this.props.logined_with_github(result[1], result[0])
         }
@@ -75,18 +75,18 @@ Home.defaultProps = {
     pageNum: 1,
     total: 0,
     articleList: []
-};
+}
 
-console.log(PropTypes);
+console.log(PropTypes)
 
 Home.propsTypes = {
     userInfo: PropTypes.object.isRequired,
     pageNum: PropTypes.number.isRequired,
     total: PropTypes.number.isRequired,
     articleList: PropTypes.array.isRequired
-};
+}
 
-function mapStateToProps(state){
+function mapStateToProps (state) {
     return {
         userInfo: state.globalState.userInfo,
         tags: state.admin.tags,
@@ -96,15 +96,15 @@ function mapStateToProps(state){
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps (dispatch) {
     return {
         get_article_list: bindActionCreators(get_article_list, dispatch),
         get_article_detail: bindActionCreators(get_article_detail, dispatch),
-        logined_with_github: bindActionCreators(IndexActions.get_github_logined, dispatch),
+        logined_with_github: bindActionCreators(IndexActions.get_github_logined, dispatch)
     }
 }
 
 export default connect(
     mapStateToProps,
     mapDispatchToProps
-)(Home);
+)(Home)

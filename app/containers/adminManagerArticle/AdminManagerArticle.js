@@ -12,13 +12,13 @@ import Admin from '../admin/Admin'
 const {get_article_list, delete_article, edit_article} = actions
 const {get_article_detail} = FrontActions
 
-class AdminManagerArticles extends Component{
-    constructor(props){
-        super(props);
+class AdminManagerArticles extends Component {
+    constructor (props) {
+        super(props)
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     }
 
-    render(){
+    render () {
         console.log(this.props.articleList)
         return (
             <div>
@@ -28,10 +28,10 @@ class AdminManagerArticles extends Component{
                         this.props.articleList.map((item, index) => {
                             return (
                                 <ManagerArticleCell
-                                    edit_article={(id)=>this.props.edit_article(id)}
+                                    edit_article={(id) => this.props.edit_article(id)}
                                     history={this.props.history}
-                                    get_article_detail={(id)=>this.props.get_article_detail(id)}
-                                    delete={(id)=>{this.props.delete_article(id)}}
+                                    get_article_detail={(id) => this.props.get_article_detail(id)}
+                                    delete={(id) => { this.props.delete_article(id) }}
                                     key={index}
                                     data={item}
                                 />
@@ -43,7 +43,7 @@ class AdminManagerArticles extends Component{
                     <Pagination
                         defaultPageSize={5}
                         onChange={(pageNum) => {
-                            this.props.get_article_list(pageNum);
+                            this.props.get_article_list(pageNum)
                         }}
                         current={this.props.pageNum}
                         total={this.props.total}
@@ -53,8 +53,8 @@ class AdminManagerArticles extends Component{
         )
     }
 
-    componentDidMount(){
-        if(this.props.articleList.length === 0){
+    componentDidMount () {
+        if (this.props.articleList.length === 0) {
             this.props.get_article_list()
         }
     }
@@ -72,7 +72,7 @@ AdminManagerArticles.PropTypes = {
     total: PropTypes.number
 }
 
-function mapStateToProps(state){
+function mapStateToProps (state) {
     return {
         articleList: state.admin.articles.articleList,
         pageNum: state.admin.articles.pageNum,
@@ -80,7 +80,7 @@ function mapStateToProps(state){
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps (dispatch) {
     return {
         get_article_list: bindActionCreators(get_article_list, dispatch),
         delete_article: bindActionCreators(delete_article, dispatch),

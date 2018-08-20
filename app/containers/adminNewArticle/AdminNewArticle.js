@@ -7,77 +7,75 @@ import style from './style.css'
 import remark from 'remark'
 import reactRenderer from 'remark-react'
 import {Input, Select, Button, Modal} from 'antd'
-import {actions} from '../../reducers/adminManagerNewArticle' //TODO
+import {actions} from '../../reducers/adminManagerNewArticle'
 import {actions as tagActions} from '../../reducers/adminManagerTags'
 import dateFormat from 'dateformat'
-
 
 const {get_all_tags} = tagActions
 const {update_content, update_tags, update_title, save_article} = actions
 const Option = Select.Option
 
-class AdminNewArticle extends Component{
-    constructor(props){
-        super(props);
-        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+class AdminNewArticle extends Component {
+    constructor (props) {
+        super(props)
+        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
         this.state = {
             options: [],
             modalVisible: false
         }
     }
-    
-    //正文
-    onChanges(e){
+    // 正文
+    onChanges (e) {
         this.props.update_content(e.target.value)
     }
-    //标题输入框
-    titleOnChange(e){
+    // 标题输入框
+    titleOnChange (e) {
         this.props.update_title(e.target.value)
     }
 
-    //选择标签
-    selectTags(value){
-        console.log("value")
+    // 选择标签
+    selectTags (value) {
+        console.log('value')
         console.log(value)
         this.props.update_tags(value)
     }
 
-    //预览
-    preView(){
+    // 预览
+    preView () {
         this.setState({
             modalVisible: true
         })
     }
 
-    //发表
-    publishArticle(){
-        let articleData = {};
-        articleData.title = this.props.title;
-        articleData.content = this.props.content;
-        articleData.tags = this.props.tags;
-        articleData.time = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss');
-        articleData.isPublish = true;
-        this.props.save_article(articleData);
+    // 发表
+    publishArticle () {
+        let articleData = {}
+        articleData.title = this.props.title
+        articleData.content = this.props.content
+        articleData.tags = this.props.tags
+        articleData.time = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss')
+        articleData.isPublish = true
+        this.props.save_article(articleData)
     }
 
-    //保存
-    saveArticle(){
-        let articleData = {};
-        articleData.title = this.props.title;
-        articleData.content = this.props.content;
-        articleData.tags = this.props.tags;
-        articleData.time = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss');
-        articleData.isPublish = false;
-        this.props.save_article(articleData);
+    // 保存
+    saveArticle () {
+        let articleData = {}
+        articleData.title = this.props.title
+        articleData.content = this.props.content
+        articleData.tags = this.props.tags
+        articleData.time = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:ss')
+        articleData.isPublish = false
+        this.props.save_article(articleData)
     }
 
-    handleOk(){
+    handleOk () {
         this.setState({
             modalVisible: false
         })
     }
 
-    render(){
+    render () {
         return (
             <div>
                 <h2>发文</h2>
@@ -88,13 +86,13 @@ class AdminNewArticle extends Component{
                         placeholder={'请输入文字标题'}
                         type='text'
                         value={this.props.title}
-                        onChange={this.titleOnChange.bind(this)} 
+                        onChange={this.titleOnChange.bind(this)}
                     />
                     <span className={`${style.subTitle}`}>正文</span>
                     <textarea
                         className={`${style.textArea}`}
                         value={this.props.content}
-                        onChange={this.onChanges.bind(this)} 
+                        onChange={this.onChanges.bind(this)}
                     />
                     <span className={`${style.subTitle}`}>分类</span>
                     <Select
@@ -105,7 +103,7 @@ class AdminNewArticle extends Component{
                         value={this.props.tags}
                     >
                         {
-                            this.props.tagsBase.map((item)=>{
+                            this.props.tagsBase.map((item) => {
                                 return (
                                     <Option key={item}>{item}</Option>
                                 )
@@ -139,8 +137,8 @@ class AdminNewArticle extends Component{
         )
     }
 
-    componentDidMount(){
-        this.props.get_all_tags();
+    componentDidMount () {
+        this.props.get_all_tags()
     }
 }
 
@@ -149,34 +147,34 @@ AdminNewArticle.PropTypes = {
     content: PropTypes.string,
     tags: PropTypes.array,
     tagsBase: PropTypes.array
-};
+}
 
 AdminNewArticle.defaultProps = {
     title: '',
     content: '',
     tags: [],
     tagsBase: []
-};
+}
 
-function mapStateToProps(state){
-    const {title, content, tags} = state.admin.newArticle;
-    let tempArr = state.admin.tags;
-    for(let i=0; i<tempArr.length; i++){
-        if(tempArr[i] == '首页'){
-            console.log("arr")
+function mapStateToProps (state) {
+    const {title, content, tags} = state.admin.newArticle
+    let tempArr = state.admin.tags
+    for (let i = 0; i < tempArr.length; i++) {
+        if (tempArr[i] === '首页') {
+            console.log('arr')
             console.log(i)
-            tempArr.splice(i, 1);
+            tempArr.splice(i, 1)
         }
     }
     return {
         title,
         content,
         tags,
-        tagsBase:tempArr
+        tagsBase: tempArr
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps (dispatch) {
     return {
         update_tags: bindActionCreators(update_tags, dispatch),
         update_title: bindActionCreators(update_title, dispatch),

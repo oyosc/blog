@@ -8,14 +8,14 @@ const menus = [
     {url: '/managerArticles', name: '文章管理', iconType: 'usergroup-delete'},
     {url: '/managerComments', name: '评论管理', iconType: 'usergroup-delete'},
     {url: '/newArticle', name: '发文', iconType: 'file-text'}
-];
+]
 
-export default class AdminMenu extends Component{
-    constructor(props){
+export default class AdminMenu extends Component {
+    constructor (props) {
         super(props)
     }
 
-    render(){
+    render () {
         return (
             <div>
                 <Menu
@@ -24,21 +24,21 @@ export default class AdminMenu extends Component{
                     theme='dark'
                     onClick={
                         ({key}) => {
-                            console.log("key");
-                            console.log(key);
-                            this.props.changeUrl(key);
+                            console.log('key')
+                            console.log(key)
+                            this.props.changeUrl(key)
                             this.props.history.push(`/admin${key}`)
                         }
-                    } 
+                    }
                 >
-                {
-                    menus.map((item, index) => 
-                        <Menu.Item key={item.url}>
-                            <Icon type={item.iconType} />
-                            <span>{item.name}</span>
-                        </Menu.Item>
-                    )
-                }
+                    {
+                        menus.map((item, index) =>
+                            <Menu.Item key={item.url}>
+                                <Icon type={item.iconType} />
+                                <span>{item.name}</span>
+                            </Menu.Item>
+                        )
+                    }
                 </Menu>
             </div>
         )

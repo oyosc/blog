@@ -5,14 +5,14 @@ import CommentListCom from './components/CommentList'
 import {actions} from '../../reducers/comments'
 import {bindActionCreators} from 'redux'
 
-class CommentList extends Component{
-    componentDidMount(){
+class CommentList extends Component {
+    componentDidMount () {
         let href = window.location.href
-        let article_id = href.split("detail/")[1]
+        let article_id = href.split('detail/')[1]
         this.props.initComments(article_id)
     }
 
-    render(){
+    render () {
         return (
             <CommentListCom
                 comments = {this.props.commentList}
@@ -37,7 +37,7 @@ CommentList.PropTypes = {
     article_id: PropTypes.string
 }
 
-function mapStateToProps(state){
+function mapStateToProps (state) {
     const {_id} = state.front.articleDetail
     return {
         article_id: _id,
@@ -47,7 +47,7 @@ function mapStateToProps(state){
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps (dispatch) {
     return {
         initComments: bindActionCreators(actions.init_comment, dispatch),
         addLikeHot: bindActionCreators(actions.add_likehot, dispatch),

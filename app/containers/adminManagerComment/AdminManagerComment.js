@@ -7,16 +7,15 @@ import {actions} from '../../reducers/adminManagerComment'
 import {Table, Pagination, Switch} from 'antd'
 import style from './style.css'
 
-function toLocalDate(timeString){
+function toLocalDate (timeString) {
     let unixTime = new Date(parseInt(timeString))
-    return unixTime.getFullYear() + "/" + (unixTime.getMonth() + 1) + "/" + unixTime.getDate() + "/ " + unixTime.getHours() + ":" + unixTime.getMinutes() + ":" + unixTime.getSeconds();
+    return unixTime.getFullYear() + '/' + (unixTime.getMonth() + 1) + '/' + unixTime.getDate() + '/' + unixTime.getHours() + ':' + unixTime.getMinutes() + ':' + unixTime.getSeconds()
 }
 
+const {get_all_comments, audit_comment, config_audit, get_audit} = actions
 
-const {get_all_comments, audit_comment, config_audit, get_audit} = actions;
-
-class AdminManagerComment extends Component{
-    constructor(props){
+class AdminManagerComment extends Component {
+    constructor (props) {
         super(props)
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     }
@@ -26,39 +25,39 @@ class AdminManagerComment extends Component{
         dataIndex: 'article_title',
         key: 'article_title',
         render: (text, row) => <a target='_blank' href={`/detail/${row.article_id}`}>{text}</a>
-    },{
+    }, {
         title: '评论内容',
         dataIndex: 'comment_content',
-        key: 'comment_content',
-    },{
+        key: 'comment_content'
+    }, {
         title: '评论时间',
         dataIndex: 'comment_time',
         key: 'comment_time',
-        render: (comment_time) =>  {return toLocalDate(comment_time)}
-    },{
+        render: (comment_time) => { return toLocalDate(comment_time) }
+    }, {
         title: '评论用户',
         dataIndex: 'comment_user',
         key: 'comment_user'
-    },{
+    }, {
         title: '审核',
         dataIndex: 'whether_audit',
         key: 'whether_audit',
         render: (whether_audit, row) => {
-            if(whether_audit === '1'){
+            if (whether_audit === '1') {
                 return <Switch checkedChildren="已审核" unCheckedChildren="未审核" checked={true} onChange = {this.props.audit_comment.bind(this, row.comment_id)}/>
-            }else{
+            } else {
                 return <Switch checkedChildren="已审核" unCheckedChildren="未审核" checked={false} onChange = {this.props.audit_comment.bind(this, row.comment_id)}/>
             }
         }
-    }];
+    }]
 
-    componentWillMount(){
-        if(this.props.list.length===0){
-            this.props.get_all_comments();
+    componentWillMount () {
+        if (this.props.list.length === 0) {
+            this.props.get_all_comments()
         }
     }
 
-    render(){
+    render () {
         return (
             <div>
                 <h2>评论管理</h2>
@@ -70,8 +69,8 @@ class AdminManagerComment extends Component{
                     dataSource={this.props.list}
                 />
                 <Pagination
-                    onChange={(pageNum) =>{
-                        this.props.get_all_comments(pageNum);
+                    onChange={(pageNum) => {
+                        this.props.get_all_comments(pageNum)
                     }}
                     defaultCurrent={1}
                     defaultPageSize={5}
@@ -95,8 +94,8 @@ AdminManagerComment.defaultProps = {
     total: 0
 }
 
-function mapStateToProps(state){
-    let {pageNum, list, total} = state.admin.comments;
+function mapStateToProps (state) {
+    let {pageNum, list, total} = state.admin.comments
     return {
         pageNum,
         list,
@@ -104,7 +103,7 @@ function mapStateToProps(state){
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps (dispatch) {
     return {
         get_all_comments: bindActionCreators(get_all_comments, dispatch),
         audit_comment: bindActionCreators(audit_comment, dispatch),

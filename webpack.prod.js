@@ -1,14 +1,14 @@
-const pathLib = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const CleanPlugin = require('clean-webpack-plugin');
+const pathLib = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+// const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+const CleanPlugin = require('clean-webpack-plugin')
 
-const ROOT_PATH = pathLib.resolve(__dirname);
-const ENTRY_PATH = pathLib.resolve(ROOT_PATH, 'app');
-const OUTPUT_PATH = pathLib.resolve(ROOT_PATH, 'build');
-console.log(pathLib.resolve(ENTRY_PATH, 'index.js'));
+const ROOT_PATH = pathLib.resolve(__dirname)
+const ENTRY_PATH = pathLib.resolve(ROOT_PATH, 'app')
+const OUTPUT_PATH = pathLib.resolve(ROOT_PATH, 'build')
+console.log(pathLib.resolve(ENTRY_PATH, 'index.js'))
 
 module.exports = {
     entry: {
@@ -30,16 +30,16 @@ module.exports = {
             },
             {
                 test: /\.less$/,
-                use: [{loader: "style-loader"}, {loader: "css-loader"}, {loader: "postcss-loader"}, {loader: "less-loader", options: {javascriptEnabled: true}}]
+                use: [{loader: 'style-loader'}, {loader: 'css-loader'}, {loader: 'postcss-loader'}, {loader: 'less-loader', options: {javascriptEnabled: true}}]
             },
             {
                 test: /\.css$/,
                 // exclude: /node_mudules/,
-                use:['style-loader',
+                use: ['style-loader',
                     {
                         loader: 'css-loader',
                         options: {
-                            modules: true,
+                            modules: true
                         }
                     },
                     'postcss-loader'
@@ -52,7 +52,7 @@ module.exports = {
                     {
                         loader: 'url-loader',
                         options: {
-                            limit:8192
+                            limit: 8192
                         }
                     }
                 ]
@@ -80,11 +80,11 @@ module.exports = {
         new ProgressBarPlugin(),
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.DefinePlugin({
-            "progress.env.NODE_ENV": JSON.stringify('production')
+            'progress.env.NODE_ENV': JSON.stringify('production')
         }),
         new HtmlWebpackPlugin({
             title: "oyosc's blog",
-            showErrors: true,
+            showErrors: true
         }),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HashedModuleIdsPlugin()

@@ -3,51 +3,51 @@ import {get, post} from '../fetch/fetch'
 import {actionsTypes as IndexActionTypes} from '../reducers'
 import {actionTypes as FrontActionTypes} from '../reducers/frontReducer'
 
-export function* getArticleList(tag, pageNum){
+export function * getArticleList (tag, pageNum) {
     yield put({type: IndexActionTypes.FETCH_START})
-    try{
-        return yield call(get, `/getArticles?pageNum=${pageNum}&isPublish=true&tag=${tag}`) 
-    }catch(err){
+    try {
+        return yield call(get, `/getArticles?pageNum=${pageNum}&isPublish=true&tag=${tag}`)
+    } catch (err) {
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
-    }finally{
+    } finally {
         yield put({type: IndexActionTypes.FETCH_END})
     }
 }
 
-export function* getAllArticleFlow(){
-    while(true){
+export function * getAllArticleFlow () {
+    while (true) {
         let req = yield take(FrontActionTypes.GET_ARTICLE_LIST)
-        console.log("req:", req)
+        console.log('req:', req)
         let res = yield call(getArticleList, req.tag, req.pageNum)
         console.log(res)
-        if(res && res.data && res.data.code ===0 && res.data.result){
-            yield put({type: FrontActionTypes.RESPONSE_ARTICLE_LIST,data: res.data.result})
-        }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
+        if (res && res.data && res.data.code === 0 && res.data.result) {
+            yield put({type: FrontActionTypes.RESPONSE_ARTICLE_LIST, data: res.data.result})
+        } else {
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
         }
     }
 }
 
-export function* getArticleDetail(id){
+export function * getArticleDetail (id) {
     yield put({type: IndexActionTypes.FETCH_START})
-    try{
+    try {
         return yield call(get, `/getArticleDetail?id=${id}`)
-    }catch(err){
+    } catch (err) {
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
-    }finally{
+    } finally {
         yield put({type: IndexActionTypes.FETCH_START})
     }
 }
 
-export function* getArticleDetailFlow(){
-    while(true){
+export function * getArticleDetailFlow () {
+    while (true) {
         let req = yield take(FrontActionTypes.GET_ARTICLE_DETAIL)
         let res = yield call(getArticleDetail, req.id)
 
-        if(res && res.data && res.data.code ===0 && res.data.result){
-            yield put({type: FrontActionTypes.RESPONSE_ARTICLE_DETAIL,data: res.data.result})
-        }else{
-            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent:'网络请求错误', msgType:0})
+        if (res && res.data && res.data.code === 0 && res.data.result) {
+            yield put({type: FrontActionTypes.RESPONSE_ARTICLE_DETAIL, data: res.data.result})
+        } else {
+            yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
         }
     }
 }

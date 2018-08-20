@@ -10,14 +10,14 @@ const carouselImgs = [
     require('./banner_3.png')
 ]
 
-export default class Banner extends Component{
-    constructor(props){
+export default class Banner extends Component {
+    constructor (props) {
         super(props)
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
         this.renderCarousel = this.renderCarousel.bind(this)
     }
 
-    render(){
+    render () {
         return (
             <Carousel autoplay>
                 {this.renderCarousel(carouselImgs)}
@@ -25,7 +25,7 @@ export default class Banner extends Component{
         )
     }
 
-    renderCarousel(imgs){
+    renderCarousel (imgs) {
         return imgs.map((item, index) => {
             return (
                 <div key={index} className={`${style.carouselImgContainer}`}>

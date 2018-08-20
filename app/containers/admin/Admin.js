@@ -1,37 +1,36 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
-import {
-    Switch,
-    Route,
-    Redirect
-} from 'react-router-dom'
-
-import NotFound from '../../components/notFound/NotFound'
-import AdminMenu from '../../components/adminMenu/AdminMenu'
 import AdminIndex from '../adminIndex/AdminIndex'
 import AdminManagerUser from '../adminManagerUser/AdminManagerUser'
 import AdminManagerTags from '../adminManagerTags/AdminManagerTags'
 import AdminManagerArticles from '../adminManagerArticle/AdminManagerArticle'
 import AdminManagerComment from '../adminManagerComment/AdminManagerComment'
 import AdminNewArticle from '../adminNewArticle/AdminNewArticle'
+import {
+    Switch,
+    Route,
+    Redirect
+} from 'react-router-dom'
+import NotFound from '../../components/notFound/NotFound'
+import AdminMenu from '../../components/adminMenu/AdminMenu'
 import style from './style.css'
 import {bindActionCreators} from 'redux'
 import {actions} from '../../reducers/admin'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 import {Detail} from '../detail/Detail'
 
-const {change_location_admin} = actions;
+const {change_location_admin} = actions
 
-class Admin extends Component{
-    constructor(props){
-        super(props);
+class Admin extends Component {
+    constructor (props) {
+        super(props)
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     }
 
-    render(){
-        const {url} = this.props.match;
-        if(this.props.userInfo&&this.props.userInfo.userType){//这里判断是否有userinfo,防止刷新页面的时候props渲染没有完成，导致为空
+    render () {
+        const {url} = this.props.match
+        if (this.props.userInfo && this.props.userInfo.userType) { // 这里判断是否有userinfo,防止刷新页面的时候props渲染没有完成，导致为空
             return (
                 <div>
                     {
@@ -59,9 +58,9 @@ class Admin extends Component{
                     }
                 </div>
             )
-        }else{
-            if(localStorage.getItem('userInfo')){
-                let userInfo = localStorage.getItem('userInfo');
+        } else {
+            if (localStorage.getItem('userInfo')) {
+                let userInfo = localStorage.getItem('userInfo')
                 let parseUserInfo = JSON.parse(userInfo)
                 return (
                     <div>
@@ -90,14 +89,14 @@ class Admin extends Component{
                         }
                     </div>
                 )
-            }else{
+            } else {
                 return <Redirect to='/' />
             }
         }
     }
 
-    componentWillReceiveProps(){
-        this.props.change_location_admin(window.location.pathname.replace(/\/admin/, '')|| '/');
+    componentWillReceiveProps () {
+        this.props.change_location_admin(window.location.pathname.replace(/\/admin/, '') || '/')
     }
 }
 
@@ -110,15 +109,15 @@ Admin.propTypes = {
     change_location_admin: PropTypes.func
 }
 
-function mapStateToProps(state){
-    const {url} = state.admin.adminGlobalState;
+function mapStateToProps (state) {
+    const {url} = state.admin.adminGlobalState
     return {
         adminUrl: url,
         userInfo: state.globalState.userInfo
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps (dispatch) {
     return {
         change_location_admin: bindActionCreators(change_location_admin, dispatch)
     }

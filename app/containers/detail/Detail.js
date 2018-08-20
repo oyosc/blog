@@ -5,18 +5,18 @@ import remark from 'remark'
 import {connect} from 'react-redux'
 import {Redirect} from 'react-router-dom'
 import {actions} from '../../reducers/frontReducer'
-const {get_article_detail} = actions
 import reactRenderer from 'remark-react'
 import style from './style.css'
 import CommentApp from '../comment/CommentApp'
+const {get_article_detail} = actions
 
-class Detail extends Component{
-    constructor(props){
+class Detail extends Component {
+    constructor (props) {
         super(props)
         this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     }
 
-    render(){
+    render () {
         const {articleContent, title, author, viewCount, commentCount, time} = this.props
         return (
             <div className={`${style.container}`}>
@@ -40,19 +40,18 @@ class Detail extends Component{
         )
     }
 
-    componentWillMount(){
-        if(this.props.state){
+    componentWillMount () {
+        if (this.props.state) {
             this.props.get_article_detail(this.props.location.state.id)
-        }else{
+        } else {
             let href = window.location.href
-            let article_id = href.split("detail/")[1]
+            let article_id = href.split('detail/')[1]
             this.props.get_article_detail(article_id)
         }
-        
     }
 }
 
-function mapStateToProps(state){
+function mapStateToProps (state) {
     const {content, title, author, viewCount, commentCount, time} = state.front.articleDetail
     return {
         articleContent: content,
@@ -64,8 +63,8 @@ function mapStateToProps(state){
     }
 }
 
-function mapDispatchToProps(dispatch){
-    return{
+function mapDispatchToProps (dispatch) {
+    return {
         get_article_detail: bindActionCreators(get_article_detail, dispatch)
     }
 }

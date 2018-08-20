@@ -1,15 +1,15 @@
-const pathLib = require('path');
-const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const OpenBrowserPlugin = require('open-browser-webpack-plugin');
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
-const CleanPlugin = require('clean-webpack-plugin');
+const pathLib = require('path')
+const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const OpenBrowserPlugin = require('open-browser-webpack-plugin')
+const ProgressBarPlugin = require('progress-bar-webpack-plugin')
+const CleanPlugin = require('clean-webpack-plugin')
 // const config = require('./config/config');
 
-const ROOT_PATH = pathLib.resolve(__dirname);
-const ENTRY_PATH = pathLib.resolve(ROOT_PATH, 'app');
-const OUTPUT_PATH = pathLib.resolve(ROOT_PATH, 'build');
-console.log(pathLib.resolve(ENTRY_PATH, 'index.js'));
+const ROOT_PATH = pathLib.resolve(__dirname)
+const ENTRY_PATH = pathLib.resolve(ROOT_PATH, 'app')
+const OUTPUT_PATH = pathLib.resolve(ROOT_PATH, 'build')
+console.log(pathLib.resolve(ENTRY_PATH, 'index.js'))
 
 module.exports = {
     entry: {
@@ -31,7 +31,7 @@ module.exports = {
     //     }
     // },
     devtool: 'cheap-moudle-eval-source-map',
-    module:{
+    module: {
         rules: [
             {
                 test: /\.(jsx|js)?$/,
@@ -41,11 +41,11 @@ module.exports = {
             {
                 test: /\.css$/,
                 // exclude: /node_mudules/,
-                use:['style-loader',
+                use: ['style-loader',
                     {
                         loader: 'css-loader',
                         options: {
-                            modules: true,
+                            modules: true
                         }
                     },
                     'postcss-loader'
@@ -58,10 +58,10 @@ module.exports = {
             {
                 test: /\.(png|jpg|gif|JPG|GIF|PNG|BMP|bmp|JPEG|jpeg)$/,
                 exclude: /node_mudules/,
-                use:[
+                use: [
                     {
                         loader: 'url-loader',
-                        options:{
+                        options: {
                             mimetype: 'image/png'
                         }
                     }
@@ -83,7 +83,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             title: "oyosc's Blog",
-            showErrors: true,
+            showErrors: true
         }),
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HashedModuleIdsPlugin(),

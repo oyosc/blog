@@ -7,40 +7,40 @@ import {actions} from '../../reducers/adminManagerUser'
 import {Table, Pagination} from 'antd'
 import style from './style.css'
 
-const {get_all_users} = actions;
+const {get_all_users} = actions
 
 const columns = [{
     title: '姓名',
     dataIndex: 'username',
     key: 'name',
     render: text => <a href="#">{text}</a>
-},{
+}, {
     title: 'ID',
     dataIndex: '_id',
-    key: 'ID',
-},{
+    key: 'ID'
+}, {
     title: '密码(加密后)',
     dataIndex: 'password',
-    key: 'password',
-},{
+    key: 'password'
+}, {
     title: '身份',
     dataIndex: 'type',
     key: 'address'
-}];
+}]
 
-class AdminManagerUser extends Component{
-    constructor(props){
-        super(props);
-        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this);
+class AdminManagerUser extends Component {
+    constructor (props) {
+        super(props)
+        this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
     }
 
-    componentDidMount(){
-        if(this.props.list.length===0){
-            this.props.getAllUsers();
+    componentDidMount () {
+        if (this.props.list.length === 0) {
+            this.props.getAllUsers()
         }
     }
 
-    render(){
+    render () {
         return (
             <div>
                 <h2>用户管理</h2>
@@ -51,8 +51,8 @@ class AdminManagerUser extends Component{
                     dataSource={this.props.list}
                 />
                 <Pagination
-                    onChange={(pageNum) =>{
-                        this.props.getAllUsers(pageNum);
+                    onChange={(pageNum) => {
+                        this.props.getAllUsers(pageNum)
                     }}
                     current={this.props.pageNum}
                     total={this.props.total}
@@ -74,8 +74,8 @@ AdminManagerUser.defaultProps = {
     total: 0
 }
 
-function mapStateToProps(state){
-    let {pageNum, list, total} = state.admin.users;
+function mapStateToProps (state) {
+    let {pageNum, list, total} = state.admin.users
     return {
         pageNum,
         list,
@@ -83,7 +83,7 @@ function mapStateToProps(state){
     }
 }
 
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps (dispatch) {
     return {
         getAllUsers: bindActionCreators(get_all_users, dispatch)
     }

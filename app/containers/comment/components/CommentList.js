@@ -4,17 +4,16 @@ import PropTypes from 'prop-types'
 import {Pagination} from 'antd'
 import style from '../index.css'
 
-class CommentListCom extends Component{
-
-    render(){
+class CommentListCom extends Component {
+    render () {
         return (
             <div>{
                 this.props.comments.map((comment) => {
                     console.log(comment)
                     return (
                         <div>
-                            <Comment 
-                                comment={comment} 
+                            <Comment
+                                comment={comment}
                                 userInfo={this.props.userInfo}
                                 addLikeHot = {this.props.addLikeHot}
                                 deleteLikeHot = {this.props.deleteLikeHot}
@@ -26,16 +25,15 @@ class CommentListCom extends Component{
             {
                 this.props.comments.length > 0 ?
                     <Pagination
-                    className={`${style.pagination}`}
-                    onChange={(pageNum) =>{
-                        this.props.showComments(this.props.article_id, pageNum);
-                    }}
-                    defaultCurrent={1}
-                    defaultPageSize={5}
-                    total={this.props.total}
+                        className={`${style.pagination}`}
+                        onChange={(pageNum) => {
+                            this.props.showComments(this.props.article_id, pageNum)
+                        }}
+                        defaultCurrent={1}
+                        defaultPageSize={5}
+                        total={this.props.total}
                     /> : null
             }
-            
             </div>
         )
     }

@@ -8,7 +8,7 @@ import {getAllArticleFlow, getArticleDetailFlow} from './frontSaga'
 import {addCommentFlow, showCommentFlow, addLikeHotFlow, deleteLikeHotFlow} from './commentSaga'
 import {showCommentListFlow, auditCommentFlow, configCommentFlow, getConfigCommentFlow} from './adminManagerCommentSaga'
 
-export default function* rootSaga(){
+export default function * rootSaga () {
     yield fork(loginFlow)
     yield fork(logoutFlow)
     yield fork(loginWithGithubFlow)

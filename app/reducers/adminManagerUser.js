@@ -10,7 +10,7 @@ export const actionTypes = {
 }
 
 export const actions = {
-    get_all_users: function(pageNum=1){
+    get_all_users: function (pageNum = 1) {
         return {
             type: actionTypes.GET_ALL_USER,
             pageNum: pageNum
@@ -18,8 +18,8 @@ export const actions = {
     }
 }
 
-export function users(state = initialState, action){
-    switch(action.type){
+export function users (state = initialState, action) {
+    switch (action.type) {
         case actionTypes.RESOLVE_GET_ALL_USERS:
             return {
                 list: action.data.list,
@@ -27,6 +27,6 @@ export function users(state = initialState, action){
                 total: action.data.total
             }
         default:
-            return state;
+            return state
     }
 }

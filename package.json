@@ -15,7 +15,8 @@
     "start-prod": "npm run build & npm run watch-client-prod & npm run start-dev-api",
     "start-prod-end": "npm run watch-client-prod & npm run start-dev-api",
     "start-prod-debug": "npm run build & npm run watch-client-prod-debug & npm run start-dev-api-debug",
-    "start-prod-end-debug": "npm run watch-client-prod-debug & npm run start-dev-api-debug"
+    "start-prod-end-debug": "npm run watch-client-prod-debug & npm run start-dev-api-debug",
+    "eslint": "./node_modules/.bin/eslint ./"
   },
   "author": "",
   "license": "ISC",
@@ -35,6 +36,7 @@
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^7.0.1",
     "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-react": "^7.11.1",
     "eslint-plugin-standard": "^3.1.0",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
@@ -73,6 +75,7 @@
   "dependencies": {
     "antd": "^3.4.1",
     "axios": "^0.18.0",
+    "babel-eslint": "^8.2.6",
     "babel-preset-stage-0": "^6.24.1",
     "connect-history-api-fallback": "^1.5.0",
     "koa-body": "^2.5.0",
