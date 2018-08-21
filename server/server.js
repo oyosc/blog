@@ -76,7 +76,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 app.use(router.routes())
 
-app.listen(nodeConfig.port, (err) => {
+export default app.listen(nodeConfig.port, (err) => {
     if (err) {
         console.error(err)
     } else {

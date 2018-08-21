@@ -18,6 +18,7 @@
         "no-useless-constructor": "warn",
         "operator-linebreak": "off",
         "no-unused-vars": "warn",
+        "no-undef": "warn",
         "indent": ["error", 4,
         {
             "SwitchCase": 1

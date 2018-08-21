@@ -187,11 +187,12 @@ mongoose.connect(mongodb_url, function (err) {
         return
     }
     console.log('数据库连接成功')
-    app.listen(apiProxy.port, function (err) {
-        if (err) {
-            log.error(__filename, __line(__filename), err)
-        } else {
-            log.info(__filename, __line(__filename), '===> api server is running at ' + apiProxy.port)
-        }
-    })
+})
+
+export default app.listen(apiProxy.port, function (err) {
+    if (err) {
+        log.error(__filename, __line(__filename), err)
+    } else {
+        log.info(__filename, __line(__filename), '===> api server is running at ' + apiProxy.port)
+    }
 })
