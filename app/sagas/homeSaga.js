@@ -39,12 +39,11 @@ export function * loginFlow () {
     }
 }
 
-export function * loginWithGithub () {
+export function * loginWithGithub (href) {
     yield put({type: IndexActionTypes.FETCH_START})
-    console.log('loginwithgithub')
+    console.log('loginwithgithub', href)
     try {
-        window.open('https://github.com/login/oauth/authorize?client_id=4c44c1800fc3ea625eb7', '_self')
-        // return yield call(get, '/user/loginedWithGithub')
+        return yield call(get, href)
     } catch (error) {
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: 'github第三方登录出现错误，请重试', msgType: 2})
     } finally {
@@ -54,27 +53,8 @@ export function * loginWithGithub () {
 
 export function * loginWithGithubFlow () {
     while (true) {
-        yield take(IndexActionTypes.GITHUB_USER_LOGIN)
-        return yield call(loginWithGithub)
-    }
-}
-
-export function * loginedWithGithub (code) {
-    yield put({type: IndexActionTypes.FETCH_START})
-    console.log('loginwithgithub')
-    try {
-        return yield call(post, '/user/loginedWithGithub', {code})
-    } catch (error) {
-        yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: 'github第三方登录出现错误，请重试', msgType: 2})
-    } finally {
-        yield put({type: IndexActionTypes.FETCH_END})
-    }
-}
-
-export function * loginedWithGithubFlow () {
-    while (true) {
-        let request = yield take(IndexActionTypes.GITHUB_USER_LOGINED)
-        let response = yield call(loginedWithGithub, request.code)
+        let request = yield take(IndexActionTypes.GITHUB_USER_LOGIN)
+        let response = yield call(loginWithGithub, request.href)
         console.log(response)
         if (response && response.data && response.data.code === 0) {
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1})
@@ -85,7 +65,6 @@ export function * loginedWithGithubFlow () {
             }
             let data = Object.assign(response.data, userInfo)
             yield put({type: IndexActionTypes.RESPONSE_USER_INFO, data: data})
-            window.location.href = request.url
         } else if (response) {
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
         }

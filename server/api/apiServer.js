@@ -1,7 +1,7 @@
 import Koa from 'koa'
 import mongoose from 'mongoose'
 import session from 'koa-session'
-import {redisConfig, mongoConfig, apiProxy} from '../base/config'
+import {redisConfig, mongoConfig, apiProxy, githubOauth} from '../base/config'
 import {redisInit} from '../database/redis/redis'
 import {checkToke} from '../base/token'
 import {responseClient} from '../base/util'
@@ -9,6 +9,9 @@ import router from '../router/main'
 import log from '../log/log'
 import {findOneUser} from '../models/user'
 import {logout} from '../controllers/user'
+import passport from 'koa-passport'
+import githubStrategyMiddleware from '../middlewares/github_strategy'
+let GitHubStrategy = require('passport-github').Strategy
 
 // const koaBody = require('koa-body')
 
@@ -71,6 +74,8 @@ if (process.env.DEBUG === 'true') {
 let verifyPath = function (path) {
     switch (true) {
         case /\/user\/login([\s\S])*?/.test(path):
+            return true
+        case /\/auth\/github([\s\S])*?/.test(path):
             return true
         case /logout([\s\S])*?/.test(path):
             return true
@@ -155,6 +160,20 @@ const CONFIG = {
     maxAge: 86400000,
     store: store
 }
+
+// oauth中间件
+app.use(passport.initialize())
+
+// github oauth
+passport.serializeUser((user, done) => {
+    done(null, user)
+})
+
+passport.deserializeUser((user, done) => {
+    done(null, user)
+})
+
+passport.use(new GitHubStrategy(githubOauth, githubStrategyMiddleware))
 
 app.use(session(CONFIG, app))
 

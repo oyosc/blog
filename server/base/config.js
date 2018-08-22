@@ -28,8 +28,7 @@ export const redisConfig = {
 }
 
 export const githubOauth = {
-    client_id: '4c44c1800fc3ea625eb7',
-    client_secret: '730740923ddff6294cefe4ab719eaaf417ad443d',
-    token_path: 'https://github.com/login/oauth/access_token',
-    user_path: 'https://api.github.com/user?'
+    clientID: '4c44c1800fc3ea625eb7',
+    clientSecret: '730740923ddff6294cefe4ab719eaaf417ad443d',
+    callbackURL: 'http://127.0.0.1:3000/api/auth/github/callback'
 }

@@ -37,6 +37,7 @@ const history = require('koa-connect-history-api-fallback')
 // })
 
 router.all('/api/*', async (ctx, next) => {
+    console.log(ctx.req.url)
     ctx.req.url = ctx.req.url.split('api')[1]
     ctx.respond = false
     proxy.web(ctx.req, ctx.res, {target: targetUrl})

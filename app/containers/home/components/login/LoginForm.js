@@ -47,8 +47,8 @@ class LoginFormCom extends Component {
                         </Button>
                     </FormItem>
                 </Form>
-                <Button className={`${style.buttonStyle}`} type="primary" onClick={this.handleLoginWithGithub.bind(this)}>
-                    github登录
+                <Button className={`${style.buttonStyle}`} type="primary" >
+                    <a href='http://127.0.0.1:8080/auth/github'>github登录</a>
                 </Button>
             </div>
         )

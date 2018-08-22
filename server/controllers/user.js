@@ -31,66 +31,34 @@ async function login (ctx) {
 }
 
 async function loginWithGithub (ctx) {
-    let {code} = ctx.request.body
-    let data = {
-        'code': code,
-        'client_id': githubOauth.client_id,
-        'client_secret': githubOauth.client_secret
-    }
-    let options = {
-        url: githubOauth.token_path,
-        method: 'POST',
-        headers: {
-            'content-type': 'application/json'
-        },
-        body: JSON.stringify(data)
-    }
-    let result = await asyncRequest(options)
-    if (result.code === 1) {
-        let accessToken = result.data.body.split('&')[0]
-        let getOptions = {
-            url: githubOauth.user_path + accessToken,
-            method: 'GET',
-            headers: {
-                'User-Agent': 'oyosc'
-            }
-        }
-        let userResult = await asyncRequest(getOptions)
-        log.debug(__filename, __line(__filename), userResult)
-        if (userResult.code === 1) {
-            let userInfo = JSON.parse(userResult.data.body)
-            let githubName = userInfo.login
-            let isExistResult = await User.findOneUser({github_name: githubName})
-            if (isExistResult.statusCode === '200') {
-                ctx.session.username = isExistResult.userInfo.username
-                ctx.session.userId = isExistResult.userInfo._id
-                isExistResult.userInfo.username = isExistResult.userInfo.github_name
-                let token = await signToke(isExistResult.userInfo)
-                responseClient(ctx.response, 200, 0, 'github用户已经存在正确信息', {token})
-            } else {
-                let registerUserInfo = {
-                    username: Math.random().toString(36).substr(2),
-                    type: '1',
-                    github_url: userInfo.html_url,
-                    github_name: githubName,
-                    avatar: userInfo.avatar_url
-                }
-                let registerResult = await User.registerUser(registerUserInfo)
-                if (registerResult.statusCode === '200') {
-                    ctx.session.username = registerResult.data.username
-                    ctx.session.userId = registerResult.data._id
-                    registerResult.data.username = registerResult.data.github_name
-                    let token = await signToke(registerResult.data)
-                    responseClient(ctx.response, 200, 0, 'github用户注册成功', {token})
-                } else {
-                    responseClient(ctx.response, 200, 1, 'github用户注册失败')
-                }
-            }
-        } else {
-            responseClient(ctx.response, 200, 1, 'github第三方登录请求access_token失败')
-        }
+    console.log('loginWithGithub')
+    let userInfo = ctx.req.user
+    let githubName = userInfo.username
+    let isExistResult = await User.findOneUser({github_name: githubName})
+    if (isExistResult.statusCode === '200') {
+        ctx.session.username = isExistResult.userInfo.username
+        ctx.session.userId = isExistResult.userInfo._id
+        isExistResult.userInfo.username = isExistResult.userInfo.github_name
+        let token = await signToke(isExistResult.userInfo)
+        responseClient(ctx.response, 200, 0, 'github用户已经存在正确信息', {token})
     } else {
-        responseClient(ctx.response, 200, 1, result.err)
+        let registerUserInfo = {
+            username: Math.random().toString(36).substr(2),
+            type: '1',
+            github_url: userInfo.profileUrl,
+            github_name: githubName,
+            avatar: userInfo.photos[0].value
+        }
+        let registerResult = await User.registerUser(registerUserInfo)
+        if (registerResult.statusCode === '200') {
+            ctx.session.username = registerResult.data.username
+            ctx.session.userId = registerResult.data._id
+            registerResult.data.username = registerResult.data.github_name
+            let token = await signToke(registerResult.data)
+            responseClient(ctx.response, 200, 0, 'github用户注册成功', {token})
+        } else {
+            responseClient(ctx.response, 200, 1, 'github用户注册失败')
+        }
     }
 }
 

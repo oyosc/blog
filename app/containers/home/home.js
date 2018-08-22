@@ -25,9 +25,10 @@ class Home extends Component {
 
     render () {
         const {tags} = this.props
+        alert(tags)
         // localStorage.setItem('userInfo', JSON.stringify(this.props.userInfo));
         return (
-            tags.length > 1 && this.props.match.params.tag && (tags.indexOf(this.props.match.params.tag) === -1 || this.props.location.pathname.lastIndexOf('\/') > 0)
+            tags.length > 1 && (tags.indexOf(this.props.match.params.tag) === -1 || this.props.location.pathname.lastIndexOf('\/') > 0 || this.props.location.pathname.lastIndexOf('\/auth\/github') > 0)
                 ?
                 <Redirect to='404' />
                 :
@@ -54,9 +55,11 @@ class Home extends Component {
     componentDidMount () {
         this.props.get_article_list(this.props.match.params.tag || '')
         let href = window.location.href
-        if (href.indexOf('?code=') !== -1) {
-            let result = href.split('?code=')
-            this.props.logined_with_github(result[1], result[0])
+        if (href.indexOf('auth/github/callback') !== -1) {
+            href = href.split('api')[1]
+            this.props.login_with_github(href)
+        } else if (href.indexOf('auth/github') !== -1) {
+            window.href = href.split('auth')[0]
         }
     }
 
@@ -100,7 +103,7 @@ function mapDispatchToProps (dispatch) {
     return {
         get_article_list: bindActionCreators(get_article_list, dispatch),
         get_article_detail: bindActionCreators(get_article_detail, dispatch),
-        logined_with_github: bindActionCreators(IndexActions.get_github_logined, dispatch)
+        login_with_github: bindActionCreators(IndexActions.get_github_login, dispatch)
     }
 }
 
