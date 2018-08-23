@@ -25,7 +25,7 @@ class Front extends Component {
     render () {
         const {url} = this.props.match
         console.log(url)
-        const {login, login_with_github, logout} = this.props
+        const {login, logout} = this.props
         if (this.props.userInfo.userId) {
             localStorage.setItem('userInfo', JSON.stringify({userId: this.props.userInfo.userId, username: this.props.userInfo.username, userType: this.props.userInfo.userType, avatarUrl: this.props.userInfo.avatar_url, github_url: this.props.userInfo.github_url}))
         }
@@ -40,12 +40,11 @@ class Front extends Component {
                     <div className={`${style.contentContainer}`}>
                         <div className={`${style.content}`}>
                             <Switch>
-                                {/* <Redirect from='/oauth/callback/' to='/' /> */}
+                                <Redirect exact from='/api/auth/github/404' to='/' />
                                 <Route exact path={url} component={Home} history={this.props.history}/>
                                 <Route path={'/detail/:id'} component={Detail} />
                                 <Route path={'/:tag'} component={Home} />
                                 <Route path={'/api/auth/github/:callback?'} history={this.props.history} component={Home} />
-                                <Route path={'/api/auth/github/(:callback?)'} history={this.props.history} component={Home} />
                                 <Route component={NotFound} />
                             </Switch>
                         </div>
@@ -53,7 +52,7 @@ class Front extends Component {
                             {
                                 this.props.userInfo.userId ?
                                     <Logined logout={logout} history={this.props.history} userInfo={this.props.userInfo} /> :
-                                    <Login login={login} login_with_github={login_with_github}/>
+                                    <Login login={login}/>
                             }
                         </div>
                     </div>
@@ -89,7 +88,6 @@ function mapStateToProps (state) {
 function mapDispatchToProps (dispatch) {
     return {
         login: bindActionCreators(IndexActions.get_login, dispatch),
-        login_with_github: bindActionCreators(IndexActions.get_github_code, dispatch),
         get_all_tags: bindActionCreators(get_all_tags, dispatch),
         get_article_list: bindActionCreators(get_article_list, dispatch),
         logout: bindActionCreators(IndexActions.logout, dispatch),

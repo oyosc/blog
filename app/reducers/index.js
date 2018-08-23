@@ -22,7 +22,6 @@ export const actionsTypes = {
     USER_AUTH: 'USER_AUTH',
     CLEAR_USER_AUTH: 'CLEAR_USER_AUTH',
     GITHUB_USER_LOGIN: 'GITHUB_USER_LOGIN',
-    GET_GITHUB_CODE: 'GET_GITHUB_CODE',
     LOGOUT: 'LOGOUT'
 }
 
@@ -40,11 +39,6 @@ export const actions = {
         return {
             type: actionsTypes.GITHUB_USER_LOGIN,
             href
-        }
-    },
-    get_github_code: function () {
-        return {
-            type: actionsTypes.GET_GITHUB_CODE
         }
     },
     get_register: function (data) {

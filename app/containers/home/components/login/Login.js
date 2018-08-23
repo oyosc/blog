@@ -12,11 +12,11 @@ export default class Login extends Component {
     }
 
     render () {
-        const {login, login_with_github} = this.props
+        const {login} = this.props
         return (
             <Tabs defaultActiveKey="1" tabBarStyle={{textAlign: 'center'}} className={`${style.container}`}>
                 <TabPane tab='登录' key='1'>
-                    <LoginForm login={login} login_with_github={login_with_github} />
+                    <LoginForm login={login} />
                 </TabPane>
             </Tabs>
         )

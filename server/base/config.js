@@ -18,7 +18,7 @@ export const apiProxy = {
 // node main config
 export const nodeConfig = {
     ip: '127.0.0.1',
-    port: '3000'
+    port: '3030'
 }
 
 // redis message
@@ -30,5 +30,5 @@ export const redisConfig = {
 export const githubOauth = {
     clientID: '4c44c1800fc3ea625eb7',
     clientSecret: '730740923ddff6294cefe4ab719eaaf417ad443d',
-    callbackURL: 'http://127.0.0.1:3000/api/auth/github/callback'
+    callbackURL: 'http://127.0.0.1/api/auth/github/callback'
 }

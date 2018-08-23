@@ -48,7 +48,7 @@ class LoginFormCom extends Component {
                     </FormItem>
                 </Form>
                 <Button className={`${style.buttonStyle}`} type="primary" >
-                    <a href='http://127.0.0.1:8080/auth/github'>github登录</a>
+                    <a href='http://127.0.0.1:3030/api/auth/github'>github登录</a>
                 </Button>
             </div>
         )
