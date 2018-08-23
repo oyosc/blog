@@ -3,14 +3,12 @@ import mongoose from 'mongoose'
 import session from 'koa-session'
 import {redisConfig, mongoConfig, apiProxy, githubOauth} from '../base/config'
 import {redisInit} from '../database/redis/redis'
-import {checkToke} from '../base/token'
-import {responseClient} from '../base/util'
 import router from '../router/main'
 import log from '../log/log'
-import {findOneUser} from '../models/user'
-import {logout} from '../controllers/user'
 import passport from 'koa-passport'
 import githubStrategyMiddleware from '../middlewares/github_strategy'
+import {adminMiddleWare} from '../middlewares/admin_middleware'
+import {tokenMiddleWare} from '../middlewares/token_middleware'
 let GitHubStrategy = require('passport-github').Strategy
 
 // const koaBody = require('koa-body')
@@ -71,90 +69,6 @@ if (process.env.DEBUG === 'true') {
     }
 }
 
-let verifyPath = function (path) {
-    switch (true) {
-        case /\/user\/login([\s\S])*?/.test(path):
-            return true
-        case /\/auth\/github([\s\S])*?/.test(path):
-            return true
-        case /logout([\s\S])*?/.test(path):
-            return true
-        case /\/user\/comment\/show([\s\S])*?/.test(path):
-            return true
-        case /\/admin([\s\S])*?/.test(path):
-            return false
-        case /\/user([\s\S])*?/.test(path):
-            return false
-        default:
-            return true
-    }
-}
-
-let tokenMiddleware = async function (ctx, next) {
-    let path = ctx.request.path
-    log.debug(__filename, __line(__filename), 'path: ' + path)
-    if (verifyPath(path)) {
-        return await next()
-    } else {
-        if (!ctx.header.authorization) {
-            return responseClient(ctx.response, 200, 3, '没有token信息，请进行登录')
-        } else if (ctx.header.authorization && ctx.session.userId) {
-            let userId = ctx.session.userId
-            if (userId) {
-                let userResult = await findOneUser({'id': userId})
-                if (userResult.statusCode === '200') {
-                    let tokenResult = await checkToke(ctx.header.authorization)
-                    log.debug(__filename, __line(__filename), tokenResult)
-                    if (tokenResult.statusCode === '200') {
-                        ctx.session.username = tokenResult.message.username
-                        ctx.session.userId = tokenResult.message.userId
-                        await next()
-                        if (tokenResult.message.token) {
-                            log.debug(__filename, __line(__filename), tokenResult.message.token)
-                            ctx.response.set({'Authorization': tokenResult.message.token})
-                        }
-                    } else {
-                        await logout(ctx)
-                        responseClient(ctx.response, 200, 3, tokenResult.message.err)
-                    }
-                } else {
-                    await logout(ctx)
-                    responseClient(ctx.response, 200, 3, '获取用户信息失败')
-                }
-            } else {
-                await logout(ctx)
-                responseClient(ctx.response, 200, 3, '未查询到用户信息')
-            }
-        } else {
-            responseClient(ctx.response, 200, 3, '请重新登录')
-        }
-    }
-}
-
-// 非admin用户禁止访问接口
-let adminMiddleware = async function (ctx, next) {
-    let path = ctx.request.path
-    let userId = ctx.session.userId
-    if (/\/admin([\s\S])*?/.test(path)) {
-        if (userId) {
-            let userResult = await findOneUser({'id': userId})
-            if (userResult.statusCode === '200') {
-                if (userResult.userInfo.type === '0') {
-                    return await next()
-                } else {
-                    responseClient(ctx.response, 200, 3, '非管理员禁止访问')
-                }
-            } else {
-                responseClient(ctx.response, 200, 3, '获取用户信息失败')
-            }
-        } else {
-            responseClient(ctx.response, 200, 3, '未查询到用户信息')
-        }
-    } else {
-        await next()
-    }
-}
-
 const CONFIG = {
     key: 'koa_react_cookie',
     maxAge: 86400000,
@@ -177,9 +91,10 @@ passport.use(new GitHubStrategy(githubOauth, githubStrategyMiddleware))
 
 app.use(session(CONFIG, app))
 
-app.use(adminMiddleware)
+// 非admin用户禁止访问接口
+app.use(adminMiddleWare)
 
-app.use(tokenMiddleware)
+app.use(tokenMiddleWare)
 
 // app.use(async ctx => {
 //     console.log(ctx.req);

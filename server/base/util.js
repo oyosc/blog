@@ -73,6 +73,25 @@ const getLocalTime = () => {
     return year + '/' + month + '/' + day + ' ' + hour + ':' + minute + ':' + second
 }
 
+const verifyPath = function (path) {
+    switch (true) {
+        case /\/user\/login([\s\S])*?/.test(path):
+            return true
+        case /\/auth\/github([\s\S])*?/.test(path):
+            return true
+        case /logout([\s\S])*?/.test(path):
+            return true
+        case /\/user\/comment\/show([\s\S])*?/.test(path):
+            return true
+        case /\/admin([\s\S])*?/.test(path):
+            return false
+        case /\/user([\s\S])*?/.test(path):
+            return false
+        default:
+            return true
+    }
+}
+
 module.exports = {
     MD5_SUFFIX: 'eisdsadawwada这个是加密的信息哦%%%@@!',
     md5: function (pwd) {
@@ -94,5 +113,6 @@ module.exports = {
     getLocalTime,
     asyncRequest,
     fetchUsers,
-    linkUser
+    linkUser,
+    verifyPath
 }
