@@ -24,7 +24,6 @@ export function * loginFlow () {
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '登录成功', msgType: 1})
             let userInfo
             console.log('login_response: ', response)
-            alert(window.href)
             if (response.headers.authorization) {
                 userInfo = resolveToken(response.headers.authorization)
                 localStorage.setItem('token', JSON.stringify(response.headers.authorization))

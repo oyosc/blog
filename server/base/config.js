@@ -4,27 +4,27 @@ export const jwtConfig = {
 
 // mongodb config
 export const mongoConfig = {
-    ip: '127.0.0.1',
-    port: '27017',
-    db: 'blog'
+    ip: process.env.NODE_ENV === 'production' ? '127.0.0.1' : '127.0.0.1',
+    port: process.env.NODE_ENV === 'production' ? '27017' : '27017',
+    db: process.env.NODE_ENV === 'production' ? 'blog' : 'blog'
 }
 
 // api proxy config
 export const apiProxy = {
-    ip: '127.0.0.1',
-    port: '8080'
+    ip: process.env.NODE_ENV === 'production' ? '127.0.0.1' : '127.0.0.1',
+    port: process.env.NODE_ENV === 'production' ? '8080' : '8080'
 }
 
 // node main config
 export const nodeConfig = {
-    ip: '127.0.0.1',
-    port: '3030'
+    ip: process.env.NODE_ENV === 'production' ? '127.0.0.1' : '127.0.0.1',
+    port: process.env.NODE_ENV === 'production' ? '3030' : '3000'
 }
 
 // redis message
 export const redisConfig = {
-    ip: '127.0.0.1',
-    port: '6379'
+    ip: process.env.NODE_ENV === 'production' ? '127.0.0.1' : '127.0.0.1',
+    port: process.env.NODE_ENV === 'production' ? '6379' : '6379'
 }
 
 export const githubOauth = {

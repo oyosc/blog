@@ -4,7 +4,7 @@ axios.defaults.timeout = 100000
 axios.defaults.withCredentials = true // 跨域问题
 
 let config = {
-    baseURL: 'http://127.0.0.1:3030/api',
+    baseURL: progress.env.NODE_ENV === 'production' ? 'http://127.0.0.1:3030/api' : '/api',
     transformRequest: [
         function (data) {
             let ret = ''

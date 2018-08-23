@@ -46,7 +46,10 @@ router.all('/api/*', async (ctx, next) => {
 })
 
 app.use(cors({origin: 'http://127.0.0.1', credentials: true, exposeHeaders: ['Authorization']}))
-// app.use(history()) // react是signal page,防止刷新无响应或者404,单纯测试后端接口的时候要注释，防止请求被拦截
+
+if (process.env.NODE_ENV === 'development') {
+    app.use(history()) // react是signal page,防止刷新无响应或者404,单纯测试后端接口的时候要注释，防止请求被拦截
+}
 
 // app.use(serve(ROOT_PATH + '/build/'))
 // app.use(serve(ROOT_PATH + '/static/'))
