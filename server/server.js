@@ -1,7 +1,7 @@
 // import http from 'http'
 import Koa from 'koa'
 import httpProxy from 'http-proxy'
-import {apiProxy, nodeConfig} from './base/config'
+import {apiProxy, nodeConfig, corsConfig} from './base/config'
 import Router from 'koa-router'
 import cors from 'koa2-cors'
 const pathLib = require('path')
@@ -45,7 +45,7 @@ router.all('/api/*', async (ctx, next) => {
     await next()
 })
 
-app.use(cors({origin: 'http://127.0.0.1', credentials: true, exposeHeaders: ['Authorization']}))
+app.use(cors({origin: corsConfig.origin, credentials: true, exposeHeaders: ['Authorization']}))
 
 if (process.env.NODE_ENV === 'development') {
     app.use(history()) // react是signal page,防止刷新无响应或者404,单纯测试后端接口的时候要注释，防止请求被拦截

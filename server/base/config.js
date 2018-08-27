@@ -32,3 +32,7 @@ export const githubOauth = {
     clientSecret: '730740923ddff6294cefe4ab719eaaf417ad443d',
     callbackURL: 'http://127.0.0.1/api/auth/github/callback'
 }
+
+export const corsConfig = {
+    origin: process.env.NODE_ENV === 'production' ? '35.200.32.99' : '127.0.0.1'
+}
