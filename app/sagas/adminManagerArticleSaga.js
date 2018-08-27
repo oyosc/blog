@@ -8,7 +8,8 @@ import {actionTypes as NewArticleTypes} from '../reducers/adminManagerNewArticle
 export function * getArticlesList (pageNum) {
     yield put({type: IndexActionTypes.FETCH_START})
     try {
-        return yield call(get, `/getArticles?pageNum=${pageNum}&isPublish=false`)
+        let token = JSON.parse(localStorage.getItem('token'))
+        return yield call(get, `/admin/article/get?pageNum=${pageNum}&isPublish=false`, token)
     } catch (err) {
         yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
     } finally {
@@ -21,7 +22,12 @@ export function * getAllArticlesFlow () {
         let req = yield take(ManagerArticlesTypes.ADMIN_GET_ARTICLE_LIST)
         let res = yield call(getArticlesList, req.pageNum)
         if (res && res.data && res.data.code === 0 && res.data.result) {
+            if (res.headers.authorization) {
+                localStorage.setItem('token', JSON.stringify(res.headers.authorization))
+            }
             yield put({type: ManagerArticlesTypes.ADMIN_RESPONSE_GET_ARTICLE_LIST, data: res.data.result})
+        } else if (res && res.data && res.data.code === 3) {
+            yield clear_userinfo()
         } else {
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '网络请求错误', msgType: 0})
         }

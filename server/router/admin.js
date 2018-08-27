@@ -1,7 +1,7 @@
 import Router from 'koa-router'
 import {manageAllUsers} from '../controllers/user'
 import {addTag, delTag} from '../controllers/tags'
-import {addArticle, delArticle, updateArticle} from '../controllers/article'
+import {addArticle, delArticle, updateArticle, getArticles} from '../controllers/article'
 import {showCommentsByAdmin, auditCommentByAdmin, configAuditByAdmin} from '../controllers/comment'
 
 const router = Router()
@@ -14,6 +14,9 @@ router.post('/tags/addTag', addTag)
 
 // 删除标签
 router.get('/tags/delTag', delTag)
+
+// 查询所有文章
+router.get('/article/get', getArticles)
 
 // 添加文章
 router.post('/article/add', addArticle)
