@@ -80,7 +80,8 @@ module.exports = {
         new ProgressBarPlugin(),
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.DefinePlugin({
-            'progress.env.NODE_ENV': JSON.stringify('production')
+            'progress.env.NODE_ENV': JSON.stringify('production'),
+            'progress.env.API_URL': JSON.stringify('http://http://35.200.32.99:3030')
         }),
         new HtmlWebpackPlugin({
             title: "oyosc's blog",
