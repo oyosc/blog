@@ -8,6 +8,7 @@ async function getArticles (ctx) {
     let tag = ctx.request.query.tag || null
     let ispublish = ctx.request.query.isPublish
     let pageNum = ctx.request.query.pageNum
+    log.debug(__filename, __line(__filename), pageNum)
     let result = await Articles.getArticles(tag, ispublish, pageNum)
     log.debug(__filename, __line(__filename), result)
     if (result.statusCode === '200') {

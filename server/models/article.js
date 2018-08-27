@@ -32,10 +32,11 @@ async function getArticles (tag, isPublish, pageNum) {
         total: 0,
         list: []
     }
-    log.debug(__filename, __line(__filename), searchCondition)
+    log.debug(__filename, __line(__filename), skip)
 
     let result = await Article.count(searchCondition).then(async count => {
         articlesInfo.total = count
+        articlesInfo.pageNum = pageNum
         let aggreResult = await Article.aggregate([
             {$match: searchCondition},
             {$sort: {'createdTime': 1}},
@@ -198,17 +199,23 @@ async function updateArticle (articleInfo) {
 }
 
 async function delArticle (id) {
-    let result = await Article.remove({'_id': id})
-        .then(data => {
-            if (data.n === 1) {
-                return {'statusCode': '200', 'message': '文章删除成功'}
-            } else {
-                return {'statusCode': '201', 'message': '文章不存在'}
-            }
-        }).catch(err => {
-            log.error(__filename, __line(__filename), err)
-            return {'statusCode': '20006', 'message': '文章删除失败'}
-        })
+    let result = await Comment.deleteMany({'articleId': id}).then(async (commentData) => {
+        if (commentData.acknowledged === false) {
+            return {'statusCode': '200', 'message': '文章评论删除失败'}
+        }
+        let Articleresult = await Article.deleteOne({'_id': id})
+            .then(data => {
+                if (data.n === 1) {
+                    return {'statusCode': '200', 'message': '文章删除成功'}
+                } else {
+                    return {'statusCode': '201', 'message': '文章不存在'}
+                }
+            }).catch(err => {
+                log.error(__filename, __line(__filename), err)
+                return {'statusCode': '20006', 'message': '文章删除失败'}
+            })
+        return Articleresult
+    })
     return result
 }
 
