@@ -76,10 +76,18 @@ async function countUsers (userInfo) {
     ).count()
 }
 
+// 在数据库中删除符合条件的用户
+async function deleteUser (userInfo) {
+    return User.deleteOne({
+        username: userInfo.username
+    })
+}
+
 module.exports = {
     findOneUser,
     findUsers,
     countUsers,
     registerUser,
-    findUsersByNames
+    findUsersByNames,
+    deleteUser
 }

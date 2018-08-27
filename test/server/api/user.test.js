@@ -2,19 +2,26 @@ import indexServer from '../../../server/server'
 import apiServer from '../../../server/api/apiServer'
 import request from 'supertest'
 import {asyncRequest} from '../../../server/base/util'
+import support from '../../support/support'
 
-afterAll(() => {
+beforeAll(async () => {
+    await support.ready(true, indexServer)
+})
+
+afterAll(async () => {
+    await support.ready(false, indexServer)
     indexServer.close()
     apiServer.close()
 })
 
 describe('test/server/api/user.test.js', () => {
     it('login with valid user', async () => {
+        console.log('support: ', support.normalUser)
         let response = await request(indexServer)
             .post('/api/user/login')
             .send({
-                username: 'admin',
-                password: '123456'
+                username: support.normalUser.username,
+                password: support.normalUser.password
             })
         let testRes = {
             header: expect.objectContaining({
@@ -23,6 +30,7 @@ describe('test/server/api/user.test.js', () => {
             status: 200,
             text: expect.stringContaining('{\"code\":0,\"message\":\"登陆成功\",\"result\":{\"token\":')
         }
+        // console.log('response: ', response)
         expect(response).toMatchObject(expect.objectContaining(
             testRes
         ))
@@ -32,7 +40,7 @@ describe('test/server/api/user.test.js', () => {
         let response = await request(indexServer)
             .post('/api/user/login')
             .send({
-                username: 'admin',
+                username: support.normalUser.username,
                 password: '1234567'
             })
         let testRes = {
@@ -60,29 +68,12 @@ describe('test/server/api/user.test.js', () => {
     })
 
     describe('call the user_auth', () => {
-        let authorization, cookie
-        beforeAll(async () => {
-            let response = await request(indexServer)
-                .post('/api/user/login')
-                .send({
-                    username: 'admin',
-                    password: '123456'
-                })
-            if (response.text.indexOf('{\"code\":0') > -1) {
-                authorization = response.headers.authorization
-                let reg = new RegExp('koa_react_cookie([\\S]*)=([\\S]+)[^; ]', 'g')
-                let cookieResult = response.headers['set-cookie'][0].match(reg)
-                cookie = cookieResult[0] + ';' + cookieResult[1]
-            }
-        })
-
         it('should 200 when get the /api/user/userInfo', async () => {
-            console.log('authorization: ', authorization)
-            console.log('cookie: ', cookie)
+            console.log('normalUserVerify: ', support.normalUserVerify)
             let response = await request(indexServer)
                 .get('/api/user/userInfo')
-                .set('authorization', authorization)
-                .set('cookie', cookie)
+                .set('authorization', support.normalUserVerify.authorization)
+                .set('cookie', support.normalUserVerify.cookie)
             expect(response.status).toBe(200)
             expect(response.text).toEqual(expect.stringContaining('{\"code\":0'))
         })
