@@ -34,5 +34,5 @@ export const githubOauth = {
 }
 
 export const corsConfig = {
-    origin: process.env.NODE_ENV === 'production' ? 'http://35.200.32.99' : 'http://127.0.0.1'
+    origin: process.env.NODE_ENV === 'production' ? 'http://127.0.0.1' : 'http://127.0.0.1'
 }

@@ -81,7 +81,7 @@ module.exports = {
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.DefinePlugin({
             'progress.env.NODE_ENV': JSON.stringify('production'),
-            'progress.env.API_URL': JSON.stringify('http://35.200.32.99:3030')
+            'progress.env.API_URL': JSON.stringify('http://127.0.0.1:3030')
         }),
         new HtmlWebpackPlugin({
             title: "oyosc's blog",
