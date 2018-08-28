@@ -48,7 +48,7 @@ class LoginFormCom extends Component {
                     </FormItem>
                 </Form>
                 <Button className={`${style.buttonStyle}`} type="primary" >
-                    <a href={progress.env.NODE_ENV === 'production' ? 'http://127.0.0.1:3030/api/auth/github' : '' }>github登录</a>
+                    <a href={progress.env.NODE_ENV === 'production' ? progress.env.API_URL + '/api/auth/github' : '' }>github登录</a>
                 </Button>
             </div>
         )
