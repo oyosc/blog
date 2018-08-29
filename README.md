@@ -21,10 +21,10 @@
 ## 前端
 ### 前端后台评论管理功能
 - 这里跟别的文章管理没什么区别，主要的问题就在于columns这个数组对象需要放在组件里，否则无法获取this对象以及对应的props，另外antd库，在使用
-   switch组件的时候defaultChecked在面对Pagination换页时会出现状态无法更改，还是显示上一页的状态，这里需要使用checked属性，[具体代码以及说明](#)
+   switch组件的时候defaultChecked在面对Pagination换页时会出现状态无法更改，还是显示上一页的状态，这里需要使用checked属性，[具体代码以及说明](https://github.com/oyosc/blog/blob/master/record/doc/%E5%89%8D%E7%AB%AF%E5%90%8E%E5%8F%B0%E8%AF%84%E8%AE%BA%E7%AE%A1%E7%90%86%E5%8A%9F%E8%83%BD.md)
    
 ### 前端第三方github登录功能
-- github第三方登录在react上这种单页面实现的时候，会出现跨域问题，这里的话有两种解决办法，[具体代码以及解决办法](#)
+- github第三方登录在react上这种单页面实现的时候，会出现跨域问题，这里的话有两种解决办法，[具体代码以及解决办法](https://github.com/oyosc/blog/blob/master/record/doc/github%E7%AC%AC%E4%B8%89%E6%96%B9%E7%99%BB%E5%BD%95%E5%8A%9F%E8%83%BD.md)
 
 ### 前端文章评论功能
 - 这块是通过我上文所借鉴项目里的教程开发的，样式的话是采用github的issue结构，具体代码位于blog/app/containers/comment文件夹里，这里就不细说了，唯一需要注意的就是在评论或者点赞的时候需要更新react state
@@ -34,16 +34,16 @@
 - 将框架由express改成了koa2，具体的中间件的话可以查看blog/server/api/apiServer.js
 
 ### token+session功能
-- 在后台中间件这里新增了token中间件(检测token)跟admin中间件(检测是否为admin),这里token中间件的处理流程是先检测请求路径是否需要验证token,如果需要则检测其请求头上的authorization字段,满足的话进入路由，并且在结束后在其响应头上将token值添加到Authorization字段，这里如果前后端采用不同的端口会产生跨域问题，[具体代码以及解决方案](#)
+- 在后台中间件这里新增了token中间件(检测token)跟admin中间件(检测是否为admin),这里token中间件的处理流程是先检测请求路径是否需要验证token,如果需要则检测其请求头上的authorization字段,满足的话进入路由，并且在结束后在其响应头上将token值添加到Authorization字段，这里如果前后端采用不同的端口会产生跨域问题，[具体代码以及解决方案](https://github.com/oyosc/blog/blob/master/record/doc/token%2Bsession%E5%8A%9F%E8%83%BD.md)
 
 ### 后端数据库字段更改跟表添加
-- 这里就一些表字段更改就表添加，唯一需要注意的是mongoose.model这个方法在表名没有s的时候会自动加上,[具体代码以及修改细节](#)
+- 这里就一些表字段更改就表添加，唯一需要注意的是mongoose.model这个方法在表名没有s的时候会自动加上,[具体代码以及修改细节](https://github.com/oyosc/blog/blob/master/record/doc/%E5%90%8E%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%97%E6%AE%B5%E6%9B%B4%E6%94%B9%E8%B7%9F%E8%A1%A8%E6%B7%BB%E5%8A%A0.md)
 
 ### 单元测试以及代码检查
 - 单元测试这里用的是jest，原因的话主要由于它内嵌了断言等，并且支持react，代码位于blog/test文件夹，目前只写了登录的测试接口，后面有时间再加上，代码检查的话采用的是eslint库，extends standard，后面加了一些自己的规则
 
 ### log模块
-- 这里在网上其实有别的方式来定义一个全局的错误变量，但是很可惜的是在es5里已经不再支持，这里我采用的是定义一个全局函数，当调用它的时候会产生一个错误，再通过正则来获取所在的代码行号跟文件信息，[具体代码](#)
+- 这里在网上其实有别的方式来定义一个全局的错误变量，但是很可惜的是在es5里已经不再支持，这里我采用的是定义一个全局函数，当调用它的时候会产生一个错误，再通过正则来获取所在的代码行号跟文件信息，[具体代码](https://github.com/oyosc/blog/blob/master/record/doc/log%E6%A8%A1%E5%9D%97.md)
 
 ## 环境
 ```
