@@ -15,9 +15,9 @@
     * [增加了log模块，可以实现具体文件名以及行号提示](#log模块)
     
 ## 项目结构介绍，只涉及后端，前端基本没啥改动，不懂得可以看下我借鉴的项目
-
+- [项目结构地址](https://github.com/oyosc/blog/blob/master/record/doc/%E9%A1%B9%E7%9B%AE%E7%BB%93%E6%9E%84%E4%BB%8B%E7%BB%8D.md)
 ## api接口整理
-
+- [api接口地址](https://github.com/oyosc/blog/blob/master/record/doc/api_%E6%96%87%E6%A1%A3%E8%AF%B4%E6%98%8E.md)
 ## 前端
 ### 前端后台评论管理功能
 - 这里跟别的文章管理没什么区别，主要的问题就在于columns这个数组对象需要放在组件里，否则无法获取this对象以及对应的props，另外antd库，在使用
@@ -37,7 +37,7 @@
 - 在后台中间件这里新增了token中间件(检测token)跟admin中间件(检测是否为admin),这里token中间件的处理流程是先检测请求路径是否需要验证token,如果需要则检测其请求头上的authorization字段,满足的话进入路由，并且在结束后在其响应头上将token值添加到Authorization字段，这里如果前后端采用不同的端口会产生跨域问题，[具体代码以及解决方案](https://github.com/oyosc/blog/blob/master/record/doc/token%2Bsession%E5%8A%9F%E8%83%BD.md)
 
 ### 后端数据库字段更改跟表添加
-- 这里就一些表字段更改就表添加，唯一需要注意的是mongoose.model这个方法在表名没有s的时候会自动加上,[具体代码以及修改细节](https://github.com/oyosc/blog/blob/master/record/doc/%E5%90%8E%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%97%E6%AE%B5%E6%9B%B4%E6%94%B9%E8%B7%9F%E8%A1%A8%E6%B7%BB%E5%8A%A0.md)
+- 这里就一些表字段更改就表添加，唯一需要注意的是mongoose.model这个方法在表名没有s的时候会自动加上,另外使用了mongodb的aggregate,pipeline等，[具体代码以及方案](https://github.com/oyosc/blog/blob/master/record/doc/%E5%90%8E%E7%AB%AF%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%97%E6%AE%B5%E6%9B%B4%E6%94%B9%E8%B7%9F%E8%A1%A8%E6%B7%BB%E5%8A%A0.md)
 
 ### 单元测试以及代码检查
 - 单元测试这里用的是jest，原因的话主要由于它内嵌了断言等，并且支持react，代码位于blog/test文件夹，目前只写了登录的测试接口，后面有时间再加上，代码检查的话采用的是eslint库，extends standard，后面加了一些自己的规则
