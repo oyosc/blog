@@ -2,7 +2,7 @@
 
 ***[项目地址：](https://github.com/oyosc/blog)https://github.com/oyosc/blog***
 
-# 第一种方法: 因为前后端端口不一致，后端使用passport库，来进行github第三方登录会造成跨域问题，所以前端需要直接链接到github的授权地址，并且在项目首页进行路由的匹配，防止直接404
+## 第一种方法: 因为前后端端口不一致，后端使用passport库，来进行github第三方登录会造成跨域问题，所以前端需要直接链接到github的授权地址，并且在项目首页进行路由的匹配，防止直接404
 ## 主要代码如下:
 ### 前端:
 - 增加github登录按钮，代码路径: [blog/app/containers/home/components/login/LoginForm.js](https://github.com/oyosc/blog/blob/master/app/containers/home/components/login/LoginForm.js)
@@ -86,7 +86,7 @@ async function loginWithGithub (ctx) {
 }
 ```
 
-# 第二种方法，这里是我刚开始的思路，主要就是前端使用window.open来打开github授权地址，然后后端接收到回调过来的CODE码，在后台继续对github进行请求从而获得相应的用户信息
+## 第二种方法，这里是我刚开始的思路，主要就是前端使用window.open来打开github授权地址，然后后端接收到回调过来的CODE码，在后台继续对github进行请求从而获得相应的用户信息
 ```
 async function login_with_github(ctx){
     console.log("node login with github")
