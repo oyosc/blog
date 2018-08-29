@@ -70,7 +70,7 @@ webpack @4.4.1
    
 ## 开发数据库文件
 
-> 地址: [blog_db](#)
+> 地址: https://pan.baidu.com/s/1oLyvpJ3gwcgvTmSAjn9OJA 密码: bv1c
 
 ## 从零开始搭建项目
-   [感兴趣的请移步我的博客]
+   [感兴趣的请移步我的博客](#)
