@@ -44,3 +44,33 @@
 
 ### log模块
 - 这里在网上其实有别的方式来定义一个全局的错误变量，但是很可惜的是在es5里已经不再支持，这里我采用的是定义一个全局函数，当调用它的时候会产生一个错误，再通过正则来获取所在的代码行号跟文件信息，[具体代码](#)
+
+## 环境
+```
+react @16.3.1
+react-router @4.2.0
+node @8.9.1
+mongodb @4.0.2
+webpack @4.4.1
+```
+## 运行
+   git clone https://github.com/oyosc/blog
+   
+   npm install
+   
+   npm run start-prod
+   
+## 独立打包
+   npm run build
+   
+## pm2方式启动
+   npm install pm2 -g
+   
+   pm2 -i max start npm -- run start-prod-debug(这里的命令可以查看package.json文件)
+   
+## 开发数据库文件
+
+> 地址: [blog_db](#)
+
+## 从零开始搭建项目
+   [感兴趣的请移步我的博客]
