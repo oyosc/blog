@@ -55,13 +55,14 @@ class AdminManagerComment extends Component {
         if (this.props.list.length === 0) {
             this.props.get_all_comments()
         }
+        this.props.get_audit()
     }
 
     render () {
         return (
             <div>
                 <h2>评论管理</h2>
-                <Switch checkedChildren="开启审核" unCheckedChildren="关闭审核" defaultChecked onChange={this.props.config_audit.bind(this)} />
+                {this.props.whether_audit === '0' ? <Switch checkedChildren="开启审核" unCheckedChildren="关闭审核" checked={false} onChange={this.props.config_audit.bind(this)} /> : <Switch checkedChildren="开启审核" unCheckedChildren="关闭审核" checked={true} onChange={this.props.config_audit.bind(this)} />}
                 <Table
                     className={style.table}
                     pagination={false}
@@ -91,15 +92,17 @@ AdminManagerComment.propTypes = {
 AdminManagerComment.defaultProps = {
     pageNum: 1,
     list: [],
-    total: 0
+    total: 0,
+    whether_audit: '0'
 }
 
 function mapStateToProps (state) {
-    let {pageNum, list, total} = state.admin.comments
+    let {pageNum, list, total, whether_audit} = state.admin.comments
     return {
         pageNum,
         list,
-        total
+        total,
+        whether_audit
     }
 }
 
