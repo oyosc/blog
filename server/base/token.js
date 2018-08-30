@@ -41,7 +41,7 @@ async function checkToke (authorization) {
         return {'statusCode': '401', 'message': {err: errCodes['401']}}
     } else {
         let [getRedisErr, getRedisValue] = await handleErr(getAsync(verifyMessage['jti']))
-        if (getRedisErr) return {'statusCode': '30001', 'message': {err: getRedisErr}}
+        if (getRedisErr) return {'staddddtusCode': '30001', 'message': {err: getRedisErr}}
         if (getRedisValue === null) return {'statusCode': '30002', 'message': {err: errCodes['30002']}}
         if (getRedisValue === '0') {
             let [ttlErr, ttlTime] = await handleErr(ttlAsync(baseJti)) // 查询redis中是否有该token
@@ -51,6 +51,9 @@ async function checkToke (authorization) {
         } else {
             let [getOldTokenErr, getOldTokenValue] = await handleErr(getAsync(authorization))
             if (getOldTokenErr) return {'statusCode': '30001', 'message': {err: getOldTokenErr}}
+            log.debug(__filename, __line(__filename), authorization)
+            log.debug(__filename, __line(__filename), 'old token')
+            log.debug(__filename, __line(__filename), getOldTokenValue)
             if (getOldTokenValue === null) return {'statusCode': '30002', 'message': {err: 'old token不存在或已过期'}}
         }
         let userInfo = {
@@ -60,8 +63,8 @@ async function checkToke (authorization) {
             avatar: decoded.payload['avatar_url'],
             github_url: decoded.payload['github_url']
         }
+        let [registerOldErr, registerOldMessage] = await handleErr(setAsync(authorization, '0', 'EX', 60)) // 以旧token为键，存在redis中
         let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo)) // 生成新的用户token
-        let [registerOldErr, registerOldMessage] = await handleErr(setAsync(authorization, '0', 'EX', 30)) // 以旧token为键，存在redis中
         log.debug(__filename, __line(__filename), registerOldMessage)
         if (registerTokenErr || registerOldErr) {
             log.error(__filename, __line(__filename), registerTokenErr)
