@@ -48,19 +48,27 @@ async function checkToke (authorization) {
             let [err, message] = await handleErr(setAsync(baseJti, '1', 'EX', ttlTime))
             log.debug(__filename, __line(__filename), message)
             if (err || ttlErr) return {'statusCode': '30001', 'message': {err: getRedisErr}}
-            let userInfo = {
-                _id: decoded.payload['userId'],
-                type: decoded.payload['userType'] === 'user' ? '1' : '0',
-                username: decoded.payload['username'],
-                avatar: decoded.payload['avatar_url'],
-                github_url: decoded.payload['github_url']
-            }
-            let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo)) // 生成新的token
-            if (registerTokenErr) return {'statusCode': '30004', 'message': {err: registerTokenErr}}
-            return {'statusCode': '200', 'message': {'token': registerToken, 'userId': decoded.payload['userId'], 'username': decoded.payload['username']}}
         } else {
-            return {'statusCode': '30003', 'message': {err: errCodes['30003']}}
+            let [getOldTokenErr, getOldTokenValue] = await handleErr(getAsync(authorization))
+            if (getOldTokenErr) return {'statusCode': '30001', 'message': {err: getOldTokenErr}}
+            if (getOldTokenValue === null) return {'statusCode': '30002', 'message': {err: 'old token不存在或已过期'}}
         }
+        let userInfo = {
+            _id: decoded.payload['userId'],
+            type: decoded.payload['userType'] === 'user' ? '1' : '0',
+            username: decoded.payload['username'],
+            avatar: decoded.payload['avatar_url'],
+            github_url: decoded.payload['github_url']
+        }
+        let [registerTokenErr, registerToken] = await handleErr(signToke(userInfo)) // 生成新的用户token
+        let [registerOldErr, registerOldMessage] = await handleErr(setAsync(authorization, '0', 'EX', 30)) // 以旧token为键，存在redis中
+        log.debug(__filename, __line(__filename), registerOldMessage)
+        if (registerTokenErr || registerOldErr) {
+            log.error(__filename, __line(__filename), registerTokenErr)
+            log.error(__filename, __line(__filename), registerOldErr)
+            return {'statusCode': '30004', 'message': {err: 'redis缓存键失败'}}
+        }
+        return {'statusCode': '200', 'message': {'token': registerToken, 'userId': decoded.payload['userId'], 'username': decoded.payload['username']}}
     }
 }
 
