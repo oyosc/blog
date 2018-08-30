@@ -15,7 +15,7 @@
     "build": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
     "start-prod": "npm run build & npm run watch-client-prod & npm run start-prod-api",
     "start-prod-end": "npm run watch-client-prod & npm run start-prod-api",
-    "start-prod-debug": "npm run build & npm run watch-client-prod-debug & npm run start-dev-api-debug",
+    "start-prod-debug": "npm run build & npm run watch-client-prod-debug & npm run start-prod-api-debug",
     "start-prod-end-debug": "npm run watch-client-prod-debug & npm run start-prod-api-debug",
     "start-dev": "npm run watch-client-dev & npm run start-dev-api",
     "start-dev-debug": "npm run watch-client-dev-debug & npm run start-dev-api-debug",
