@@ -93,7 +93,7 @@ AdminManagerComment.defaultProps = {
     pageNum: 1,
     list: [],
     total: 0,
-    whether_audit: '0'
+    whether_audit: '1'
 }
 
 function mapStateToProps (state) {
