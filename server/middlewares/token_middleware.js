@@ -17,6 +17,7 @@ exports.tokenMiddleWare = async function (ctx, next) {
             if (userId) {
                 let userResult = await findOneUser({'id': userId})
                 if (userResult.statusCode === '200') {
+                    log.debug(__filename, __line(__filename), ctx.request.path)
                     let tokenResult = await checkToke(ctx.header.authorization)
                     log.debug(__filename, __line(__filename), tokenResult)
                     if (tokenResult.statusCode === '200') {

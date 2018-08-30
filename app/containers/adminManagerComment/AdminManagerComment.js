@@ -51,7 +51,7 @@ class AdminManagerComment extends Component {
         }
     }]
 
-    componentWillMount () {
+    componentDidMount () {
         if (this.props.list.length === 0) {
             this.props.get_all_comments()
         }
