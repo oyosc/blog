@@ -21,6 +21,7 @@ async function signToke (user) {
         iat: Date.parse(new Date()),
         exp: Date.parse(new Date()) + 1000 * 60 * 30
     }, jwtConfig.jwt_secret)
+    log.debug(__filename, __line(__filename), token)
     let [err, message] = await handleErr(setAsync(baseJti, '0', 'EX', 60 * 30))
     log.debug(__filename, __line(__filename), message)
     if (err) log.error(__filename, __line(__filename), 'redis存储key失败')

@@ -2,7 +2,7 @@ import crypto from 'crypto'
 import request from 'request'
 import {findUsersByNames} from '../models/user'
 import log from '../log/log'
-
+import {prod, dev} from '../../config'
 import util from 'util'
 import _ from 'lodash'
 
@@ -93,7 +93,7 @@ const verifyPath = function (path) {
 }
 
 module.exports = {
-    MD5_SUFFIX: 'eisdsadawwada这个是加密的信息哦%%%@@!',
+    MD5_SUFFIX: process.env.NODE_ENV === 'production' ? prod.md5_suffix : dev.md5_suffix,
     md5: function (pwd) {
         let md5 = crypto.createHash('md5')
         return md5.update(pwd).digest('hex')

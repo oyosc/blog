@@ -4,7 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const OpenBrowserPlugin = require('open-browser-webpack-plugin')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
-// const config = require('./config/config');
+const devConfig = require('./config').dev
 
 const ROOT_PATH = pathLib.resolve(__dirname)
 const ENTRY_PATH = pathLib.resolve(ROOT_PATH, 'app')
@@ -88,7 +88,7 @@ module.exports = {
         new webpack.NoEmitOnErrorsPlugin(),
         new webpack.HashedModuleIdsPlugin(),
         new OpenBrowserPlugin({
-            url: 'http://127.0.0.1:3000'
+            url: devConfig.fore_end_url
         })
     ],
     resolve: {
