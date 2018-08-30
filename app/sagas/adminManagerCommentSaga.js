@@ -96,6 +96,7 @@ export function * configCommentFlow () {
         console.log('configAudit: ', res)
         if (res && res.data && res.data.code === 0) {
             yield put({type: IndexActionTypes.SET_MESSAGE, msgContent: '配置成功', msgType: 1})
+            yield put({type: AdminCommentActionTypes.GET_AUDIT})
         } else if (res && res.data && res.data.code === 3) {
             yield clear_userinfo()
         } else {

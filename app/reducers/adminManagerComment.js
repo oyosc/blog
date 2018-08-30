@@ -42,6 +42,7 @@ export const actions = {
         }
     },
     config_audit: function (audit_status) {
+        console.log('audit_statis: ', audit_status)
         if (audit_status === true) {
             audit_status = '1'
         } else {
@@ -69,6 +70,13 @@ export function reducer (state = initialState, action) {
                 list: [...action.data.list],
                 pageNum: action.data.pageNum,
                 total: action.data.total
+            }
+        case actionTypes.RESPONSE_GET_AUDIT:
+            console.log('RESPONSE_GET_AUDIT')
+            console.log(action.data)
+            return {
+                ...state,
+                whether_audit: action.data.audit_status
             }
         default:
             return state
