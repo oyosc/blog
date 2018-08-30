@@ -8,6 +8,7 @@ const CleanPlugin = require('clean-webpack-plugin')
 const ROOT_PATH = pathLib.resolve(__dirname)
 const ENTRY_PATH = pathLib.resolve(ROOT_PATH, 'app')
 const OUTPUT_PATH = pathLib.resolve(ROOT_PATH, 'build')
+const prodConfig = require('./config').prod
 console.log(pathLib.resolve(ENTRY_PATH, 'index.js'))
 
 module.exports = {
@@ -81,7 +82,7 @@ module.exports = {
         new webpack.optimize.AggressiveMergingPlugin(),
         new webpack.DefinePlugin({
             'progress.env.NODE_ENV': JSON.stringify('production'),
-            'progress.env.API_URL': JSON.stringify('http://127.0.0.1:3030')
+            'progress.env.API_URL': JSON.stringify(prodConfig.api_url)
         }),
         new HtmlWebpackPlugin({
             title: "oyosc's blog",
