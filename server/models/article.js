@@ -32,16 +32,14 @@ async function getArticles (tag, isPublish, pageNum) {
         total: 0,
         list: []
     }
-    log.debug(__filename, __line(__filename), skip)
-
     let result = await Article.count(searchCondition).then(async count => {
         articlesInfo.total = count
         articlesInfo.pageNum = pageNum
         let aggreResult = await Article.aggregate([
             {$match: searchCondition},
             {$sort: {'createdTime': 1}},
+	    {$skip: skip},
             {$limit: 5},
-            {$skip: skip},
             {$lookup: {
                 from: 'comment',
                 let: {article_id: '$_id'},
