@@ -1,7 +1,9 @@
 import Article from '../database/mongodb/models/article'
 import Comment from '../database/mongodb/models/comment'
+import {prod} from '../../config'
 import log from '../log/log'
 import {findOneUser} from './user'
+const rp = require('request-promise')
 const objectId = require('mongodb').ObjectID
 
 // 获取文章列表
@@ -38,7 +40,7 @@ async function getArticles (tag, isPublish, pageNum) {
         let aggreResult = await Article.aggregate([
             {$match: searchCondition},
             {$sort: {'createdTime': 1}},
-	    {$skip: skip},
+            {$skip: skip},
             {$limit: 5},
             {$lookup: {
                 from: 'comment',
@@ -217,6 +219,119 @@ async function delArticle (id) {
     return result
 }
 
+async function syncGithubArticle () {
+    let apiUrl = 'https://api.github.com/repos/oyosc/blog'
+    let issueApiUrl = apiUrl + '/issues?access_token=' + '15f6e907b82037e652dde980739cf3493fe6dd9f&state=' + 'all'
+    let testUrl = 'https://api.github.com/repos/996icu/996.ICU'
+    let options = {
+        method: 'GET',
+        headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36' }
+    }
+    options['uri'] = apiUrl
+    rp(options)
+        .then(async (respBody) => {
+            respBody = JSON.parse(respBody)
+            console.log('respBody: ', respBody)
+            let openIssuesCount = respBody.open_issues_count
+            let size = prod.issueSize ? prod.issueSize : 30
+            let page = Math.ceil(openIssuesCount / size)
+            console.log('page: ', page)
+            let issuesFiledUrl = []
+            let issuesUnFiledUrl = []
+            let issuePromise = []
+            while (page !== 0) {
+                let issueUnFiledUrl = issueApiUrl + '&page=' + page + '&size=' + size + '&labels=' + 'bug'
+                let issueFiledUrl = issueApiUrl + '&page=' + page + '&size=' + size + '&labels=' + '已归档'
+                issuesUnFiledUrl.push(issueUnFiledUrl)
+                issuesFiledUrl.push(issueFiledUrl)
+                page--
+            }
+
+            function getIssuesUnFiledResult (issuesUnFiledUrl) {
+                let getIssueUnfiledPromises = []
+                function getIssueUnfiled (issueUnFiledUrl) {
+                    options['uri'] = issueUnFiledUrl
+                    return rp(options)
+                        .then((issueBody) => {
+                            issueBody = JSON.parse(issueBody)
+                            let issues = []
+                            for (let i = 0, l = issueBody.length; i < l; i++) {
+                                let issue = {}
+                                let commentsUrl = issueBody[i].comments_url
+                                issue['user'] = {
+                                    name: issueBody[i].user.login,
+                                    avatar_url: issueBody[i].user.avatar_url,
+                                    url: issueBody[i].user.url
+                                }
+                                issue['labels'] = issueBody[i].labels.map((item) => {
+                                    return item.name
+                                })
+                                issue['title'] = issueBody[i].title
+                                issue['body'] = issueBody[i].body
+                                issue['created_at'] = issueBody[i].created_at
+                                issue['updated_at'] = issueBody[i].updated_at
+                                options['uri'] = commentsUrl
+                                return rp(options)
+                                    .then((commentReuslt) => {
+                                        commentReuslt = JSON.parse(commentReuslt)
+                                        issue['comments'] = []
+                                        for (let i = 0, l = commentReuslt.length; i < l; i++) {
+                                            let comment = {}
+                                            comment['user'] = {
+                                                name: commentReuslt[i].user.login,
+                                                avatar_url: commentReuslt[i].user.avatar_url,
+                                                url: commentReuslt[i].user.url
+                                            }
+                                            comment['body'] = commentReuslt[i].body
+                                            comment['created_at'] = commentReuslt[i].created_at
+                                            comment['updated_at'] = commentReuslt[i].updated_at
+                                            issue['comments'].push(comment)
+                                        }
+                                        issues.push(issue)
+                                        return issues
+                                    })
+                            }
+                        })
+                }
+
+                for (let i = 0, l = issuesUnFiledUrl.length; i < l; i++) {
+                    getIssueUnfiledPromises.push(getIssueUnfiled(issuesUnFiledUrl[i]))
+                }
+
+                console.log('getIssueUnfiledPromises: ', getIssueUnfiledPromises)
+                return Promise.all(getIssueUnfiledPromises).then((issues) => {
+                    console.log('issues: ', issues)
+                    let finalIssues = []
+                    for (let i = 0, l = issues.length; i < l; i++) {
+                        finalIssues = finalIssues.concat(issues[i])
+                    }
+                    return finalIssues
+                })
+            }
+
+            let unFiledIssues = await getIssuesUnFiledResult(issuesUnFiledUrl)
+
+            console.log('unFiledIssues: ', unFiledIssues)
+
+            // let issues = []
+            // for (let i = 0, l = issueBody.length; i < l; i++) {
+            //     let issue = {}
+            //     issue['user'] = {
+            //         name: issueBody[i].user.login,
+            //         avatar_url: issueBody[i].user.avatar_url
+            //     }
+            //     issue['labels'] = issueBody[i].labels.map((item) => {
+            //         return item.name
+            //     })
+            // }
+            console.log('issueLength: ', respBody.open_issues_count)
+        })
+        .catch((err) => {
+            console.log(err)
+        })
+}
+
+syncGithubArticle()
 module.exports = {
     getArticles,
     updateArticle,

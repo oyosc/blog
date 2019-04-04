@@ -11,5 +11,7 @@ module.exports = new mongoose.Schema({
     tags: Array,
     isPublish: Boolean,
     createdTime: String,
-    updatedTime: String
+    updatedTime: String,
+    isIssue: Boolean,
+    issueId: Number
 })

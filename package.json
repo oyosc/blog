@@ -98,6 +98,7 @@
     "redux-saga": "^0.16.0",
     "remark": "^9.0.0",
     "remark-react": "^4.0.3",
+    "request-promise": "^4.2.4",
     "url-loader": "^1.0.1"
   }
 }
