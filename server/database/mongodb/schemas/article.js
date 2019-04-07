@@ -10,7 +10,6 @@ module.exports = new mongoose.Schema({
     author: String,
     tags: Array,
     isPublish: Boolean,
-    createdTime: String,
     updatedTime: String,
     isIssue: Boolean,
     issueId: Number
