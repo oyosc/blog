@@ -401,55 +401,50 @@ async function syncGithubUnfiledArticle () {
                             rp(options)
                                 .then(async (editIssueResult) => {
                                     console.log('editIssueResult: ', editIssueResult)
-                                    if (editIssueResult.Status === 200) {
-                                        for (let i = 0, l = unFiledIssue.comments.length; i < l; i++) {
-                                            let comment = unFiledIssue.comments[i]
-                                            let userInfo = comment.user
-                                            let isExistUserInfo = await findOneUser({github_name: userInfo.name})
-                                            console.log('isExistUserInfo: ', isExistUserInfo)
-                                            if (isExistUserInfo.statusCode !== '200') {
-                                                let registerUserInfo = {
-                                                    username: Math.random().toString(36).substr(2),
-                                                    type: '1',
-                                                    github_url: userInfo.url,
-                                                    github_name: userInfo.name,
-                                                    avatar: userInfo.avatar_url
-                                                }
-                                                let registerResult = await registerUser(registerUserInfo)
-                                                if (registerResult.statusCode === '200') {
-                                                    isExistUserInfo.userInfo = registerResult.data
-                                                    log.debug(__filename, __line(__filename), registerResult.message)
-                                                } else {
-                                                    log.error(__filename, __line(__filename), registerResult.message)
-                                                }
+                                    for (let i = 0, l = unFiledIssue.comments.length; i < l; i++) {
+                                        let comment = unFiledIssue.comments[i]
+                                        let userInfo = comment.user
+                                        let isExistUserInfo = await findOneUser({github_name: userInfo.name})
+                                        console.log('isExistUserInfo: ', isExistUserInfo)
+                                        if (isExistUserInfo.statusCode !== '200') {
+                                            let registerUserInfo = {
+                                                username: Math.random().toString(36).substr(2),
+                                                type: '1',
+                                                github_url: userInfo.url,
+                                                github_name: userInfo.name,
+                                                avatar: userInfo.avatar_url
                                             }
-                                            if (isExistUserInfo.userInfo && newArticleResult.data) {
-                                                let newComment = new Comment({
-                                                    content: comment.body,
-                                                    userId: isExistUserInfo.userInfo._id,
-                                                    createdTime: comment.created_at,
-                                                    updatedTime: comment.updated_at,
-                                                    likeHot: 0,
-                                                    articleId: newArticleResult.data._id,
-                                                    type: '1',
-                                                    isIssueComment: true,
-                                                    issueCommentId: comment.id
-                                                })
-                                                let result = await newComment.save().then(async data => {
-                                                    return {'statusCode': '200', 'message': '评论保存成功', data}
-                                                }).catch(err => {
-                                                    log.error(__filename, __line(__filename), err)
-                                                    return {'statusCode': '20008', 'message': '评论保存失败'}
-                                                })
-                                                log.info(__filename, __line(__filename), result)
+                                            let registerResult = await registerUser(registerUserInfo)
+                                            if (registerResult.statusCode === '200') {
+                                                isExistUserInfo.userInfo = registerResult.data
+                                                log.debug(__filename, __line(__filename), registerResult.message)
                                             } else {
-                                                log.error(__filename, __line(__filename), isExistUserInfo.message)
-                                                log.error(__filename, __line(__filename), newArticleResult.message)
+                                                log.error(__filename, __line(__filename), registerResult.message)
                                             }
                                         }
-                                    } else {
-                                        log.error(__filename, __line(__filename), editIssueResult)
-                                    }
+                                        if (isExistUserInfo.userInfo && newArticleResult.data) {
+                                            let newComment = new Comment({
+                                                content: comment.body,
+                                                userId: isExistUserInfo.userInfo._id,
+                                                createdTime: comment.created_at,
+                                                updatedTime: comment.updated_at,
+                                                likeHot: 0,
+                                                articleId: newArticleResult.data._id,
+                                                type: '1',
+                                                isIssueComment: true,
+                                                issueCommentId: comment.id
+                                            })
+                                            let result = await newComment.save().then(async data => {
+                                                return {'statusCode': '200', 'message': '评论保存成功', data}
+                                            }).catch(err => {
+                                                log.error(__filename, __line(__filename), err)
+                                                return {'statusCode': '20008', 'message': '评论保存失败'}
+                                            })
+                                            log.info(__filename, __line(__filename), result)
+                                        } else {
+                                            log.error(__filename, __line(__filename), isExistUserInfo.message)
+                                            log.error(__filename, __line(__filename), newArticleResult.message)
+                                        }
                                 })
                                 .catch((err) => {
                                     log.error(__filename, __line(__filename), err)
