@@ -224,7 +224,7 @@ async function delArticle (id) {
 
 async function syncGithubUnfiledArticle () {
     let apiUrl = prod.apiUrl
-    let issueApiUrl = apiUrl + '/issues?access_token=' + prod.issueAccessToken + '&state=' + prod.issueState + '&labels=' + encodeURI(prod.issueFiledFlag) + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
+    let issueApiUrl = apiUrl + '/issues?access_token=' + prod.issueAccessToken + '&state=' + prod.issueState + '&labels=' + encodeURI(prod.issueUnfiledFlag) + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
     let options = {
         method: 'GET',
         headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36' }
@@ -248,9 +248,11 @@ async function syncGithubUnfiledArticle () {
                 let getIssueUnfiledPromises = []
                 function getIssueUnfiled (issueUnFiledUrl) {
                     options['uri'] = issueUnFiledUrl
+                    console.log('issueUnFiledUrl: ', issueUnFiledUrl)
                     return rp(options)
                         .then((issueBodys) => {
                             issueBodys = JSON.parse(issueBodys)
+                            console.log('issueBodys_rp: ', issueBodys)
                             function getIssues (issueBody) {
                                 let issue = {}
                                 let commentsUrl = issueBody.comments_url
