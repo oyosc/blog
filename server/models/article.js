@@ -2,7 +2,7 @@ import Article from '../database/mongodb/models/article'
 import Comment from '../database/mongodb/models/comment'
 import Tags from '../database/mongodb/models/tags'
 import tags from './tags'
-import {prod} from '../../config'
+import {prod, dev} from '../../config'
 import log from '../log/log'
 import {findOneUser, registerUser} from './user'
 import {utcToLocal} from '../base/util'
@@ -223,18 +223,17 @@ async function delArticle (id) {
 }
 
 async function syncGithubUnfiledArticle () {
-    let apiUrl = 'https://api.github.com/repos/oyosc/blog'
-    let issueApiUrl = apiUrl + '/issues?access_token=' + '15f6e907b82037e652dde980739cf3493fe6dd9f&state=' + 'open'
-    let testUrl = 'https://api.github.com/repos/996icu/996.ICU'
+    let apiUrl = prod.apiUrl
+    let issueApiUrl = apiUrl + '/issues?access_token=' + prod.issueAccessToken + '&state=' + prod.issueState + '&labels=' + encodeURI(prod.issueFiledFlag) + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
     let options = {
         method: 'GET',
         headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36' }
     }
-    options['uri'] = apiUrl
+    options['uri'] = apiUrl + '?client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
+    console.log('options_uri', options)
     rp(options)
         .then(async (respBody) => {
             respBody = JSON.parse(respBody)
-            console.log('respBody: ', respBody)
             let openIssuesCount = respBody.open_issues_count
             let size = prod.issueSize ? prod.issueSize : 30
             let page = Math.ceil(openIssuesCount / size)
@@ -251,7 +250,6 @@ async function syncGithubUnfiledArticle () {
                     options['uri'] = issueUnFiledUrl
                     return rp(options)
                         .then((issueBodys) => {
-                            console.log('issueBodys: ', issueBodys)
                             issueBodys = JSON.parse(issueBodys)
                             function getIssues (issueBody) {
                                 let issue = {}
@@ -269,7 +267,7 @@ async function syncGithubUnfiledArticle () {
                                 issue['body'] = issueBody.body
                                 issue['created_at'] = utcToLocal(issueBody.created_at).local_datetime
                                 issue['updated_at'] = utcToLocal(issueBody.updated_at).timestamp
-                                options['uri'] = commentsUrl
+                                options['uri'] = commentsUrl + '?client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
                                 return rp(options)
                                     .then((commentReuslt) => {
                                         commentReuslt = JSON.parse(commentReuslt)
@@ -316,7 +314,6 @@ async function syncGithubUnfiledArticle () {
                     getIssueUnfiledPromises.push(getIssueUnfiled(issuesUnFiledUrl[i]))
                 }
 
-                console.log('getIssueUnfiledPromises: ', getIssueUnfiledPromises)
                 return Promise.all(getIssueUnfiledPromises).then((issueResults) => {
                     console.log('issues: ', issueResults)
                     let finalIssues = []
@@ -446,9 +443,8 @@ async function syncGithubUnfiledArticle () {
 }
 
 async function syncGithubfiledArticle () {
-    let apiUrl = 'https://api.github.com/repos/oyosc/blog'
-    let issueApiUrl = apiUrl + '/issues?access_token=' + '15f6e907b82037e652dde980739cf3493fe6dd9f&state=' + 'open'
-    let testUrl = 'https://api.github.com/repos/996icu/996.ICU'
+    let apiUrl = prod.apiUrl
+    let issueApiUrl = apiUrl + '/issues?access_token=' + prod.issueAccessToken + '&state=' + prod.issueState + '&labels=' + encodeURI(prod.issueFiledFlag) + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
     let options = {
         method: 'GET',
         headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36' }
@@ -480,7 +476,7 @@ async function syncGithubfiledArticle () {
             return {'statusCode': '20007', 'data': JSON.stringify(err)}
         })
         if (commentInfo.statusCode === '200' && commentInfo.data) {
-            options['uri'] = commentsUrl + '?since=' + new Date((commentInfo.data[0].updatedTime) * 1000 + 1000).toISOString()
+            options['uri'] = commentsUrl + '?since=' + new Date((commentInfo.data[0].updatedTime) * 1000 + 1000).toISOString() + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
             return rp(options)
                 .then((commentReuslt) => {
                     commentReuslt = JSON.parse(commentReuslt)
@@ -501,7 +497,7 @@ async function syncGithubfiledArticle () {
     if (articleInfo.statusCode === '200' && articleInfo.data) {
         console.log(articleInfo.data[0])
         let updatedTime = new Date((articleInfo.data[0].updatedTime) * 1000 + 1000).toISOString()
-        issueApiUrl = issueApiUrl + '&since=' + updatedTime
+        issueApiUrl = issueApiUrl + '&since=' + updatedTime + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
         console.log(issueApiUrl)
         options['uri'] = issueApiUrl
         rp(options)
@@ -517,7 +513,8 @@ async function syncGithubfiledArticle () {
                                 let notHTags = issueData.labels.filter((item) => {
                                     return tags.indexOf(item) === -1
                                 })
-                                if (notHTags) {
+                                console.log('notHTags: ', notHTags)
+                                if (notHTags.length > 0) {
                                     let insertTags = []
                                     for (let i in notHTags) {
                                         let insertTag = new Tags(notHTags[i])
@@ -558,7 +555,7 @@ async function syncGithubfiledArticle () {
     }
 }
 
-syncGithubUnfiledArticle()
+// syncGithubUnfiledArticle()
 // syncGithubfiledArticle()
 module.exports = {
     getArticles,
