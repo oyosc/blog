@@ -70,28 +70,20 @@ const getLocalTime = () => {
     let hour = date.getHours()
     let minute = date.getMinutes()
     let second = date.getSeconds()
-    return year + '/' + month + '/' + day + ' ' + hour + ':' + minute + ':' + second
+    return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
 }
 
 function utcToLocal (utcDatetime) {
     // 转为正常的时间格式 年-月-日 时:分:秒
-    var tPos = utcDatetime.indexOf('T')
-    var zPos = utcDatetime.indexOf('Z')
-    var year_month_day = utcDatetime.substr(0, tPos)
-    var hour_minute_second = utcDatetime.substr(tPos + 1, zPos - tPos - 1)
-    var new_datetime = year_month_day + '' + hour_minute_second
-
     // 处理成为时间戳
-    let timestamp = new Date(Date.parse(new_datetime))
+    console.log('utcDatetime', utcDatetime)
+    let timestamp = new Date(utcDatetime)
     timestamp = timestamp.getTime()
     timestamp = timestamp / 1000
 
-    // 增加8个小时，北京时间比utc时间多八个时区
-    timestamp = timestamp + 8 * 60 * 60
-
     // 时间戳转为时间
     var local_datetime = new Date(parseInt(timestamp) * 1000).toLocaleString().replace(/年|月/g, '-').replace(/日/g, ' ')
-    return local_datetime
+    return {local_datetime, timestamp}
 }
 
 const verifyPath = function (path) {

@@ -1,5 +1,6 @@
 import Article from '../database/mongodb/models/article'
 import Comment from '../database/mongodb/models/comment'
+import Tags from '../database/mongodb/models/tags'
 import tags from './tags'
 import {prod} from '../../config'
 import log from '../log/log'
@@ -223,7 +224,7 @@ async function delArticle (id) {
 
 async function syncGithubUnfiledArticle () {
     let apiUrl = 'https://api.github.com/repos/oyosc/blog'
-    let issueApiUrl = apiUrl + '/issues?access_token=' + '15f6e907b82037e652dde980739cf3493fe6dd9f&state=' + 'all'
+    let issueApiUrl = apiUrl + '/issues?access_token=' + '15f6e907b82037e652dde980739cf3493fe6dd9f&state=' + 'open'
     let testUrl = 'https://api.github.com/repos/996icu/996.ICU'
     let options = {
         method: 'GET',
@@ -237,14 +238,10 @@ async function syncGithubUnfiledArticle () {
             let openIssuesCount = respBody.open_issues_count
             let size = prod.issueSize ? prod.issueSize : 30
             let page = Math.ceil(openIssuesCount / size)
-            console.log('page: ', page)
-            let issuesFiledUrl = []
             let issuesUnFiledUrl = []
             while (page !== 0) {
-                let issueUnFiledUrl = issueApiUrl + '&page=' + page + '&size=' + size + '&labels=' + 'bug'
-                let issueFiledUrl = issueApiUrl + '&page=' + page + '&size=' + size + '&labels=' + '已归档'
+                let issueUnFiledUrl = issueApiUrl + '&page=' + page + '&size=' + size
                 issuesUnFiledUrl.push(issueUnFiledUrl)
-                issuesFiledUrl.push(issueFiledUrl)
                 page--
             }
 
@@ -253,25 +250,25 @@ async function syncGithubUnfiledArticle () {
                 function getIssueUnfiled (issueUnFiledUrl) {
                     options['uri'] = issueUnFiledUrl
                     return rp(options)
-                        .then((issueBody) => {
-                            issueBody = JSON.parse(issueBody)
-                            let issues = []
-                            for (let i = 0, l = issueBody.length; i < l; i++) {
+                        .then((issueBodys) => {
+                            console.log('issueBodys: ', issueBodys)
+                            issueBodys = JSON.parse(issueBodys)
+                            function getIssues (issueBody) {
                                 let issue = {}
-                                let commentsUrl = issueBody[i].comments_url
+                                let commentsUrl = issueBody.comments_url
                                 issue['user'] = {
-                                    name: issueBody[i].user.login,
-                                    avatar_url: issueBody[i].user.avatar_url,
-                                    url: issueBody[i].user.url
+                                    name: issueBody.user.login,
+                                    avatar_url: issueBody.user.avatar_url,
+                                    url: issueBody.user.url
                                 }
-                                issue['labels'] = issueBody[i].labels.map((item) => {
+                                issue['labels'] = issueBody.labels.map((item) => {
                                     return item.name
                                 })
-                                issue['title'] = issueBody[i].title
-                                issue['number'] = issueBody[i].number
-                                issue['body'] = issueBody[i].body
-                                issue['created_at'] = utcToLocal(issueBody[i].created_at)
-                                issue['updated_at'] = issueBody[i].updated_at
+                                issue['title'] = issueBody.title
+                                issue['number'] = issueBody.number
+                                issue['body'] = issueBody.body
+                                issue['created_at'] = utcToLocal(issueBody.created_at).local_datetime
+                                issue['updated_at'] = utcToLocal(issueBody.updated_at).timestamp
                                 options['uri'] = commentsUrl
                                 return rp(options)
                                     .then((commentReuslt) => {
@@ -286,14 +283,32 @@ async function syncGithubUnfiledArticle () {
                                             }
                                             comment['body'] = commentReuslt[i].body
                                             comment['id'] = commentReuslt[i].id
-                                            comment['created_at'] = utcToLocal(commentReuslt[i].created_at)
-                                            comment['updated_at'] = utcToLocal(commentReuslt[i].updated_at)
+                                            comment['created_at'] = utcToLocal(commentReuslt[i].created_at).local_datetime
+                                            comment['updated_at'] = utcToLocal(commentReuslt[i].updated_at).timestamp
                                             issue['comments'].push(comment)
                                         }
-                                        issues.push(issue)
-                                        return issues
+                                        return {statusCode: '200', issue}
+                                    }).catch((err) => {
+                                        return {statusCode: '20012', message: JSON.stringify(err)}
                                     })
                             }
+                            return Promise.all(issueBodys.map((item) => getIssues(item))).then((loopIssueResults) => {
+                                console.log('loopIssueResults: ', loopIssueResults)
+                                let finalLoopIssues = []
+                                for (let i = 0, l = loopIssueResults.length; i < l; i++) {
+                                    let loopIssueResult = loopIssueResults[i]
+                                    if (loopIssueResult.statusCode === '200') {
+                                        finalLoopIssues = finalLoopIssues.concat(loopIssueResult.issue)
+                                    } else {
+                                        log.error(__filename, __line(__filename), loopIssueResult.message)
+                                    }
+                                }
+                                return {statusCode: '200', finalLoopIssues}
+                            }).catch(err => {
+                                return {statusCode: '20010', message: JSON.stringify(err)}
+                            })
+                        }).catch((err) => {
+                            return {statusCode: '20011', message: JSON.stringify(err)}
                         })
                 }
 
@@ -302,74 +317,30 @@ async function syncGithubUnfiledArticle () {
                 }
 
                 console.log('getIssueUnfiledPromises: ', getIssueUnfiledPromises)
-                return Promise.all(getIssueUnfiledPromises).then((issues) => {
-                    console.log('issues: ', issues)
+                return Promise.all(getIssueUnfiledPromises).then((issueResults) => {
+                    console.log('issues: ', issueResults)
                     let finalIssues = []
-                    for (let i = 0, l = issues.length; i < l; i++) {
-                        finalIssues = finalIssues.concat(issues[i])
+                    for (let i = 0, l = issueResults.length; i < l; i++) {
+                        let issuesData = issueResults[i]
+                        if (issuesData.statusCode === '200') {
+                            finalIssues = finalIssues.concat(issuesData.finalLoopIssues)
+                        } else {
+                            log.error(__filename, __line(__filename), issuesData.message)
+                        }
                     }
-                    return finalIssues
+                    return {statusCode: '200', finalIssues}
+                }).catch((err) => {
+                    return {statusCode: '20013', message: JSON.stringify(err)}
                 })
             }
 
             async function syncUnFiledIssues () {
                 let unFiledIssues = await getIssuesUnFiledResult(issuesUnFiledUrl)
-
-                for (let i = 0, l = unFiledIssues.length; i < l; i++) {
-                    let unFiledIssue = unFiledIssues[i]
-                    let userInfo = unFiledIssue.user
-                    let isExistUserInfo = findOneUser({github_name: userInfo.name})
-                    if (isExistUserInfo.statusCode !== '200') {
-                        let registerUserInfo = {
-                            username: Math.random().toString(36).substr(2),
-                            type: '1',
-                            github_url: userInfo.url,
-                            github_name: userInfo.name,
-                            avatar: userInfo.avatar_url
-                        }
-                        let registerResult = await registerUser(registerUserInfo)
-                        if (registerResult.statusCode === '200') {
-                            log.debug(__filename, __line(__filename), registerResult.message)
-                        } else {
-                            log.error(__filename, __line(__filename), registerResult.message)
-                        }
-                    }
-                    for (let i = 0, l = unFiledIssue.labels.length; i < l; i++) {
-                        let labelResult = await tags.addTag({name: unFiledIssue.labels[i]})
-                        if (labelResult.statusCode === '200') {
-                            log.debug(__filename, __line(__filename), labelResult.message)
-                        } else {
-                            log.error(__filename, __line(__filename), labelResult.message)
-                        }
-                    }
-                    let newArticle = new Article({
-                        title: unFiledIssue.title,
-                        content: unFiledIssue.body,
-                        isPublish: 1,
-                        viewCount: 0,
-                        commentCount: unFiledIssue.comments.length,
-                        time: unFiledIssue.created_at,
-                        updatedTime: unFiledIssue.updated_at,
-                        isIssue: true,
-                        issueId: unFiledIssue.number,
-                        author: unFiledIssue.user.name,
-                        tags: unFiledIssue.labels
-                    })
-                    let newArticleResult = await newArticle.save().then(data => {
-                        return {'statusCode': '200', 'message': '文章保存成功', data}
-                    }).catch(err => {
-                        log.error(__filename, __line(__filename), err)
-                        return {'statusCode': '20008', 'message': '文章保存失败'}
-                    })
-                    if (newArticleResult.statusCode === '200') {
-                        log.debug(__filename, __line(__filename), newArticleResult.message)
-                    } else {
-                        log.error(__filename, __line(__filename), newArticleResult.message)
-                    }
-                    for (let i = 0, l = unFiledIssue.comments.length; i < l; i++) {
-                        let comment = unFiledIssue.comments[i]
-                        let userInfo = comment.user
-                        let isExistUserInfo = findOneUser({github_name: userInfo.name})
+                if (unFiledIssues.statusCode === '200') {
+                    for (let i = 0, l = unFiledIssues.finalIssues.length; i < l; i++) {
+                        let unFiledIssue = unFiledIssues.finalIssues[i]
+                        let userInfo = unFiledIssue.user
+                        let isExistUserInfo = await findOneUser({github_name: userInfo.name})
                         if (isExistUserInfo.statusCode !== '200') {
                             let registerUserInfo = {
                                 username: Math.random().toString(36).substr(2),
@@ -380,39 +351,94 @@ async function syncGithubUnfiledArticle () {
                             }
                             let registerResult = await registerUser(registerUserInfo)
                             if (registerResult.statusCode === '200') {
-                                isExistUserInfo.userInfo = registerResult.data
                                 log.debug(__filename, __line(__filename), registerResult.message)
                             } else {
                                 log.error(__filename, __line(__filename), registerResult.message)
                             }
                         }
-                        if (isExistUserInfo.userInfo && newArticleResult.data) {
-                            let newComment = new Comment({
-                                content: comment.body,
-                                userId: isExistUserInfo.userInfo._id,
-                                createdTime: comment.created_at,
-                                updatedTime: comment.updated_at,
-                                likeHot: 0,
-                                articleId: newArticleResult.data._id,
-                                type: '1',
-                                isIssueComment: true,
-                                issueCommentId: comment.id
-                            })
-
-                            let result = await newComment.save().then(async data => {
-                                return {'statusCode': '200', 'message': '评论保存成功', data}
-                            }).catch(err => {
-                                log.error(__filename, __line(__filename), err)
-                                return {'statusCode': '20008', 'message': '评论保存失败'}
-                            })
-                            log.info(__filename, __line(__filename), result)
+                        for (let i = 0, l = unFiledIssue.labels.length; i < l; i++) {
+                            let labelResult = await tags.addTag({name: unFiledIssue.labels[i]})
+                            if (labelResult.statusCode === '200') {
+                                log.debug(__filename, __line(__filename), labelResult.message)
+                            } else {
+                                log.error(__filename, __line(__filename), labelResult.message)
+                            }
+                        }
+                        let newArticle = new Article({
+                            title: unFiledIssue.title,
+                            content: unFiledIssue.body,
+                            isPublish: 1,
+                            viewCount: 0,
+                            commentCount: unFiledIssue.comments.length,
+                            time: unFiledIssue.created_at,
+                            updatedTime: unFiledIssue.updated_at,
+                            isIssue: true,
+                            issueId: unFiledIssue.number,
+                            author: unFiledIssue.user.name,
+                            tags: unFiledIssue.labels
+                        })
+                        let newArticleResult = await newArticle.save().then(data => {
+                            return {'statusCode': '200', 'message': '文章保存成功', data}
+                        }).catch(err => {
+                            log.error(__filename, __line(__filename), err)
+                            return {'statusCode': '20008', 'message': '文章保存失败'}
+                        })
+                        if (newArticleResult.statusCode === '200') {
+                            log.debug(__filename, __line(__filename), newArticleResult.message)
                         } else {
-                            log.error(__filename, __line(__filename), isExistUserInfo.message)
                             log.error(__filename, __line(__filename), newArticleResult.message)
                         }
+                        for (let i = 0, l = unFiledIssue.comments.length; i < l; i++) {
+                            let comment = unFiledIssue.comments[i]
+                            let userInfo = comment.user
+                            let isExistUserInfo = await findOneUser({github_name: userInfo.name})
+                            console.log('isExistUserInfo: ', isExistUserInfo)
+                            if (isExistUserInfo.statusCode !== '200') {
+                                let registerUserInfo = {
+                                    username: Math.random().toString(36).substr(2),
+                                    type: '1',
+                                    github_url: userInfo.url,
+                                    github_name: userInfo.name,
+                                    avatar: userInfo.avatar_url
+                                }
+                                let registerResult = await registerUser(registerUserInfo)
+                                if (registerResult.statusCode === '200') {
+                                    isExistUserInfo.userInfo = registerResult.data
+                                    log.debug(__filename, __line(__filename), registerResult.message)
+                                } else {
+                                    log.error(__filename, __line(__filename), registerResult.message)
+                                }
+                            }
+                            if (isExistUserInfo.userInfo && newArticleResult.data) {
+                                let newComment = new Comment({
+                                    content: comment.body,
+                                    userId: isExistUserInfo.userInfo._id,
+                                    createdTime: comment.created_at,
+                                    updatedTime: comment.updated_at,
+                                    likeHot: 0,
+                                    articleId: newArticleResult.data._id,
+                                    type: '1',
+                                    isIssueComment: true,
+                                    issueCommentId: comment.id
+                                })
+                                let result = await newComment.save().then(async data => {
+                                    return {'statusCode': '200', 'message': '评论保存成功', data}
+                                }).catch(err => {
+                                    log.error(__filename, __line(__filename), err)
+                                    return {'statusCode': '20008', 'message': '评论保存失败'}
+                                })
+                                log.info(__filename, __line(__filename), result)
+                            } else {
+                                log.error(__filename, __line(__filename), isExistUserInfo.message)
+                                log.error(__filename, __line(__filename), newArticleResult.message)
+                            }
+                        }
                     }
+                } else {
+                    log.error(__filename, __line(__filename), unFiledIssues.message)
                 }
             }
+            syncUnFiledIssues()
         })
         .catch((err) => {
             console.log(err)
@@ -430,17 +456,99 @@ async function syncGithubfiledArticle () {
     let articleInfo = await Article.find({}, 'updatedTime', {
         limit: 1
     }).then((result) => {
-        return {'code': 200, 'data': result}
+        return {'statusCode': '200', 'data': result}
     }).catch((err) => {
-        return {'code': 20007, 'data': JSON.stringify(err)}
+        return {'statusCode': '20007', 'data': JSON.stringify(err)}
     })
-    if (articleInfo.code === 200 && articleInfo.data) {
-        let updatedTime = articleInfo.data.updatedTime
+
+    async function getIssueFiled (issueBody) {
+        let issue = {}
+        let commentsUrl = issueBody.comments_url
+        issue['labels'] = issueBody.labels.map((item) => {
+            return item.name
+        })
+        issue['title'] = issueBody.title
+        issue['number'] = issueBody.number
+        issue['body'] = issueBody.body
+        issue['updated_at'] = utcToLocal(issueBody.updated_at).timestamp
+        issue['comments'] = []
+        let commentInfo = await Comment.find({}, 'updatedTime', {
+            limit: 1
+        }).then((result) => {
+            return {'statusCode': '200', 'data': result}
+        }).catch((err) => {
+            return {'statusCode': '20007', 'data': JSON.stringify(err)}
+        })
+        if (commentInfo.statusCode === '200' && commentInfo.data) {
+            options['uri'] = commentsUrl + '?since=' + new Date((commentInfo.data[0].updatedTime) * 1000 + 1000).toISOString()
+            return rp(options)
+                .then((commentReuslt) => {
+                    commentReuslt = JSON.parse(commentReuslt)
+                    for (let i = 0, l = commentReuslt.length; i < l; i++) {
+                        let comment = {}
+                        comment['body'] = commentReuslt[i].body
+                        comment['id'] = commentReuslt[i].id
+                        comment['updated_at'] = utcToLocal(commentReuslt[i].updated_at).timestamp
+                        issue['comments'].push(comment)
+                    }
+                    return issue
+                })
+        } else {
+            log.error(__filename, __line(__filename), commentInfo.data)
+        }
+    }
+
+    if (articleInfo.statusCode === '200' && articleInfo.data) {
+        console.log(articleInfo.data[0])
+        let updatedTime = new Date((articleInfo.data[0].updatedTime) * 1000 + 1000).toISOString()
         issueApiUrl = issueApiUrl + '&since=' + updatedTime
+        console.log(issueApiUrl)
         options['uri'] = issueApiUrl
         rp(options)
             .then((respBody) => {
-                respBody = JSON.parse(respBody)
+                if (respBody) {
+                    let issueBodys = JSON.parse(respBody)
+                    Promise.all(issueBodys.map(item => getIssueFiled(item))).then(async (issueDatas) => {
+                        for (let i = 0, l = issueDatas.length; i < l; i++) {
+                            let issueData = issueDatas[i]
+                            let allTags = await tags.getAllTags()
+                            if (allTags.statusCode === '200') {
+                                let tags = JSON.stringify(allTags.tagsInfo)
+                                let notHTags = issueData.labels.filter((item) => {
+                                    return tags.indexOf(item) === -1
+                                })
+                                if (notHTags) {
+                                    let insertTags = []
+                                    for (let i in notHTags) {
+                                        let insertTag = new Tags(notHTags[i])
+                                        insertTags.push(insertTag)
+                                    }
+                                    let insertManyTags = await Tags.insertMany(insertTags).then((data) => {
+                                        return {'statusCode': '200', 'message': '标签添加成功'}
+                                    }).catch((err) => {
+                                        return {'statusCode': '20009', 'message': JSON.stringify(err)}
+                                    })
+                                    log.info(__filename, __line(__filename), insertManyTags.message)
+                                }
+                                Article.update({issueId: issueData.number, isIssue: true}, {title: issueData.title, labels: issueData.labels, body: issueData.body, updated_at: issueData.updated_at}).then((data) => {
+                                    log.info(__filename, __line(__filename), data)
+                                }).catch(err => {
+                                    log.err(__filename, __line(__filename), JSON.stringify(err))
+                                })
+                                for (let j = 0, k = issueData.comments.length; j < k; j++) {
+                                    let insertComment = issueData.comments[j]
+                                    Comment.update({isIssueComment: true, issueCommentId: insertComment.id}, {content: insertComment.body, updatedTime: insertComment.updated_at}).then((data) => {
+                                        log.info(__filename, __line(__filename), data)
+                                    }).catch(err => {
+                                        log.err(__filename, __line(__filename), JSON.stringify(err))
+                                    })
+                                }
+                            } else {
+                                log.error(__filename, __line(__filename), allTags.message)
+                            }
+                        }
+                    })
+                }
             })
             .catch((err) => {
                 log.error(__filename, __line(__filename), JSON.stringify(err))
@@ -448,18 +556,10 @@ async function syncGithubfiledArticle () {
     } else {
         log.error(__filename, __line(__filename), articleInfo.data)
     }
-    console.log(articleInfo)
-    // options['uri'] = apiUrl
-    // rp(options)
-    //     .then(async (respBody) => {
-    //     })
-    //     .catch((err) => {
-    //         console.log(err)
-    //     })
 }
 
-// syncGithubArticle()
-syncGithubfiledArticle()
+syncGithubUnfiledArticle()
+// syncGithubfiledArticle()
 module.exports = {
     getArticles,
     updateArticle,
