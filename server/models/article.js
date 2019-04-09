@@ -475,7 +475,7 @@ async function syncGithubfiledArticle () {
     }
     let articleInfo = await Article.find({isIssue: true}, 'updatedTime', {
         limit: 1,
-        sort: [['updatedTime', -1]]
+        sort: [{updatedTime: -1}]
     }).then((result) => {
         return {'statusCode': '200', 'data': result}
     }).catch((err) => {
