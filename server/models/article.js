@@ -493,14 +493,14 @@ async function syncGithubfiledArticle () {
         issue['body'] = issueBody.body
         issue['updated_at'] = utcToLocal(issueBody.updated_at).timestamp
         issue['comments'] = []
-        let commentInfo = await Comment.find({}, 'updatedTime', {
+        let commentInfo = await Comment.find({isIssue: true}, 'updatedTime', {
             limit: 1
         }).then((result) => {
             return {'statusCode': '200', 'data': result}
         }).catch((err) => {
             return {'statusCode': '20007', 'data': JSON.stringify(err)}
         })
-        if (commentInfo.statusCode === '200' && commentInfo.data) {
+        if (commentInfo.statusCode === '200' && commentInfo.data.length > 0) {
             options['uri'] = commentsUrl + '?since=' + new Date((commentInfo.data[0].updatedTime) * 1000 + 1000).toISOString() + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
             return rp(options)
                 .then((commentReuslt) => {
@@ -515,12 +515,12 @@ async function syncGithubfiledArticle () {
                     return issue
                 })
         } else {
+	    return issue
             log.error(__filename, __line(__filename), commentInfo.data)
         }
     }
 
     if (articleInfo.statusCode === '200' && articleInfo.data.length > 0) {
-        console.log(articleInfo.data)
         let updatedTime = new Date((articleInfo.data[0].updatedTime) * 1000 + 1000).toISOString()
         issueApiUrl = issueApiUrl + '&since=' + updatedTime + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
         console.log(issueApiUrl)
@@ -528,9 +528,11 @@ async function syncGithubfiledArticle () {
         rp(options)
             .then((respBody) => {
                 if (respBody) {
+		    console.log('debug_respBody: ', respBody)
                     let issueBodys = JSON.parse(respBody)
                     Promise.all(issueBodys.map(item => getIssueFiled(item))).then(async (issueDatas) => {
-                        for (let i = 0, l = issueDatas.length; i < l; i++) {
+                        console.log('debug_issueDatas: ', issueDatas)
+			for (let i = 0, l = issueDatas.length; i < l; i++) {
                             let issueData = issueDatas[i]
                             let allTags = await tags.getAllTags()
                             if (allTags.statusCode === '200') {
@@ -580,8 +582,8 @@ async function syncGithubfiledArticle () {
     }
 }
 function execTasks () {
-    schedule.scheduleJob('30 * * * * *', syncGithubUnfiledArticle)
-    schedule.scheduleJob('30 * * * * *', syncGithubfiledArticle)
+    schedule.scheduleJob('0 30 0 * * *', syncGithubUnfiledArticle)
+    schedule.scheduleJob('0 30 1 * * *', syncGithubfiledArticle)
 }
 
 execTasks()
