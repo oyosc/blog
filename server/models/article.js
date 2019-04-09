@@ -473,8 +473,9 @@ async function syncGithubfiledArticle () {
         method: 'GET',
         headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36' }
     }
-    let articleInfo = await Article.find({}, 'updatedTime', {
-        limit: 1
+    let articleInfo = await Article.find({isIssue: true}, 'updatedTime', {
+        limit: 1,
+        sort: [['updatedTime', -1]]
     }).then((result) => {
         return {'statusCode': '200', 'data': result}
     }).catch((err) => {
