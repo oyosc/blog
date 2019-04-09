@@ -27,7 +27,7 @@ class Comment extends Component {
 
     toLocalDate (timeString) {
         let unixTime = new Date(parseInt(timeString))
-        return unixTime.getFullYear() + '/' + (unixTime.getMonth() + 1) + '/' + unixTime.getDate() + '/' + unixTime.getHours() + ':' + unixTime.getMinutes() + ':' + unixTime.getSeconds()
+        return unixTime.getFullYear() + '-' + (unixTime.getMonth() + 1) + '-' + unixTime.getDate() + ' ' + unixTime.getHours() + ':' + unixTime.getMinutes() + ':' + unixTime.getSeconds()
     }
 
     componentWillMount () {
@@ -40,7 +40,7 @@ class Comment extends Component {
 
     _updateTimeString () {
         const comment = this.props.comment
-        const duration = (+Date.now() - comment.createdTime) / 1000
+        const duration = (+Date.now() - comment.createdTime * 1000) / 1000
         this.setState({
             timeString: duration > 60 ? (duration > 3600 ? (duration > 86400 ? (duration > 259200 ? this.toLocalDate(comment.createdTime) : `${Math.round(duration / 3600)}天前`) : `${Math.round(duration / 3600)}小时前`) : `${Math.round(duration / 60)}分钟前`) : `${Math.round(Math.max(duration, 1))} 秒前`
         })

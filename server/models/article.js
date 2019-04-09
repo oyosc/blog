@@ -285,7 +285,7 @@ async function syncGithubUnfiledArticle () {
                                             }
                                             comment['body'] = commentReuslt[i].body
                                             comment['id'] = commentReuslt[i].id
-                                            comment['created_at'] = utcToLocal(commentReuslt[i].created_at).local_datetime
+                                            comment['created_at'] = utcToLocal(commentReuslt[i].created_at).timestamp * 1000
                                             comment['updated_at'] = utcToLocal(commentReuslt[i].updated_at).timestamp
                                             issue['comments'].push(comment)
                                         }
@@ -518,8 +518,8 @@ async function syncGithubfiledArticle () {
         }
     }
 
-    if (articleInfo.statusCode === '200' && articleInfo.data) {
-        console.log(articleInfo.data[0])
+    if (articleInfo.statusCode === '200' && articleInfo.data.length > 0) {
+        console.log(articleInfo.data)
         let updatedTime = new Date((articleInfo.data[0].updatedTime) * 1000 + 1000).toISOString()
         issueApiUrl = issueApiUrl + '&since=' + updatedTime + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
         console.log(issueApiUrl)
