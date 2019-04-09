@@ -6,6 +6,7 @@ import {prod, dev} from '../../config'
 import log from '../log/log'
 import {findOneUser, registerUser} from './user'
 import {utcToLocal} from '../base/util'
+import schedule from 'node-schedule'
 const rp = require('request-promise')
 const objectId = require('mongodb').ObjectID
 
@@ -445,6 +446,7 @@ async function syncGithubUnfiledArticle () {
                                             log.error(__filename, __line(__filename), isExistUserInfo.message)
                                             log.error(__filename, __line(__filename), newArticleResult.message)
                                         }
+                                    }
                                 })
                                 .catch((err) => {
                                     log.error(__filename, __line(__filename), err)
@@ -535,11 +537,10 @@ async function syncGithubfiledArticle () {
                                 let notHTags = issueData.labels.filter((item) => {
                                     return tags.indexOf(item) === -1
                                 })
-                                console.log('notHTags: ', notHTags)
                                 if (notHTags.length > 0) {
                                     let insertTags = []
-                                    for (let i in notHTags) {
-                                        let insertTag = new Tags(notHTags[i])
+                                    for (let index in notHTags) {
+                                        let insertTag = new Tags({name: notHTags[index]})
                                         insertTags.push(insertTag)
                                     }
                                     let insertManyTags = await Tags.insertMany(insertTags).then((data) => {
@@ -549,7 +550,8 @@ async function syncGithubfiledArticle () {
                                     })
                                     log.info(__filename, __line(__filename), insertManyTags.message)
                                 }
-                                Article.update({issueId: issueData.number, isIssue: true}, {title: issueData.title, labels: issueData.labels, body: issueData.body, updated_at: issueData.updated_at}).then((data) => {
+                                console.log('issueData.labels: ', issueData)
+                                Article.update({issueId: issueData.number, isIssue: true}, {title: issueData.title, tags: issueData.labels, content: issueData.body, updatedTime: issueData.updated_at}).then((data) => {
                                     log.info(__filename, __line(__filename), data)
                                 }).catch(err => {
                                     log.err(__filename, __line(__filename), JSON.stringify(err))
@@ -576,9 +578,12 @@ async function syncGithubfiledArticle () {
         log.error(__filename, __line(__filename), articleInfo.data)
     }
 }
+function execTasks () {
+    schedule.scheduleJob('30 * * * * *', syncGithubUnfiledArticle)
+    schedule.scheduleJob('30 * * * * *', syncGithubfiledArticle)
+}
 
-syncGithubUnfiledArticle()
-// syncGithubfiledArticle()
+execTasks()
 module.exports = {
     getArticles,
     updateArticle,
