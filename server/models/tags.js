@@ -8,14 +8,14 @@ async function getAllTags () {
     let result = await Tags.find(null, 'name')
         .then((tagsInfo) => {
             if (tagsInfo) {
-                try {
-                    let newTagsInfo = tagsInfo.filter((tagInfo) => {
-                        return (JSON.stringify(tagInfo).indexOf(issueConfig.issueUnfiledFlag) === -1 && JSON.stringify(tagInfo).indexOf(issueConfig.issueFiledFlag) === -1)
-                    })
-                    return {'statusCode': '200', 'message': '成功查询到tag信息', tagsInfo: newTagsInfo}
-                } catch (err) {
-                    console.log('err: ', JSON.stringify(err))
-                }
+                let newTagsInfo = tagsInfo.filter((tagInfo) => {
+                    console.log('tagInfo: ', tagInfo)
+                    console.log('flag: ', JSON.stringify(tagInfo).indexOf(issueConfig.issueUnfiledFlag) === -1)
+                    console.log('flag1: ', JSON.stringify(tagInfo).indexOf(issueConfig.issueFiledFlag) === -1)
+                    console.log('flag2: ', JSON.stringify(tagInfo).indexOf(issueConfig.issueUnfiledFlag) === -1 && JSON.stringify(tagInfo).indexOf(issueConfig.issueFiledFlag) === -1)
+                    return (JSON.stringify(tagInfo).indexOf(issueConfig.issueUnfiledFlag) === -1 && JSON.stringify(tagInfo).indexOf(issueConfig.issueFiledFlag) === -1)
+                })
+                return {'statusCode': '200', 'message': '成功查询到tag信息', tagsInfo: newTagsInfo}
             } else {
                 return {'statusCode': '20003', 'message': errCodes['20003']}
             }
