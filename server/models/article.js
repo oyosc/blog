@@ -582,9 +582,8 @@ async function syncGithubfiledArticle () {
     }
 }
 function execTasks () {
-    console.log('112345')
-    schedule.scheduleJob('5 * * * * *', syncGithubUnfiledArticle)
-    schedule.scheduleJob('5 * * * * *', syncGithubfiledArticle)
+    schedule.scheduleJob('0 30 0 * * *', syncGithubUnfiledArticle)
+    schedule.scheduleJob('0 30 1 * * *', syncGithubfiledArticle)
 }
 
 execTasks()
