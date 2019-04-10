@@ -1,18 +1,22 @@
 import Tags from '../database/mongodb/models/tags'
 import errCodes from '../base/errCodes'
 import log from '../log/log'
+import {issueConfig} from '../base/config'
 
 // 获取所有标签
 async function getAllTags () {
     let result = await Tags.find(null, 'name')
         .then((tagsInfo) => {
             if (tagsInfo) {
-                return {'statusCode': '200', 'message': '成功查询到tag信息', tagsInfo}
+                let newTagsInfo = tagsInfo.filter((tagInfo) => {
+                    return (JSON.stringify(tagInfo).indexOf(issueConfig.issueUnfiledFlag) === -1 && JSON.stringify(tagInfo).indexOf(issueConfig.issueFiledFlag) === -1)
+                })
+                return {'statusCode': '200', 'message': '成功查询到tag信息', tagsInfo: newTagsInfo}
             } else {
                 return {'statusCode': '20003', 'message': errCodes['20003']}
             }
         }).catch(err => {
-            log.err(__filename, __line(__filename), err)
+            log.error(__filename, __line(__filename), err)
             return {'statusCode': '20002', 'message': JSON.stringify(err)}
         })
     return result

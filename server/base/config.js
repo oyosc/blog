@@ -24,3 +24,6 @@ export const redisConfig = config.redisConfig
 export const githubOauth = config.githubOauth
 
 export const corsConfig = config.corsConfig
+
+// issue config
+export const issueConfig = config.issueConfig

@@ -2,7 +2,7 @@ import Article from '../database/mongodb/models/article'
 import Comment from '../database/mongodb/models/comment'
 import Tags from '../database/mongodb/models/tags'
 import tags from './tags'
-import {prod, dev} from '../../config'
+import {issueConfig, githubOauth} from '../base/config'
 import log from '../log/log'
 import {findOneUser, registerUser} from './user'
 import {utcToLocal} from '../base/util'
@@ -224,19 +224,19 @@ async function delArticle (id) {
 }
 
 async function syncGithubUnfiledArticle () {
-    let apiUrl = prod.apiUrl
-    let issueApiUrl = apiUrl + '/issues?access_token=' + prod.issueAccessToken + '&state=' + prod.issueState + '&labels=' + encodeURI(prod.issueUnfiledFlag) + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
+    let apiUrl = issueConfig.apiUrl
+    let issueApiUrl = apiUrl + '/issues?access_token=' + issueConfig.issueAccessToken + '&state=' + issueConfig.issueState + '&labels=' + encodeURI(issueConfig.issueUnfiledFlag) + '&client_id=' + githubOauth.clientID + '&client_secret=' + githubOauth.clientSecret
     let options = {
         method: 'GET',
         headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36' }
     }
-    options['uri'] = apiUrl + '?client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
+    options['uri'] = apiUrl + '?client_id=' + githubOauth.clientID + '&client_secret=' + githubOauth.clientSecret
     console.log('options_uri', options)
     rp(options)
         .then(async (respBody) => {
             respBody = JSON.parse(respBody)
             let openIssuesCount = respBody.open_issues_count
-            let size = prod.issueSize ? prod.issueSize : 30
+            let size = issueConfig.issueSize ? issueConfig.issueSize : 30
             let page = Math.ceil(openIssuesCount / size)
             let issuesUnFiledUrl = []
             while (page !== 0) {
@@ -271,7 +271,7 @@ async function syncGithubUnfiledArticle () {
                                 issue['url'] = issueBody.url
                                 issue['created_at'] = utcToLocal(issueBody.created_at).local_datetime
                                 issue['updated_at'] = utcToLocal(issueBody.updated_at).timestamp
-                                options['uri'] = commentsUrl + '?client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
+                                options['uri'] = commentsUrl + '?client_id=' + githubOauth.clientID + '&client_secret=' + githubOauth.clientSecret
                                 return rp(options)
                                     .then((commentReuslt) => {
                                         commentReuslt = JSON.parse(commentReuslt)
@@ -386,12 +386,12 @@ async function syncGithubUnfiledArticle () {
                         })
                         if (newArticleResult.statusCode === '200') {
                             log.debug(__filename, __line(__filename), newArticleResult.message)
-                            let editIssueUrl = unFiledIssue.url + '?access_token=' + prod.issueAccessToken + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
+                            let editIssueUrl = unFiledIssue.url + '?access_token=' + issueConfig.issueAccessToken + '&client_id=' + githubOauth.clientID + '&client_secret=' + githubOauth.clientSecret
                             console.log('unFiledIssue.labels: ', unFiledIssue.labels)
                             let newLabels = unFiledIssue.labels.filter((item) => {
-                                return item !== prod.issueUnfiledFlag
+                                return item !== issueConfig.issueUnfiledFlag
                             })
-                            newLabels.push(prod.issueFiledFlag)
+                            newLabels.push(issueConfig.issueFiledFlag)
                             console.log('newLabels: ', newLabels)
                             options['uri'] = editIssueUrl
                             options['method'] = 'PATCH'
@@ -467,8 +467,8 @@ async function syncGithubUnfiledArticle () {
 }
 
 async function syncGithubfiledArticle () {
-    let apiUrl = prod.apiUrl
-    let issueApiUrl = apiUrl + '/issues?access_token=' + prod.issueAccessToken + '&state=' + prod.issueState + '&labels=' + encodeURI(prod.issueFiledFlag) + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
+    let apiUrl = issueConfig.apiUrl
+    let issueApiUrl = apiUrl + '/issues?access_token=' + issueConfig.issueAccessToken + '&state=' + issueConfig.issueState + '&labels=' + encodeURI(issueConfig.issueFiledFlag) + '&client_id=' + githubOauth.clientID + '&client_secret=' + githubOauth.clientSecret
     let options = {
         method: 'GET',
         headers: { 'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36' }
@@ -501,7 +501,7 @@ async function syncGithubfiledArticle () {
             return {'statusCode': '20007', 'data': JSON.stringify(err)}
         })
         if (commentInfo.statusCode === '200' && commentInfo.data.length > 0) {
-            options['uri'] = commentsUrl + '?since=' + new Date((commentInfo.data[0].updatedTime) * 1000 + 1000).toISOString() + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
+            options['uri'] = commentsUrl + '?since=' + new Date((commentInfo.data[0].updatedTime) * 1000 + 1000).toISOString() + '&client_id=' + githubOauth.clientID + '&client_secret=' + githubOauth.clientSecret
             return rp(options)
                 .then((commentReuslt) => {
                     commentReuslt = JSON.parse(commentReuslt)
@@ -515,24 +515,24 @@ async function syncGithubfiledArticle () {
                     return issue
                 })
         } else {
-	    return issue
             log.error(__filename, __line(__filename), commentInfo.data)
+            return issue
         }
     }
 
     if (articleInfo.statusCode === '200' && articleInfo.data.length > 0) {
         let updatedTime = new Date((articleInfo.data[0].updatedTime) * 1000 + 1000).toISOString()
-        issueApiUrl = issueApiUrl + '&since=' + updatedTime + '&client_id=' + prod.githubOauth.clientID + '&client_secret=' + prod.githubOauth.clientSecret
+        issueApiUrl = issueApiUrl + '&since=' + updatedTime + '&client_id=' + githubOauth.clientID + '&client_secret=' + githubOauth.clientSecret
         console.log(issueApiUrl)
         options['uri'] = issueApiUrl
         rp(options)
             .then((respBody) => {
                 if (respBody) {
-		    console.log('debug_respBody: ', respBody)
+                    console.log('debug_respBody: ', respBody)
                     let issueBodys = JSON.parse(respBody)
                     Promise.all(issueBodys.map(item => getIssueFiled(item))).then(async (issueDatas) => {
                         console.log('debug_issueDatas: ', issueDatas)
-			for (let i = 0, l = issueDatas.length; i < l; i++) {
+                        for (let i = 0, l = issueDatas.length; i < l; i++) {
                             let issueData = issueDatas[i]
                             let allTags = await tags.getAllTags()
                             if (allTags.statusCode === '200') {
@@ -582,8 +582,9 @@ async function syncGithubfiledArticle () {
     }
 }
 function execTasks () {
-    schedule.scheduleJob('0 30 0 * * *', syncGithubUnfiledArticle)
-    schedule.scheduleJob('0 30 1 * * *', syncGithubfiledArticle)
+    console.log('112345')
+    schedule.scheduleJob('5 * * * * *', syncGithubUnfiledArticle)
+    schedule.scheduleJob('5 * * * * *', syncGithubfiledArticle)
 }
 
 execTasks()

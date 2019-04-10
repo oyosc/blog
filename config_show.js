@@ -31,12 +31,14 @@ let prod = {
         ip: '127.0.0.1',
         port: '6379'
     },
-    issueSize: 30,
-    apiUrl: 'https://api.github.com/repos/oyosc/blog',
-    issueAccessToken: 'xxxxxxxx8dd94b28841c4ca4b9e00735efxxxxxx',
-    issueState: 'open',
-    issueUnfiledFlag: '未归档',
-    issueFiledFlag: '已归档'
+    issueConfig: {
+        issueSize: 30,
+        apiUrl: 'https://api.github.com/repos/oyosc/blog',
+        issueAccessToken: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        issueState: 'open',
+        issueUnfiledFlag: '未归档',
+        issueFiledFlag: '已归档'
+    }
 }
 
 let dev = {
