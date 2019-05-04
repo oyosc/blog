@@ -80,6 +80,7 @@ webpack @4.4.1
 
 ## UPDATE
 - 增加github同步功能，博客会定时的对github上特定的issue进行同步以及更新 -- 2019.4.9
+- 将博客实现docker化，通过docker-compose来进行部署 -- 2019.5.4
    
 ## more
 -   由于一直是做后端程序员，所以搞起前端来感觉很麻烦，有问题什么的请提issue,有时间的话会回答的，最后欢迎star,欢迎fork,大家一起学习
