@@ -1,0 +1,70 @@
+version: '2'
+volumes:
+    db_volume:
+services:
+  blog_web:
+    build: ./docker/nodejs
+    ports:
+      - "3030:3030"
+    volumes:
+      - "./:/home/src/blog"
+    command: sh /home/src/blog/bin/enterpoint.sh
+    depends_on:
+      - redis
+      - mongo_db
+      - nginx
+    networks: ## 定义网络
+      nn: ## 加入的网络的名称
+        ipv4_address: 192.168.5.101
+    
+
+  mongo_db:
+    image: amd64/mongo:4
+    ports:
+      - "27017:27017"
+    volumes:
+          - db_volume:/data/db
+    environment:
+        AUTH: 'no'
+    networks: ## 定义网络
+      nn: ## 加入的网络的名称
+        ipv4_address: 192.168.5.102
+  mongo-seed:
+    build: ./docker/mongodb
+    links:
+      - mongo_db
+    volumes:
+      - "./:/home/src/blog"
+    networks: ## 定义网络
+      nn: ## 加入的网络的名称
+        ipv4_address: 192.168.5.105
+
+  redis:
+    image: redis:3.2.0
+    ports:
+      - "6379:6379"
+    networks: ## 定义网络
+      nn: ## 加入的网络的名称
+        ipv4_address: 192.168.5.103
+  nginx:
+    build:
+      context: ./
+      dockerfile: ./docker/nginx/Dockerfile
+    ports:
+      - "8088:80"
+      - "3033:3033"
+      - "443:443"
+    volumes:
+      - "./:/home/src/blog"
+      - "./docker_data/nginx/nginx.conf:/etc/nginx/nginx.conf"
+    networks: ## 定义网络
+      nn: ## 加入的网络的名称
+        ipv4_address: 192.168.5.104
+  
+networks: ##定义网络组
+  nn: ## 网络组名称
+    driver: bridge ## 网络的模式
+    ipam: ## 配置网络
+      driver: default
+      config:
+        - subnet: 192.168.5.0/24

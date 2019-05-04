@@ -2,5 +2,3 @@ node_modules
 .DS_Store
 .vscode
 build
-config.js
-docker_data

@@ -15,7 +15,7 @@ let GitHubStrategy = require('passport-github').Strategy
 
 const app = new Koa()
 const mongodb_url = 'mongodb://' + mongoConfig.ip + ':' + mongoConfig.port + '/' + mongoConfig.db
-const redis_client = redisInit(redisConfig.port, redisConfig.url)
+const redis_client = redisInit(redisConfig.port, redisConfig.ip)
 
 console.log('api_server@@@@@@@@@@@@')
 // app.use(bodyParser());
